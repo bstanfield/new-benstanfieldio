@@ -1,0 +1,19 @@
+{
+  "name": "benstanfield-io",
+  "version": "1.0.0",
+  "description": "Personal website for Benjamin Stanfield with GitHub-powered blog editor",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.2"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

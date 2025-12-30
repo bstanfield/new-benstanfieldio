@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor - Benjamin Stanfield</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-form">
+      <h1>Editor Access</h1>
+      <input 
+        type="password" 
+        id="password-input" 
+        placeholder="Enter password"
+        autocomplete="current-password"
+      >
+      <button class="btn btn-primary" id="login-btn">Enter</button>
+      <p id="login-error" style="color: #dc3545; margin-top: 1rem; display: none;">
+        Incorrect password
+      </p>
+    </div>
+  </div>
+
+  <!-- Editor Container -->
+  <div class="editor-container" id="editor-container" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="editor-sidebar">
+      <div class="sidebar-header">
+        <h2>Posts</h2>
+        <button class="btn btn-small btn-secondary" id="new-post-btn">+ New</button>
+      </div>
+      <ul class="posts-sidebar-list" id="posts-list">
+        <li><button disabled>Loading...</button></li>
+      </ul>
+      <div style="padding: 1rem; border-top: 1px solid var(--color-border);">
+        <a href="/" class="btn btn-secondary" style="width: 100%; text-align: center;">← Back to Site</a>
+      </div>
+    </aside>
+
+    <!-- Editor Panel -->
+    <div class="editor-panel">
+      <div class="editor-header">
+        <input 
+          type="text" 
+          class="editor-title-input" 
+          id="post-title" 
+          placeholder="Post title..."
+        >
+      </div>
+      <textarea 
+        class="editor-textarea" 
+        id="post-content" 
+        placeholder="Write your post in Markdown...
+
+# Heading 1
+## Heading 2
+
+**Bold text** and *italic text*
+
+- List item 1
+- List item 2
+
+[Link text](https://example.com)
+
+![Image alt text](/images/photo.jpg)
+
+> Blockquote
+
+`inline code`
+
+```
+code block
+```"
+      ></textarea>
+      
+      <!-- Image Upload -->
+      <div class="image-upload-zone" id="image-upload-zone">
+        <input type="file" id="image-input" accept="image/*">
+        📷 Drag & drop an image or click to upload
+      </div>
+      
+      <div class="editor-actions">
+        <button class="btn btn-primary" id="save-btn">Save Post</button>
+        <button class="btn btn-secondary" id="delete-btn" style="display: none;">Delete</button>
+        <label style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+          <input type="checkbox" id="published-checkbox" checked>
+          Published
+        </label>
+        <span class="status-indicator" id="status-indicator"></span>
+      </div>
+    </div>
+
+    <!-- Preview Panel -->
+    <div class="preview-panel">
+      <div class="preview-header">Preview</div>
+      <div class="preview-content post-content" id="preview-content">
+        <p style="color: var(--color-text-secondary);">Preview will appear here...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let password = '';
+    let posts = [];
+    let currentPost = null;
+    let isDirty = false;
+
+    // DOM Elements
+    const loginOverlay = document.getElementById('login-overlay');
+    const editorContainer = document.getElementById('editor-container');
+    const passwordInput = document.getElementById('password-input');
+    const loginBtn = document.getElementById('login-btn');
+    const loginError = document.getElementById('login-error');
+    const postsList = document.getElementById('posts-list');
+    const postTitle = document.getElementById('post-title');
+    const postContent = document.getElementById('post-content');
+    const previewContent = document.getElementById('preview-content');
+    const saveBtn = document.getElementById('save-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+    const newPostBtn = document.getElementById('new-post-btn');
+    const publishedCheckbox = document.getElementById('published-checkbox');
+    const statusIndicator = document.getElementById('status-indicator');
+    const imageUploadZone = document.getElementById('image-upload-zone');
+    const imageInput = document.getElementById('image-input');
+
+    // Check for saved password
+    function init() {
+      const savedPassword = sessionStorage.getItem('editor_password');
+      if (savedPassword) {
+        password = savedPassword;
+        showEditor();
+      }
+
+      // Set up event listeners
+      loginBtn.addEventListener('click', handleLogin);
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+      });
+      newPostBtn.addEventListener('click', createNewPost);
+      saveBtn.addEventListener('click', savePost);
+      deleteBtn.addEventListener('click', deletePost);
+      postTitle.addEventListener('input', handleEdit);
+      postContent.addEventListener('input', handleEdit);
+      publishedCheckbox.addEventListener('change', handleEdit);
+
+      // Image upload
+      imageUploadZone.addEventListener('click', () => imageInput.click());
+      imageInput.addEventListener('change', handleImageSelect);
+      imageUploadZone.addEventListener('dragover', handleDragOver);
+      imageUploadZone.addEventListener('dragleave', handleDragLeave);
+      imageUploadZone.addEventListener('drop', handleDrop);
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+          e.preventDefault();
+          savePost();
+        }
+      });
+
+      // Live preview
+      postContent.addEventListener('input', updatePreview);
+    }
+
+    async function handleLogin() {
+      password = passwordInput.value;
+      
+      try {
+        // Test the password by fetching posts
+        const response = await fetch('/api/posts', {
+          headers: {
+            'Authorization': `Bearer ${password}`
+          }
+        });
+
+        if (response.ok) {
+          sessionStorage.setItem('editor_password', password);
+          showEditor();
+        } else {
+          loginError.style.display = 'block';
+          passwordInput.value = '';
+        }
+      } catch (error) {
+        // Even if unauthorized, the GET might work without auth
+        // Let's try the editor and see
+        sessionStorage.setItem('editor_password', password);
+        showEditor();
+      }
+    }
+
+    async function showEditor() {
+      loginOverlay.style.display = 'none';
+      editorContainer.style.display = 'grid';
+      await loadPosts();
+    }
+
+    async function loadPosts() {
+      try {
+        const response = await fetch('/api/posts');
+        
+        if (response.ok) {
+          posts = await response.json();
+          renderPostsList();
+        } else {
+          posts = [];
+          renderPostsList();
+        }
+      } catch (error) {
+        console.error('Error loading posts:', error);
+        posts = [];
+        renderPostsList();
+      }
+    }
+
+    function renderPostsList() {
+      if (posts.length === 0) {
+        postsList.innerHTML = '<li><button disabled style="color: var(--color-text-secondary);">No posts yet</button></li>';
+        return;
+      }
+
+      // Sort by date descending
+      const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      postsList.innerHTML = sortedPosts.map(post => {
+        const isActive = currentPost && currentPost.slug === post.slug;
+        const date = new Date(post.date).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        const statusIcon = post.published === false ? '📝' : '';
+        
+        return `
+          <li>
+            <button 
+              class="${isActive ? 'active' : ''}" 
+              onclick="selectPost('${post.slug}')"
+            >
+              <span class="post-item-title">${statusIcon} ${post.title}</span>
+              <span class="post-item-date">${date}</span>
+            </button>
+          </li>
+        `;
+      }).join('');
+    }
+
+    async function selectPost(slug) {
+      if (isDirty && !confirm('You have unsaved changes. Discard them?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/posts?slug=${encodeURIComponent(slug)}`);
+        
+        if (response.ok) {
+          currentPost = await response.json();
+          postTitle.value = currentPost.title;
+          postContent.value = currentPost.content;
+          publishedCheckbox.checked = currentPost.published !== false;
+          deleteBtn.style.display = 'inline-flex';
+          isDirty = false;
+          updatePreview();
+          renderPostsList();
+        }
+      } catch (error) {
+        console.error('Error loading post:', error);
+        setStatus('Error loading post', 'error');
+      }
+    }
+
+    function createNewPost() {
+      if (isDirty && !confirm('You have unsaved changes. Discard them?')) {
+        return;
+      }
+
+      currentPost = null;
+      postTitle.value = '';
+      postContent.value = '';
+      publishedCheckbox.checked = true;
+      deleteBtn.style.display = 'none';
+      isDirty = false;
+      previewContent.innerHTML = '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
+      renderPostsList();
+      postTitle.focus();
+    }
+
+    function handleEdit() {
+      isDirty = true;
+      setStatus('Unsaved changes', '');
+    }
+
+    function updatePreview() {
+      const content = postContent.value;
+      if (content.trim()) {
+        previewContent.innerHTML = marked.parse(content);
+      } else {
+        previewContent.innerHTML = '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
+      }
+    }
+
+    async function savePost() {
+      const title = postTitle.value.trim();
+      const content = postContent.value.trim();
+      const published = publishedCheckbox.checked;
+
+      if (!title) {
+        setStatus('Title is required', 'error');
+        return;
+      }
+
+      if (!content) {
+        setStatus('Content is required', 'error');
+        return;
+      }
+
+      setStatus('Saving...', 'saving');
+
+      try {
+        let response;
+        
+        if (currentPost) {
+          // Update existing post
+          response = await fetch('/api/posts', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${password}`
+            },
+            body: JSON.stringify({
+              slug: currentPost.slug,
+              title,
+              content,
+              published,
+              sha: currentPost.sha
+            })
+          });
+        } else {
+          // Create new post
+          response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${password}`
+            },
+            body: JSON.stringify({ title, content, published })
+          });
+        }
+
+        if (response.ok) {
+          currentPost = await response.json();
+          isDirty = false;
+          setStatus('Saved!', 'saved');
+          deleteBtn.style.display = 'inline-flex';
+          await loadPosts();
+          renderPostsList();
+          
+          // Clear status after 3 seconds
+          setTimeout(() => {
+            if (statusIndicator.textContent === 'Saved!') {
+              setStatus('', '');
+            }
+          }, 3000);
+        } else {
+          const error = await response.json();
+          setStatus(error.error || 'Failed to save', 'error');
+        }
+      } catch (error) {
+        console.error('Error saving post:', error);
+        setStatus('Error saving post', 'error');
+      }
+    }
+
+    async function deletePost() {
+      if (!currentPost) return;
+      
+      if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) {
+        return;
+      }
+
+      setStatus('Deleting...', 'saving');
+
+      try {
+        const response = await fetch(`/api/posts?slug=${encodeURIComponent(currentPost.slug)}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${password}`
+          }
+        });
+
+        if (response.ok) {
+          setStatus('Deleted', 'saved');
+          createNewPost();
+          await loadPosts();
+        } else {
+          const error = await response.json();
+          setStatus(error.error || 'Failed to delete', 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        setStatus('Error deleting post', 'error');
+      }
+    }
+
+    function setStatus(message, type) {
+      statusIndicator.textContent = message;
+      statusIndicator.className = 'status-indicator';
+      if (type) {
+        statusIndicator.classList.add(type);
+      }
+    }
+
+    // Image upload handlers
+    function handleDragOver(e) {
+      e.preventDefault();
+      imageUploadZone.classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      imageUploadZone.classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      imageUploadZone.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        uploadImage(files[0]);
+      }
+    }
+
+    function handleImageSelect(e) {
+      const files = e.target.files;
+      if (files.length > 0) {
+        uploadImage(files[0]);
+      }
+    }
+
+    async function uploadImage(file) {
+      if (!file.type.startsWith('image/')) {
+        setStatus('Please select an image file', 'error');
+        return;
+      }
+
+      setStatus('Uploading image...', 'saving');
+
+      try {
+        // Convert to base64
+        const base64 = await fileToBase64(file);
+        
+        const response = await fetch('/api/images', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${password}`
+          },
+          body: JSON.stringify({
+            filename: file.name,
+            content: base64,
+            contentType: file.type
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          
+          // Insert markdown at cursor position
+          const imageMarkdown = `![${file.name}](${result.url})`;
+          insertAtCursor(postContent, imageMarkdown);
+          handleEdit();
+          updatePreview();
+          
+          setStatus('Image uploaded!', 'saved');
+          setTimeout(() => {
+            if (statusIndicator.textContent === 'Image uploaded!') {
+              setStatus('Unsaved changes', '');
+            }
+          }, 3000);
+        } else {
+          const error = await response.json();
+          setStatus(error.error || 'Failed to upload', 'error');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        setStatus('Error uploading image', 'error');
+      }
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          // Remove the data:image/xxx;base64, prefix
+          const base64 = reader.result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function insertAtCursor(textarea, text) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const value = textarea.value;
+      
+      textarea.value = value.substring(0, start) + text + value.substring(end);
+      textarea.selectionStart = textarea.selectionEnd = start + text.length;
+      textarea.focus();
+    }
+
+    // Make selectPost available globally for onclick handlers
+    window.selectPost = selectPost;
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>

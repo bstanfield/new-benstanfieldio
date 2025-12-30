@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benjamin Stanfield</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <!-- Right-aligned navigation -->
+  <nav class="site-nav">
+    <div class="name">Benjamin Stanfield</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#bookshelf">Bookshelf</a></li>
+      <li><a href="#posts">Writing</a></li>
+      <li><a href="https://wren.co" target="_blank">Wren</a></li>
+      <li><a href="https://linkedin.com/in/benstanfield" target="_blank">LinkedIn</a></li>
+      <li><a href="https://github.com/benstanfield" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <!-- Profile Section -->
+    <section id="about" class="profile">
+      <img 
+        src="https://pbs.twimg.com/profile_images/1234567890/photo.jpg" 
+        alt="Benjamin Stanfield" 
+        class="profile-photo"
+        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect fill=%22%23e5e5e5%22 width=%22140%22 height=%22140%22/></svg>'"
+      >
+      <div class="profile-bio">
+        <p>
+          I'm Benjamin Stanfield, Co-founder and Product/Design Lead at 
+          <a href="https://wren.co">Wren</a> and <a href="https://topo.io">Topo</a>.
+        </p>
+        <p>
+          I love basketball, board games, typography, fun cocktails, and a good book.
+          I currently live in California, cozied up against the hills.
+        </p>
+        <p>
+          Previously, I studied at the <a href="https://iovine-young.usc.edu">Iovine & Young Academy</a> at USC.
+        </p>
+        <p>
+          Email: <a href="mailto:ben@benstanfield.io">ben@benstanfield.io</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- Posts Section -->
+    <section id="posts">
+      <h2>Writing</h2>
+      <ul class="posts-list" id="posts-list">
+        <li class="loading">Loading posts...</li>
+      </ul>
+    </section>
+
+    <!-- Bookshelf Section -->
+    <section id="bookshelf">
+      <h2>Bookshelf</h2>
+      <ul class="bookshelf">
+        <!-- Currently Reading -->
+        <li>
+          <span class="book-emoji">🪖</span>
+          <span class="book-title">Postwar</span>
+          <span class="book-genre">History</span>
+          <span class="book-status reading">Reading now</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌊</span>
+          <span class="book-title">Sea of Tranquility</span>
+          <span class="book-genre">Time Travel</span>
+          <span class="book-status reading">Reading now</span>
+        </li>
+        <li>
+          <span class="book-emoji">👶🏼</span>
+          <span class="book-title">WEIRDEST People</span>
+          <span class="book-genre">Psychology & Economics</span>
+          <span class="book-status reading">Reading now</span>
+        </li>
+        
+        <!-- Finished Books -->
+        <li>
+          <span class="book-emoji">🎯</span>
+          <span class="book-title">Outliers</span>
+          <span class="book-genre">Non-fiction</span>
+          <span class="book-date">Dec. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🐴</span>
+          <span class="book-title">Lonesome Dove</span>
+          <span class="book-genre">Western Fiction</span>
+          <span class="book-date">Nov. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🦨</span>
+          <span class="book-title">Skunk Works</span>
+          <span class="book-genre">Memoir</span>
+          <span class="book-date">Oct. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">📘</span>
+          <span class="book-title">Careless People</span>
+          <span class="book-genre">Memoir</span>
+          <span class="book-date">Oct. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🧂</span>
+          <span class="book-title">Salt</span>
+          <span class="book-genre">History</span>
+          <span class="book-date">Sept. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🏛️</span>
+          <span class="book-title">Meditations</span>
+          <span class="book-genre">Philosophy</span>
+          <span class="book-date">Sept. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🕷️</span>
+          <span class="book-title">Children of Time</span>
+          <span class="book-genre">Science Fiction</span>
+          <span class="book-date">Jul. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌊</span>
+          <span class="book-title">The Coming Wave</span>
+          <span class="book-genre">Technology & Society</span>
+          <span class="book-date">Jun. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🦉</span>
+          <span class="book-title">Poor Charlie's Almanack</span>
+          <span class="book-genre">Business & Philosophy</span>
+          <span class="book-date">Apr. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">💥</span>
+          <span class="book-title">Boom: Bubbles & the End of Stagnation</span>
+          <span class="book-genre">Business</span>
+          <span class="book-date">Jan. 2025</span>
+        </li>
+        <li>
+          <span class="book-emoji">🚢</span>
+          <span class="book-title">The Path Between The Seas</span>
+          <span class="book-genre">History</span>
+          <span class="book-date">Nov. 2024</span>
+        </li>
+        <li>
+          <span class="book-emoji">🏛️</span>
+          <span class="book-title">All The President's Men</span>
+          <span class="book-genre">Journalism</span>
+          <span class="book-date">Nov. 2024</span>
+        </li>
+        <li>
+          <span class="book-emoji">⚖️</span>
+          <span class="book-title">Midnight in the Garden of Good & Evil</span>
+          <span class="book-genre">True Crime</span>
+          <span class="book-date">Oct. 2024</span>
+        </li>
+        <li>
+          <span class="book-emoji">🫁</span>
+          <span class="book-title">Exhalation</span>
+          <span class="book-genre">Science Fiction</span>
+          <span class="book-date">Jul. 2024</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌝</span>
+          <span class="book-title">Artemis</span>
+          <span class="book-genre">Science Fiction</span>
+          <span class="book-date">Apr. 2024</span>
+        </li>
+        <li>
+          <span class="book-emoji">🍻</span>
+          <span class="book-title">Drunk</span>
+          <span class="book-genre">Anthropology</span>
+          <span class="book-date">Jan. 2024</span>
+        </li>
+        <li>
+          <span class="book-emoji">🪞</span>
+          <span class="book-title">Trick Mirror</span>
+          <span class="book-genre">Essays</span>
+          <span class="book-date">Dec. 2023</span>
+        </li>
+        <li>
+          <span class="book-emoji">💡</span>
+          <span class="book-title">Invention and Innovation</span>
+          <span class="book-genre">History</span>
+          <span class="book-date">May 2023</span>
+        </li>
+        <li>
+          <span class="book-emoji">🚀</span>
+          <span class="book-title">Liftoff</span>
+          <span class="book-genre">Business</span>
+          <span class="book-date">Apr. 2023</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌍</span>
+          <span class="book-title">Thinking in Systems</span>
+          <span class="book-genre">Business</span>
+          <span class="book-date">Feb. 2023</span>
+        </li>
+        <li>
+          <span class="book-emoji">🇺🇸</span>
+          <span class="book-title">Team of Rivals</span>
+          <span class="book-genre">Biography</span>
+          <span class="book-date">Jan. 2023</span>
+        </li>
+        <li>
+          <span class="book-emoji">🚂</span>
+          <span class="book-title">The Underground Railroad</span>
+          <span class="book-genre">Historical Fiction</span>
+          <span class="book-date">Dec. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌚</span>
+          <span class="book-title">The Stone Sky</span>
+          <span class="book-genre">Science Fiction</span>
+          <span class="book-date">Dec. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">💎</span>
+          <span class="book-title">The Obelisk Gate</span>
+          <span class="book-genre">Science Fiction</span>
+          <span class="book-date">Nov. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌋</span>
+          <span class="book-title">The Fifth Season</span>
+          <span class="book-genre">Science Fiction</span>
+          <span class="book-date">Nov. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌹</span>
+          <span class="book-title">This Is Your Mind On Plants</span>
+          <span class="book-genre">Nonfiction, Science</span>
+          <span class="book-date">Oct. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌊</span>
+          <span class="book-title">Upheaval</span>
+          <span class="book-genre">History</span>
+          <span class="book-date">Sept. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🫀</span>
+          <span class="book-title">Never Let Me Go</span>
+          <span class="book-genre">Speculative Fiction</span>
+          <span class="book-date">Jul. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🗽</span>
+          <span class="book-title">Invisible Child</span>
+          <span class="book-genre">Biography</span>
+          <span class="book-date">Jul. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🔫</span>
+          <span class="book-title">The Great Mistake</span>
+          <span class="book-genre">Biography</span>
+          <span class="book-date">Jun. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🕵️‍♀️</span>
+          <span class="book-title">A Woman of No Importance</span>
+          <span class="book-genre">History</span>
+          <span class="book-date">Mar. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">⚔️</span>
+          <span class="book-title">The Song of Achilles</span>
+          <span class="book-genre">Mythology</span>
+          <span class="book-date">Feb. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">👩‍🦳</span>
+          <span class="book-title">Circe</span>
+          <span class="book-genre">Mythology</span>
+          <span class="book-date">Feb. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🤝</span>
+          <span class="book-title">15 Commitments</span>
+          <span class="book-genre">Business Culture</span>
+          <span class="book-date">Jan. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">👏</span>
+          <span class="book-title">Give and Take</span>
+          <span class="book-genre">Business</span>
+          <span class="book-date">Jan. 2022</span>
+        </li>
+        <li>
+          <span class="book-emoji">🗺</span>
+          <span class="book-title">The Map That Changed the World</span>
+          <span class="book-genre">History & Geology</span>
+          <span class="book-date">Nov. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">🏜</span>
+          <span class="book-title">Dune</span>
+          <span class="book-genre">Sci-fi & Fantasy</span>
+          <span class="book-date">Nov. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">👨‍🚀</span>
+          <span class="book-title">Project Hail Mary</span>
+          <span class="book-genre">Sci-fi</span>
+          <span class="book-date">Oct. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">🦠</span>
+          <span class="book-title">Life's Edge</span>
+          <span class="book-genre">Philosophy & Science</span>
+          <span class="book-date">Aug. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">🔥</span>
+          <span class="book-title">Intro to Fire</span>
+          <span class="book-genre">Ecology</span>
+          <span class="book-date">Aug. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">⏬</span>
+          <span class="book-title">Drawdown</span>
+          <span class="book-genre">Climate Science</span>
+          <span class="book-date">Mar. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌍</span>
+          <span class="book-title">The Story of More</span>
+          <span class="book-genre">Climate Science</span>
+          <span class="book-date">Feb. 2021</span>
+        </li>
+        <li>
+          <span class="book-emoji">🌑</span>
+          <span class="book-title">Seveneves</span>
+          <span class="book-genre">Hard Sci-fi</span>
+          <span class="book-date">Feb. 2020</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <ul class="footer-links">
+        <li><a href="https://wren.co">Wren</a></li>
+        <li><a href="https://topo.io">Topo</a></li>
+        <li><a href="https://linkedin.com/in/benstanfield">LinkedIn</a></li>
+        <li><a href="https://github.com/benstanfield">GitHub</a></li>
+      </ul>
+    </footer>
+  </main>
+
+  <script>
+    // Fetch and render posts
+    async function loadPosts() {
+      const postsListEl = document.getElementById('posts-list');
+      
+      try {
+        const response = await fetch('/api/posts');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts');
+        }
+        
+        const posts = await response.json();
+        
+        // Filter published posts and sort by date
+        const publishedPosts = posts
+          .filter(post => post.published !== false)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        if (publishedPosts.length === 0) {
+          postsListEl.innerHTML = '<li>No posts yet.</li>';
+          return;
+        }
+        
+        postsListEl.innerHTML = publishedPosts.map(post => {
+          const date = new Date(post.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          
+          // Get first paragraph as excerpt
+          const excerpt = post.content
+            .replace(/^#.*$/gm, '') // Remove headings
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links
+            .replace(/[*_`]/g, '') // Remove formatting
+            .trim()
+            .split('\n')[0]
+            .slice(0, 150);
+          
+          return `
+            <li>
+              <a href="?post=${post.slug}" class="post-link">${post.title}</a>
+              <span class="post-date">${date}</span>
+              ${excerpt ? `<p class="post-excerpt">${excerpt}${excerpt.length >= 150 ? '...' : ''}</p>` : ''}
+            </li>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        console.error('Error loading posts:', error);
+        postsListEl.innerHTML = '<li>No posts yet.</li>';
+      }
+    }
+    
+    // Check if viewing a single post
+    async function checkSinglePost() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('post');
+      
+      if (slug) {
+        try {
+          const response = await fetch(`/api/posts?slug=${encodeURIComponent(slug)}`);
+          
+          if (!response.ok) {
+            throw new Error('Post not found');
+          }
+          
+          const post = await response.json();
+          displaySinglePost(post);
+        } catch (error) {
+          console.error('Error loading post:', error);
+        }
+      }
+    }
+    
+    function displaySinglePost(post) {
+      const main = document.querySelector('main.container');
+      const date = new Date(post.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      main.innerHTML = `
+        <article>
+          <header style="margin-bottom: 2rem;">
+            <a href="/" style="font-size: 0.875rem; color: var(--color-text-secondary);">← Back</a>
+            <h1 style="margin-top: 1rem;">${post.title}</h1>
+            <time style="color: var(--color-text-secondary); font-size: 0.9rem;">${date}</time>
+          </header>
+          <div class="post-content">
+            ${marked.parse(post.content)}
+          </div>
+        </article>
+        <footer class="site-footer">
+          <ul class="footer-links">
+            <li><a href="https://wren.co">Wren</a></li>
+            <li><a href="https://topo.io">Topo</a></li>
+            <li><a href="https://linkedin.com/in/benstanfield">LinkedIn</a></li>
+            <li><a href="https://github.com/benstanfield">GitHub</a></li>
+          </ul>
+        </footer>
+      `;
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('post')) {
+        checkSinglePost();
+      } else {
+        loadPosts();
+      }
+    });
+  </script>
+</body>
+</html>
