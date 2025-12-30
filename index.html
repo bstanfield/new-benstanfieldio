@@ -11,7 +11,7 @@
   <!-- Right-aligned navigation -->
   <nav class="site-nav">
     <div class="name">Benjamin Stanfield</div>
-    <ul>
+    <ul id="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#bookshelf">Bookshelf</a></li>
       <li><a href="#posts">Writing</a></li>
@@ -365,9 +365,17 @@
       return useProduction ? PRODUCTION_URL : '';
     }
     
-    // Create dev toggle (only shown on localhost)
+    // Create dev toggle and editor link (only shown on localhost)
     function createDevToggle() {
       if (!isLocalhost) return;
+      
+      // Add editor link to nav
+      const navLinks = document.getElementById('nav-links');
+      if (navLinks) {
+        const editorLi = document.createElement('li');
+        editorLi.innerHTML = '<a href="/editor.html" style="color: #e91e63;">Editor ✏️</a>';
+        navLinks.appendChild(editorLi);
+      }
       
       const useProduction = localStorage.getItem('useProductionApi') === 'true';
       
