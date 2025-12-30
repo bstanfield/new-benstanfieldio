@@ -104,6 +104,77 @@ code block
   </div>
 
   <script>
+    // Configuration
+    const PRODUCTION_URL = 'https://new-benstanfieldio-kappa.vercel.app';
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Get API base URL based on toggle state
+    function getApiBase() {
+      if (!isLocalhost) return ''; // Always use relative URLs in production
+      const useProduction = localStorage.getItem('useProductionApi') === 'true';
+      return useProduction ? PRODUCTION_URL : '';
+    }
+    
+    // Create dev toggle (only shown on localhost)
+    function createDevToggle() {
+      if (!isLocalhost) return;
+      
+      const useProduction = localStorage.getItem('useProductionApi') === 'true';
+      
+      const toggle = document.createElement('div');
+      toggle.id = 'dev-toggle';
+      toggle.style.cssText = `
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        background: #1a1a1a;
+        color: #fff;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-family: var(--font-mono);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      `;
+      
+      toggle.innerHTML = `
+        <span style="opacity: 0.7;">API:</span>
+        <button id="toggle-local" style="
+          background: ${!useProduction ? '#0066cc' : '#444'};
+          color: #fff;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 0.7rem;
+        ">Local</button>
+        <button id="toggle-prod" style="
+          background: ${useProduction ? '#0066cc' : '#444'};
+          color: #fff;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 0.7rem;
+        ">Prod</button>
+      `;
+      
+      document.body.appendChild(toggle);
+      
+      document.getElementById('toggle-local').addEventListener('click', () => {
+        localStorage.setItem('useProductionApi', 'false');
+        window.location.reload();
+      });
+      
+      document.getElementById('toggle-prod').addEventListener('click', () => {
+        localStorage.setItem('useProductionApi', 'true');
+        window.location.reload();
+      });
+    }
+
     // State
     let password = '';
     let posts = [];
@@ -169,10 +240,11 @@ code block
 
     async function handleLogin() {
       password = passwordInput.value;
+      const apiBase = getApiBase();
       
       try {
         // Test the password by fetching posts
-        const response = await fetch('/api/posts', {
+        const response = await fetch(`${apiBase}/api/posts`, {
           headers: {
             'Authorization': `Bearer ${password}`
           }
@@ -196,12 +268,14 @@ code block
     async function showEditor() {
       loginOverlay.style.display = 'none';
       editorContainer.style.display = 'grid';
+      createDevToggle();
       await loadPosts();
     }
 
     async function loadPosts() {
+      const apiBase = getApiBase();
       try {
-        const response = await fetch('/api/posts');
+        const response = await fetch(`${apiBase}/api/posts`);
         
         if (response.ok) {
           posts = await response.json();
@@ -254,8 +328,9 @@ code block
         return;
       }
 
+      const apiBase = getApiBase();
       try {
-        const response = await fetch(`/api/posts?slug=${encodeURIComponent(slug)}`);
+        const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`);
         
         if (response.ok) {
           currentPost = await response.json();
@@ -320,12 +395,13 @@ code block
 
       setStatus('Saving...', 'saving');
 
+      const apiBase = getApiBase();
       try {
         let response;
         
         if (currentPost) {
           // Update existing post
-          response = await fetch('/api/posts', {
+          response = await fetch(`${apiBase}/api/posts`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -341,7 +417,7 @@ code block
           });
         } else {
           // Create new post
-          response = await fetch('/api/posts', {
+          response = await fetch(`${apiBase}/api/posts`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -384,8 +460,9 @@ code block
 
       setStatus('Deleting...', 'saving');
 
+      const apiBase = getApiBase();
       try {
-        const response = await fetch(`/api/posts?slug=${encodeURIComponent(currentPost.slug)}`, {
+        const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(currentPost.slug)}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${password}`
@@ -450,11 +527,12 @@ code block
 
       setStatus('Uploading image...', 'saving');
 
+      const apiBase = getApiBase();
       try {
         // Convert to base64
         const base64 = await fileToBase64(file);
         
-        const response = await fetch('/api/images', {
+        const response = await fetch(`${apiBase}/api/images`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
