@@ -354,12 +354,84 @@
   </main>
 
   <script>
+    // Configuration
+    const PRODUCTION_URL = 'https://new-benstanfieldio-kappa.vercel.app';
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Get API base URL based on toggle state
+    function getApiBase() {
+      if (!isLocalhost) return ''; // Always use relative URLs in production
+      const useProduction = localStorage.getItem('useProductionApi') === 'true';
+      return useProduction ? PRODUCTION_URL : '';
+    }
+    
+    // Create dev toggle (only shown on localhost)
+    function createDevToggle() {
+      if (!isLocalhost) return;
+      
+      const useProduction = localStorage.getItem('useProductionApi') === 'true';
+      
+      const toggle = document.createElement('div');
+      toggle.id = 'dev-toggle';
+      toggle.style.cssText = `
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        background: #1a1a1a;
+        color: #fff;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-family: var(--font-mono);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      `;
+      
+      toggle.innerHTML = `
+        <span style="opacity: 0.7;">API:</span>
+        <button id="toggle-local" style="
+          background: ${!useProduction ? '#0066cc' : '#444'};
+          color: #fff;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 0.7rem;
+        ">Local</button>
+        <button id="toggle-prod" style="
+          background: ${useProduction ? '#0066cc' : '#444'};
+          color: #fff;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 0.7rem;
+        ">Prod</button>
+      `;
+      
+      document.body.appendChild(toggle);
+      
+      document.getElementById('toggle-local').addEventListener('click', () => {
+        localStorage.setItem('useProductionApi', 'false');
+        window.location.reload();
+      });
+      
+      document.getElementById('toggle-prod').addEventListener('click', () => {
+        localStorage.setItem('useProductionApi', 'true');
+        window.location.reload();
+      });
+    }
+    
     // Fetch and render posts
     async function loadPosts() {
       const postsListEl = document.getElementById('posts-list');
+      const apiBase = getApiBase();
       
       try {
-        const response = await fetch('/api/posts');
+        const response = await fetch(`${apiBase}/api/posts`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch posts');
@@ -412,10 +484,11 @@
     async function checkSinglePost() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('post');
+      const apiBase = getApiBase();
       
       if (slug) {
         try {
-          const response = await fetch(`/api/posts?slug=${encodeURIComponent(slug)}`);
+          const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`);
           
           if (!response.ok) {
             throw new Error('Post not found');
@@ -461,6 +534,8 @@
     
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
+      createDevToggle();
+      
       const params = new URLSearchParams(window.location.search);
       if (params.get('post')) {
         checkSinglePost();
