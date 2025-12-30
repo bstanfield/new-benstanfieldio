@@ -6,6 +6,126 @@
   <title>Editor - Benjamin Stanfield</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    /* Editor-specific styles */
+    .tab-buttons {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.75rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab-btn.active {
+      color: var(--color-link);
+      border-bottom-color: var(--color-link);
+    }
+    .tab-btn:hover {
+      background-color: #f5f5f5;
+    }
+    
+    /* Book form styles */
+    .book-form {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="url"] {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      font-size: 1rem;
+      font-family: var(--font-sans);
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--color-link);
+    }
+    .radio-group {
+      display: flex;
+      gap: 1rem;
+    }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.9rem;
+      text-transform: none;
+      letter-spacing: normal;
+      cursor: pointer;
+    }
+    .emoji-input {
+      width: 4rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    
+    /* Book preview card */
+    .book-preview {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      background: #fafafa;
+    }
+    .book-preview-card {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      max-width: 100%;
+    }
+    .book-preview-emoji {
+      font-size: 1.25rem;
+    }
+    .book-preview-title {
+      font-weight: 500;
+    }
+    .book-preview-genre {
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+    }
+    .book-preview-status {
+      font-size: 0.75rem;
+      padding: 0.125rem 0.5rem;
+      border-radius: 3px;
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    .book-preview-date {
+      color: var(--color-text-secondary);
+      font-size: 0.8rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Login Overlay -->
@@ -29,20 +149,40 @@
   <div class="editor-container" id="editor-container" style="display: none;">
     <!-- Sidebar -->
     <aside class="editor-sidebar">
-      <div class="sidebar-header">
-        <h2>Posts</h2>
-        <button class="btn btn-small btn-secondary" id="new-post-btn">+ New</button>
+      <div class="tab-buttons">
+        <button class="tab-btn active" id="posts-tab-btn">Posts</button>
+        <button class="tab-btn" id="books-tab-btn">Books</button>
       </div>
-      <ul class="posts-sidebar-list" id="posts-list">
-        <li><button disabled>Loading...</button></li>
-      </ul>
+      
+      <!-- Posts List -->
+      <div id="posts-tab" class="tab-content">
+        <div class="sidebar-header">
+          <h2>Posts</h2>
+          <button class="btn btn-small btn-secondary" id="new-post-btn">+ New</button>
+        </div>
+        <ul class="posts-sidebar-list" id="posts-list">
+          <li><button disabled>Loading...</button></li>
+        </ul>
+      </div>
+      
+      <!-- Books List -->
+      <div id="books-tab" class="tab-content" style="display: none;">
+        <div class="sidebar-header">
+          <h2>Books</h2>
+          <button class="btn btn-small btn-secondary" id="new-book-btn">+ New</button>
+        </div>
+        <ul class="posts-sidebar-list" id="books-list">
+          <li><button disabled>Loading...</button></li>
+        </ul>
+      </div>
+      
       <div style="padding: 1rem; border-top: 1px solid var(--color-border);">
         <a href="/" class="btn btn-secondary" style="width: 100%; text-align: center;">← Back to Site</a>
       </div>
     </aside>
 
-    <!-- Editor Panel -->
-    <div class="editor-panel">
+    <!-- Post Editor Panel -->
+    <div class="editor-panel" id="post-editor-panel">
       <div class="editor-header">
         <input 
           type="text" 
@@ -70,11 +210,7 @@
 
 > Blockquote
 
-`inline code`
-
-```
-code block
-```"
+`inline code`"
       ></textarea>
       
       <!-- Image Upload -->
@@ -84,21 +220,78 @@ code block
       </div>
       
       <div class="editor-actions">
-        <button class="btn btn-primary" id="save-btn">Save Post</button>
-        <button class="btn btn-secondary" id="delete-btn" style="display: none;">Delete</button>
+        <button class="btn btn-primary" id="save-post-btn">Save Post</button>
+        <button class="btn btn-secondary" id="delete-post-btn" style="display: none;">Delete</button>
         <label style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
           <input type="checkbox" id="published-checkbox" checked>
           Published
         </label>
-        <span class="status-indicator" id="status-indicator"></span>
+        <span class="status-indicator" id="post-status-indicator"></span>
+      </div>
+    </div>
+    
+    <!-- Book Editor Panel -->
+    <div class="editor-panel" id="book-editor-panel" style="display: none;">
+      <div class="book-form">
+        <div class="form-group">
+          <label>Emoji</label>
+          <input type="text" id="book-emoji" class="emoji-input" placeholder="📚" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="book-title" placeholder="Book title...">
+        </div>
+        <div class="form-group">
+          <label>Genre</label>
+          <input type="text" id="book-genre" placeholder="e.g., Science Fiction, History...">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="book-status" value="finished" checked>
+              Finished
+            </label>
+            <label>
+              <input type="radio" name="book-status" value="reading">
+              Reading
+            </label>
+          </div>
+        </div>
+        <div class="form-group" id="book-date-group">
+          <label>Date Finished</label>
+          <input type="text" id="book-date" placeholder="e.g., Dec. 2025">
+        </div>
+        <div class="form-group">
+          <label>Goodreads URL</label>
+          <input type="url" id="book-goodreads" placeholder="https://www.goodreads.com/book/show/...">
+        </div>
+      </div>
+      
+      <div class="editor-actions">
+        <button class="btn btn-primary" id="save-book-btn">Save Book</button>
+        <button class="btn btn-danger" id="delete-book-btn" style="display: none;">Delete</button>
+        <span class="status-indicator" id="book-status-indicator"></span>
       </div>
     </div>
 
     <!-- Preview Panel -->
-    <div class="preview-panel">
+    <div class="preview-panel" id="post-preview-panel">
       <div class="preview-header">Preview</div>
       <div class="preview-content post-content" id="preview-content">
         <p style="color: var(--color-text-secondary);">Preview will appear here...</p>
+      </div>
+    </div>
+    
+    <!-- Book Preview Panel -->
+    <div class="preview-panel book-preview" id="book-preview-panel" style="display: none;">
+      <div class="preview-header" style="position: absolute; top: 0; left: 0; right: 0;">Preview</div>
+      <div class="book-preview-card" id="book-preview-card">
+        <span class="book-preview-emoji" id="preview-emoji">📚</span>
+        <span class="book-preview-title" id="preview-title">Book Title</span>
+        <span class="book-preview-genre" id="preview-genre">Genre</span>
+        <span class="book-preview-status" id="preview-status" style="display: none;">Reading now</span>
+        <span class="book-preview-date" id="preview-date"></span>
       </div>
     </div>
   </div>
@@ -110,12 +303,12 @@ code block
     
     // Get API base URL based on toggle state
     function getApiBase() {
-      if (!isLocalhost) return ''; // Always use relative URLs in production
+      if (!isLocalhost) return '';
       const useProduction = localStorage.getItem('useProductionApi') === 'true';
       return useProduction ? PRODUCTION_URL : '';
     }
     
-    // Create dev toggle (only shown on localhost)
+    // Create dev toggle
     function createDevToggle() {
       if (!isLocalhost) return;
       
@@ -177,11 +370,20 @@ code block
 
     // State
     let password = '';
+    let activeTab = 'posts';
+    
+    // Posts state
     let posts = [];
     let currentPost = null;
-    let isDirty = false;
+    let isPostDirty = false;
+    
+    // Books state
+    let books = [];
+    let booksSha = null;
+    let currentBookIndex = null;
+    let isBookDirty = false;
 
-    // DOM Elements
+    // DOM Elements - Posts
     const loginOverlay = document.getElementById('login-overlay');
     const editorContainer = document.getElementById('editor-container');
     const passwordInput = document.getElementById('password-input');
@@ -191,15 +393,38 @@ code block
     const postTitle = document.getElementById('post-title');
     const postContent = document.getElementById('post-content');
     const previewContent = document.getElementById('preview-content');
-    const saveBtn = document.getElementById('save-btn');
-    const deleteBtn = document.getElementById('delete-btn');
+    const savePostBtn = document.getElementById('save-post-btn');
+    const deletePostBtn = document.getElementById('delete-post-btn');
     const newPostBtn = document.getElementById('new-post-btn');
     const publishedCheckbox = document.getElementById('published-checkbox');
-    const statusIndicator = document.getElementById('status-indicator');
+    const postStatusIndicator = document.getElementById('post-status-indicator');
     const imageUploadZone = document.getElementById('image-upload-zone');
     const imageInput = document.getElementById('image-input');
+    
+    // DOM Elements - Books
+    const booksList = document.getElementById('books-list');
+    const bookEmoji = document.getElementById('book-emoji');
+    const bookTitleInput = document.getElementById('book-title');
+    const bookGenre = document.getElementById('book-genre');
+    const bookDate = document.getElementById('book-date');
+    const bookDateGroup = document.getElementById('book-date-group');
+    const bookGoodreads = document.getElementById('book-goodreads');
+    const saveBookBtn = document.getElementById('save-book-btn');
+    const deleteBookBtn = document.getElementById('delete-book-btn');
+    const newBookBtn = document.getElementById('new-book-btn');
+    const bookStatusIndicator = document.getElementById('book-status-indicator');
+    
+    // DOM Elements - Tabs
+    const postsTabBtn = document.getElementById('posts-tab-btn');
+    const booksTabBtn = document.getElementById('books-tab-btn');
+    const postsTab = document.getElementById('posts-tab');
+    const booksTab = document.getElementById('books-tab');
+    const postEditorPanel = document.getElementById('post-editor-panel');
+    const bookEditorPanel = document.getElementById('book-editor-panel');
+    const postPreviewPanel = document.getElementById('post-preview-panel');
+    const bookPreviewPanel = document.getElementById('book-preview-panel');
 
-    // Check for saved password
+    // Initialize
     function init() {
       const savedPassword = sessionStorage.getItem('editor_password');
       if (savedPassword) {
@@ -207,17 +432,44 @@ code block
         showEditor();
       }
 
-      // Set up event listeners
+      // Login handlers
       loginBtn.addEventListener('click', handleLogin);
       passwordInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleLogin();
       });
+      
+      // Tab handlers
+      postsTabBtn.addEventListener('click', () => switchTab('posts'));
+      booksTabBtn.addEventListener('click', () => switchTab('books'));
+      
+      // Post handlers
       newPostBtn.addEventListener('click', createNewPost);
-      saveBtn.addEventListener('click', savePost);
-      deleteBtn.addEventListener('click', deletePost);
-      postTitle.addEventListener('input', handleEdit);
-      postContent.addEventListener('input', handleEdit);
-      publishedCheckbox.addEventListener('change', handleEdit);
+      savePostBtn.addEventListener('click', savePost);
+      deletePostBtn.addEventListener('click', deletePost);
+      postTitle.addEventListener('input', handlePostEdit);
+      postContent.addEventListener('input', handlePostEdit);
+      publishedCheckbox.addEventListener('change', handlePostEdit);
+      postContent.addEventListener('input', updatePostPreview);
+      
+      // Book handlers
+      newBookBtn.addEventListener('click', createNewBook);
+      saveBookBtn.addEventListener('click', saveBook);
+      deleteBookBtn.addEventListener('click', deleteBook);
+      bookEmoji.addEventListener('input', updateBookPreview);
+      bookTitleInput.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
+      bookGenre.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
+      bookDate.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
+      bookGoodreads.addEventListener('input', handleBookEdit);
+      
+      // Book status radio handlers
+      document.querySelectorAll('input[name="book-status"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+          handleBookEdit();
+          updateBookPreview();
+          // Show/hide date field based on status
+          bookDateGroup.style.display = radio.value === 'reading' ? 'none' : 'flex';
+        });
+      });
 
       // Image upload
       imageUploadZone.addEventListener('click', () => imageInput.click());
@@ -230,12 +482,38 @@ code block
       document.addEventListener('keydown', (e) => {
         if ((e.metaKey || e.ctrlKey) && e.key === 's') {
           e.preventDefault();
-          savePost();
+          if (activeTab === 'posts') {
+            savePost();
+          } else {
+            saveBook();
+          }
         }
       });
-
-      // Live preview
-      postContent.addEventListener('input', updatePreview);
+    }
+    
+    // Tab switching
+    function switchTab(tab) {
+      activeTab = tab;
+      
+      if (tab === 'posts') {
+        postsTabBtn.classList.add('active');
+        booksTabBtn.classList.remove('active');
+        postsTab.style.display = 'block';
+        booksTab.style.display = 'none';
+        postEditorPanel.style.display = 'flex';
+        bookEditorPanel.style.display = 'none';
+        postPreviewPanel.style.display = 'flex';
+        bookPreviewPanel.style.display = 'none';
+      } else {
+        postsTabBtn.classList.remove('active');
+        booksTabBtn.classList.add('active');
+        postsTab.style.display = 'none';
+        booksTab.style.display = 'block';
+        postEditorPanel.style.display = 'none';
+        bookEditorPanel.style.display = 'flex';
+        postPreviewPanel.style.display = 'none';
+        bookPreviewPanel.style.display = 'flex';
+      }
     }
 
     async function handleLogin() {
@@ -243,11 +521,8 @@ code block
       const apiBase = getApiBase();
       
       try {
-        // Test the password by fetching posts
         const response = await fetch(`${apiBase}/api/posts`, {
-          headers: {
-            'Authorization': `Bearer ${password}`
-          }
+          headers: { 'Authorization': `Bearer ${password}` }
         });
 
         if (response.ok) {
@@ -258,8 +533,6 @@ code block
           passwordInput.value = '';
         }
       } catch (error) {
-        // Even if unauthorized, the GET might work without auth
-        // Let's try the editor and see
         sessionStorage.setItem('editor_password', password);
         showEditor();
       }
@@ -269,14 +542,17 @@ code block
       loginOverlay.style.display = 'none';
       editorContainer.style.display = 'grid';
       createDevToggle();
-      await loadPosts();
+      await Promise.all([loadPosts(), loadBooks()]);
     }
 
+    // =====================
+    // POSTS FUNCTIONS
+    // =====================
+    
     async function loadPosts() {
       const apiBase = getApiBase();
       try {
         const response = await fetch(`${apiBase}/api/posts`);
-        
         if (response.ok) {
           posts = await response.json();
           renderPostsList();
@@ -297,25 +573,19 @@ code block
         return;
       }
 
-      // Sort by date descending
       const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
 
       postsList.innerHTML = sortedPosts.map(post => {
         const isActive = currentPost && currentPost.slug === post.slug;
         const date = new Date(post.date).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric'
+          month: 'short', day: 'numeric', year: 'numeric'
         });
-        const statusIcon = post.published === false ? '📝' : '';
+        const statusIcon = post.published === false ? '📝 ' : '';
         
         return `
           <li>
-            <button 
-              class="${isActive ? 'active' : ''}" 
-              onclick="selectPost('${post.slug}')"
-            >
-              <span class="post-item-title">${statusIcon} ${post.title}</span>
+            <button class="${isActive ? 'active' : ''}" onclick="selectPost('${post.slug}')">
+              <span class="post-item-title">${statusIcon}${post.title}</span>
               <span class="post-item-date">${date}</span>
             </button>
           </li>
@@ -324,52 +594,47 @@ code block
     }
 
     async function selectPost(slug) {
-      if (isDirty && !confirm('You have unsaved changes. Discard them?')) {
-        return;
-      }
+      if (isPostDirty && !confirm('You have unsaved changes. Discard them?')) return;
 
       const apiBase = getApiBase();
       try {
         const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`);
-        
         if (response.ok) {
           currentPost = await response.json();
           postTitle.value = currentPost.title;
           postContent.value = currentPost.content;
           publishedCheckbox.checked = currentPost.published !== false;
-          deleteBtn.style.display = 'inline-flex';
-          isDirty = false;
-          updatePreview();
+          deletePostBtn.style.display = 'inline-flex';
+          isPostDirty = false;
+          updatePostPreview();
           renderPostsList();
         }
       } catch (error) {
         console.error('Error loading post:', error);
-        setStatus('Error loading post', 'error');
+        setPostStatus('Error loading post', 'error');
       }
     }
 
     function createNewPost() {
-      if (isDirty && !confirm('You have unsaved changes. Discard them?')) {
-        return;
-      }
+      if (isPostDirty && !confirm('You have unsaved changes. Discard them?')) return;
 
       currentPost = null;
       postTitle.value = '';
       postContent.value = '';
       publishedCheckbox.checked = true;
-      deleteBtn.style.display = 'none';
-      isDirty = false;
+      deletePostBtn.style.display = 'none';
+      isPostDirty = false;
       previewContent.innerHTML = '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
       renderPostsList();
       postTitle.focus();
     }
 
-    function handleEdit() {
-      isDirty = true;
-      setStatus('Unsaved changes', '');
+    function handlePostEdit() {
+      isPostDirty = true;
+      setPostStatus('Unsaved changes', '');
     }
 
-    function updatePreview() {
+    function updatePostPreview() {
       const content = postContent.value;
       if (content.trim()) {
         previewContent.innerHTML = marked.parse(content);
@@ -383,115 +648,288 @@ code block
       const content = postContent.value.trim();
       const published = publishedCheckbox.checked;
 
-      if (!title) {
-        setStatus('Title is required', 'error');
-        return;
-      }
+      if (!title) { setPostStatus('Title is required', 'error'); return; }
+      if (!content) { setPostStatus('Content is required', 'error'); return; }
 
-      if (!content) {
-        setStatus('Content is required', 'error');
-        return;
-      }
-
-      setStatus('Saving...', 'saving');
+      setPostStatus('Saving...', 'saving');
 
       const apiBase = getApiBase();
       try {
         let response;
         
         if (currentPost) {
-          // Update existing post
           response = await fetch(`${apiBase}/api/posts`, {
             method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${password}`
-            },
-            body: JSON.stringify({
-              slug: currentPost.slug,
-              title,
-              content,
-              published,
-              sha: currentPost.sha
-            })
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
+            body: JSON.stringify({ slug: currentPost.slug, title, content, published, sha: currentPost.sha })
           });
         } else {
-          // Create new post
           response = await fetch(`${apiBase}/api/posts`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${password}`
-            },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
             body: JSON.stringify({ title, content, published })
           });
         }
 
         if (response.ok) {
           currentPost = await response.json();
-          isDirty = false;
-          setStatus('Saved!', 'saved');
-          deleteBtn.style.display = 'inline-flex';
+          isPostDirty = false;
+          setPostStatus('Saved!', 'saved');
+          deletePostBtn.style.display = 'inline-flex';
           await loadPosts();
-          renderPostsList();
-          
-          // Clear status after 3 seconds
-          setTimeout(() => {
-            if (statusIndicator.textContent === 'Saved!') {
-              setStatus('', '');
-            }
-          }, 3000);
+          setTimeout(() => { if (postStatusIndicator.textContent === 'Saved!') setPostStatus('', ''); }, 3000);
         } else {
           const error = await response.json();
-          setStatus(error.error || 'Failed to save', 'error');
+          setPostStatus(error.error || 'Failed to save', 'error');
         }
       } catch (error) {
         console.error('Error saving post:', error);
-        setStatus('Error saving post', 'error');
+        setPostStatus('Error saving post', 'error');
       }
     }
 
     async function deletePost() {
       if (!currentPost) return;
-      
-      if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) {
-        return;
-      }
+      if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) return;
 
-      setStatus('Deleting...', 'saving');
+      setPostStatus('Deleting...', 'saving');
 
       const apiBase = getApiBase();
       try {
         const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(currentPost.slug)}`, {
           method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${password}`
-          }
+          headers: { 'Authorization': `Bearer ${password}` }
         });
 
         if (response.ok) {
-          setStatus('Deleted', 'saved');
+          setPostStatus('Deleted', 'saved');
           createNewPost();
           await loadPosts();
         } else {
           const error = await response.json();
-          setStatus(error.error || 'Failed to delete', 'error');
+          setPostStatus(error.error || 'Failed to delete', 'error');
         }
       } catch (error) {
         console.error('Error deleting post:', error);
-        setStatus('Error deleting post', 'error');
+        setPostStatus('Error deleting post', 'error');
       }
     }
 
-    function setStatus(message, type) {
-      statusIndicator.textContent = message;
-      statusIndicator.className = 'status-indicator';
-      if (type) {
-        statusIndicator.classList.add(type);
+    function setPostStatus(message, type) {
+      postStatusIndicator.textContent = message;
+      postStatusIndicator.className = 'status-indicator';
+      if (type) postStatusIndicator.classList.add(type);
+    }
+
+    // =====================
+    // BOOKS FUNCTIONS
+    // =====================
+    
+    async function loadBooks() {
+      const apiBase = getApiBase();
+      try {
+        const response = await fetch(`${apiBase}/api/books`);
+        if (response.ok) {
+          const data = await response.json();
+          books = data.books || [];
+          booksSha = data.sha;
+          renderBooksList();
+        } else {
+          books = [];
+          renderBooksList();
+        }
+      } catch (error) {
+        console.error('Error loading books:', error);
+        books = [];
+        renderBooksList();
       }
     }
 
-    // Image upload handlers
+    function renderBooksList() {
+      if (books.length === 0) {
+        booksList.innerHTML = '<li><button disabled style="color: var(--color-text-secondary);">No books yet</button></li>';
+        return;
+      }
+
+      booksList.innerHTML = books.map((book, index) => {
+        const isActive = currentBookIndex === index;
+        const statusText = book.status === 'reading' ? '📖' : '';
+        
+        return `
+          <li>
+            <button class="${isActive ? 'active' : ''}" onclick="selectBook(${index})">
+              <span class="post-item-title">${statusText} ${book.emoji} ${book.title}</span>
+              <span class="post-item-date">${book.status === 'reading' ? 'Reading' : book.date}</span>
+            </button>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function selectBook(index) {
+      if (isBookDirty && !confirm('You have unsaved changes. Discard them?')) return;
+
+      currentBookIndex = index;
+      const book = books[index];
+      
+      bookEmoji.value = book.emoji;
+      bookTitleInput.value = book.title;
+      bookGenre.value = book.genre;
+      bookDate.value = book.date || '';
+      bookGoodreads.value = book.goodreadsUrl || '';
+      
+      // Set status radio
+      document.querySelector(`input[name="book-status"][value="${book.status}"]`).checked = true;
+      bookDateGroup.style.display = book.status === 'reading' ? 'none' : 'flex';
+      
+      deleteBookBtn.style.display = 'inline-flex';
+      isBookDirty = false;
+      updateBookPreview();
+      renderBooksList();
+    }
+
+    function createNewBook() {
+      if (isBookDirty && !confirm('You have unsaved changes. Discard them?')) return;
+
+      currentBookIndex = null;
+      bookEmoji.value = '📚';
+      bookTitleInput.value = '';
+      bookGenre.value = '';
+      bookDate.value = '';
+      bookGoodreads.value = '';
+      document.querySelector('input[name="book-status"][value="finished"]').checked = true;
+      bookDateGroup.style.display = 'flex';
+      deleteBookBtn.style.display = 'none';
+      isBookDirty = false;
+      updateBookPreview();
+      renderBooksList();
+      bookTitleInput.focus();
+    }
+
+    function handleBookEdit() {
+      isBookDirty = true;
+      setBookStatus('Unsaved changes', '');
+    }
+
+    function updateBookPreview() {
+      const emoji = bookEmoji.value || '📚';
+      const title = bookTitleInput.value || 'Book Title';
+      const genre = bookGenre.value || 'Genre';
+      const status = document.querySelector('input[name="book-status"]:checked').value;
+      const date = bookDate.value;
+      
+      document.getElementById('preview-emoji').textContent = emoji;
+      document.getElementById('preview-title').textContent = title;
+      document.getElementById('preview-genre').textContent = genre;
+      
+      const statusEl = document.getElementById('preview-status');
+      const dateEl = document.getElementById('preview-date');
+      
+      if (status === 'reading') {
+        statusEl.style.display = 'inline';
+        dateEl.style.display = 'none';
+      } else {
+        statusEl.style.display = 'none';
+        dateEl.style.display = 'inline';
+        dateEl.textContent = date || '';
+      }
+    }
+
+    async function saveBook() {
+      const emoji = bookEmoji.value.trim();
+      const title = bookTitleInput.value.trim();
+      const genre = bookGenre.value.trim();
+      const status = document.querySelector('input[name="book-status"]:checked').value;
+      const date = status === 'reading' ? '' : bookDate.value.trim();
+      const goodreadsUrl = bookGoodreads.value.trim();
+
+      if (!title) { setBookStatus('Title is required', 'error'); return; }
+      if (!emoji) { setBookStatus('Emoji is required', 'error'); return; }
+
+      setBookStatus('Saving...', 'saving');
+
+      // Generate ID from title
+      const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+      const bookData = { id, emoji, title, genre, status, date, goodreadsUrl };
+
+      // Update or add book
+      if (currentBookIndex !== null) {
+        books[currentBookIndex] = bookData;
+      } else {
+        books.unshift(bookData); // Add to beginning
+        currentBookIndex = 0;
+      }
+
+      const apiBase = getApiBase();
+      try {
+        const response = await fetch(`${apiBase}/api/books`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
+          body: JSON.stringify({ books, sha: booksSha })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          booksSha = data.sha;
+          isBookDirty = false;
+          setBookStatus('Saved!', 'saved');
+          deleteBookBtn.style.display = 'inline-flex';
+          renderBooksList();
+          setTimeout(() => { if (bookStatusIndicator.textContent === 'Saved!') setBookStatus('', ''); }, 3000);
+        } else {
+          const error = await response.json();
+          setBookStatus(error.error || 'Failed to save', 'error');
+        }
+      } catch (error) {
+        console.error('Error saving book:', error);
+        setBookStatus('Error saving book', 'error');
+      }
+    }
+
+    async function deleteBook() {
+      if (currentBookIndex === null) return;
+      const book = books[currentBookIndex];
+      if (!confirm(`Delete "${book.title}"? This cannot be undone.`)) return;
+
+      setBookStatus('Deleting...', 'saving');
+
+      books.splice(currentBookIndex, 1);
+
+      const apiBase = getApiBase();
+      try {
+        const response = await fetch(`${apiBase}/api/books`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
+          body: JSON.stringify({ books, sha: booksSha })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          booksSha = data.sha;
+          setBookStatus('Deleted', 'saved');
+          createNewBook();
+          renderBooksList();
+        } else {
+          const error = await response.json();
+          setBookStatus(error.error || 'Failed to delete', 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting book:', error);
+        setBookStatus('Error deleting book', 'error');
+      }
+    }
+
+    function setBookStatus(message, type) {
+      bookStatusIndicator.textContent = message;
+      bookStatusIndicator.className = 'status-indicator';
+      if (type) bookStatusIndicator.classList.add(type);
+    }
+
+    // =====================
+    // IMAGE UPLOAD
+    // =====================
+
     function handleDragOver(e) {
       e.preventDefault();
       imageUploadZone.classList.add('dragover');
@@ -505,79 +943,55 @@ code block
     function handleDrop(e) {
       e.preventDefault();
       imageUploadZone.classList.remove('dragover');
-      
       const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        uploadImage(files[0]);
-      }
+      if (files.length > 0) uploadImage(files[0]);
     }
 
     function handleImageSelect(e) {
       const files = e.target.files;
-      if (files.length > 0) {
-        uploadImage(files[0]);
-      }
+      if (files.length > 0) uploadImage(files[0]);
     }
 
     async function uploadImage(file) {
       if (!file.type.startsWith('image/')) {
-        setStatus('Please select an image file', 'error');
+        setPostStatus('Please select an image file', 'error');
         return;
       }
 
-      setStatus('Uploading image...', 'saving');
+      setPostStatus('Uploading image...', 'saving');
 
       const apiBase = getApiBase();
       try {
-        // Convert to base64
         const base64 = await fileToBase64(file);
         
         const response = await fetch(`${apiBase}/api/images`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${password}`
-          },
-          body: JSON.stringify({
-            filename: file.name,
-            content: base64,
-            contentType: file.type
-          })
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
+          body: JSON.stringify({ filename: file.name, content: base64, contentType: file.type })
         });
 
         if (response.ok) {
           const result = await response.json();
-          
-          // Insert markdown at cursor position
           const imageMarkdown = `![${file.name}](${result.url})`;
           insertAtCursor(postContent, imageMarkdown);
-          handleEdit();
-          updatePreview();
-          
-          setStatus('Image uploaded!', 'saved');
-          setTimeout(() => {
-            if (statusIndicator.textContent === 'Image uploaded!') {
-              setStatus('Unsaved changes', '');
-            }
-          }, 3000);
+          handlePostEdit();
+          updatePostPreview();
+          setPostStatus('Image uploaded!', 'saved');
+          setTimeout(() => { if (postStatusIndicator.textContent === 'Image uploaded!') setPostStatus('Unsaved changes', ''); }, 3000);
         } else {
           const error = await response.json();
-          setStatus(error.error || 'Failed to upload', 'error');
+          setPostStatus(error.error || 'Failed to upload', 'error');
         }
       } catch (error) {
         console.error('Error uploading image:', error);
-        setStatus('Error uploading image', 'error');
+        setPostStatus('Error uploading image', 'error');
       }
     }
 
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => {
-          // Remove the data:image/xxx;base64, prefix
-          const base64 = reader.result.split(',')[1];
-          resolve(base64);
-        };
+        reader.onload = () => resolve(reader.result.split(',')[1]);
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
@@ -586,15 +1000,14 @@ code block
     function insertAtCursor(textarea, text) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const value = textarea.value;
-      
-      textarea.value = value.substring(0, start) + text + value.substring(end);
+      textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
       textarea.selectionStart = textarea.selectionEnd = start + text.length;
       textarea.focus();
     }
 
-    // Make selectPost available globally for onclick handlers
+    // Global functions for onclick handlers
     window.selectPost = selectPost;
+    window.selectBook = selectBook;
 
     // Initialize
     init();

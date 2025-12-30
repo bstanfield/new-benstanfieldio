@@ -1,0 +1,416 @@
+[
+  {
+    "id": "outliers",
+    "emoji": "🎯",
+    "title": "Outliers",
+    "genre": "Non-fiction",
+    "status": "finished",
+    "date": "Dec. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/3228917-outliers"
+  },
+  {
+    "id": "lonesome-dove",
+    "emoji": "🐴",
+    "title": "Lonesome Dove",
+    "genre": "Western Fiction",
+    "status": "finished",
+    "date": "Nov. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/256008.Lonesome_Dove"
+  },
+  {
+    "id": "skunk-works",
+    "emoji": "🦨",
+    "title": "Skunk Works",
+    "genre": "Memoir",
+    "status": "finished",
+    "date": "Oct. 2025",
+    "goodreadsUrl": ""
+  },
+  {
+    "id": "careless-people",
+    "emoji": "📘",
+    "title": "Careless People",
+    "genre": "Memoir",
+    "status": "finished",
+    "date": "Oct. 2025",
+    "goodreadsUrl": ""
+  },
+  {
+    "id": "salt",
+    "emoji": "🧂",
+    "title": "Salt",
+    "genre": "History",
+    "status": "finished",
+    "date": "Sept. 2025",
+    "goodreadsUrl": ""
+  },
+  {
+    "id": "meditations",
+    "emoji": "🏛️",
+    "title": "Meditations",
+    "genre": "Philosophy",
+    "status": "finished",
+    "date": "Sept. 2025",
+    "goodreadsUrl": ""
+  },
+  {
+    "id": "children-of-time",
+    "emoji": "🕷️",
+    "title": "Children of Time",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Jul. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/25499718-children-of-time"
+  },
+  {
+    "id": "the-coming-wave",
+    "emoji": "🌊",
+    "title": "The Coming Wave",
+    "genre": "Technology & Society",
+    "status": "finished",
+    "date": "Jun. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/90590134-the-coming-wave"
+  },
+  {
+    "id": "poor-charlies-almanack",
+    "emoji": "🦉",
+    "title": "Poor Charlie's Almanack",
+    "genre": "Business & Philosophy",
+    "status": "finished",
+    "date": "Apr. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/944652.Poor_Charlie_s_Almanack"
+  },
+  {
+    "id": "boom",
+    "emoji": "💥",
+    "title": "Boom",
+    "genre": "Business",
+    "status": "finished",
+    "date": "Jan. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/205307264-boom"
+  },
+  {
+    "id": "postwar",
+    "emoji": "🪖",
+    "title": "Postwar",
+    "genre": "History",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/29658.Postwar"
+  },
+  {
+    "id": "the-path-between-the-seas",
+    "emoji": "🚢",
+    "title": "The Path Between The Seas",
+    "genre": "History",
+    "status": "finished",
+    "date": "Nov. 2024",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/2372.The_Path_Between_the_Seas"
+  },
+  {
+    "id": "all-the-presidents-men",
+    "emoji": "🏛️",
+    "title": "All The President's Men",
+    "genre": "Journalism",
+    "status": "finished",
+    "date": "Nov. 2024",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/96123.All_the_President_s_Men"
+  },
+  {
+    "id": "midnight-in-the-garden",
+    "emoji": "⚖️",
+    "title": "Midnight in the Garden of Good & Evil",
+    "genre": "True Crime",
+    "status": "finished",
+    "date": "Oct. 2024",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/386187.Midnight_in_the_Garden_of_Good_and_Evil"
+  },
+  {
+    "id": "exhalation",
+    "emoji": "🫁",
+    "title": "Exhalation",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Jul. 2024",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/41160292-exhalation"
+  },
+  {
+    "id": "sea-of-tranquility",
+    "emoji": "🌊",
+    "title": "Sea of Tranquility",
+    "genre": "Time Travel",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/58446227-sea-of-tranquility"
+  },
+  {
+    "id": "artemis",
+    "emoji": "🌝",
+    "title": "Artemis",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Apr. 2024",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/34928122-artemis"
+  },
+  {
+    "id": "drunk",
+    "emoji": "🍻",
+    "title": "Drunk",
+    "genre": "Anthropology",
+    "status": "finished",
+    "date": "Jan. 2024",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/55643282-drunk"
+  },
+  {
+    "id": "trick-mirror",
+    "emoji": "🪞",
+    "title": "Trick Mirror",
+    "genre": "Essays",
+    "status": "finished",
+    "date": "Dec. 2023",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/43126457-trick-mirror"
+  },
+  {
+    "id": "invention-and-innovation",
+    "emoji": "💡",
+    "title": "Invention and Innovation",
+    "genre": "History",
+    "status": "finished",
+    "date": "May 2023",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/61102803-invention-and-innovation"
+  },
+  {
+    "id": "liftoff",
+    "emoji": "🚀",
+    "title": "Liftoff",
+    "genre": "Business",
+    "status": "finished",
+    "date": "Apr. 2023",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/53402132"
+  },
+  {
+    "id": "thinking-in-systems",
+    "emoji": "🌍",
+    "title": "Thinking in Systems",
+    "genre": "Business",
+    "status": "finished",
+    "date": "Feb. 2023",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/3828902"
+  },
+  {
+    "id": "team-of-rivals",
+    "emoji": "🇺🇸",
+    "title": "Team of Rivals",
+    "genre": "Biography",
+    "status": "finished",
+    "date": "Jan. 2023",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/2199.Team_of_Rivals"
+  },
+  {
+    "id": "give-and-take",
+    "emoji": "👏",
+    "title": "Give and Take",
+    "genre": "Business",
+    "status": "finished",
+    "date": "Jan. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/16158498-give-and-take"
+  },
+  {
+    "id": "the-underground-railroad",
+    "emoji": "🚂",
+    "title": "The Underground Railroad",
+    "genre": "Historical Fiction",
+    "status": "finished",
+    "date": "Dec. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/30555488-the-underground-railroad"
+  },
+  {
+    "id": "the-stone-sky",
+    "emoji": "🌚",
+    "title": "The Stone Sky",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Dec. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/31817749-the-stone-sky"
+  },
+  {
+    "id": "the-obelisk-gate",
+    "emoji": "💎",
+    "title": "The Obelisk Gate",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Nov. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/26228034-the-obelisk-gate"
+  },
+  {
+    "id": "the-fifth-season",
+    "emoji": "🌋",
+    "title": "The Fifth Season",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Nov. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/19161852-the-fifth-season"
+  },
+  {
+    "id": "this-is-your-mind-on-plants",
+    "emoji": "🌹",
+    "title": "This Is Your Mind On Plants",
+    "genre": "Nonfiction, Science",
+    "status": "finished",
+    "date": "Oct. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/56015023-this-is-your-mind-on-plants"
+  },
+  {
+    "id": "upheaval",
+    "emoji": "🌊",
+    "title": "Upheaval",
+    "genre": "History",
+    "status": "finished",
+    "date": "Sept. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/41716904-upheaval"
+  },
+  {
+    "id": "never-let-me-go",
+    "emoji": "🫀",
+    "title": "Never Let Me Go",
+    "genre": "Speculative Fiction",
+    "status": "finished",
+    "date": "Jul. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/6334.Never_Let_Me_Go"
+  },
+  {
+    "id": "invisible-child",
+    "emoji": "🗽",
+    "title": "Invisible Child",
+    "genre": "Biography",
+    "status": "finished",
+    "date": "Jul. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/57359691-invisible-child"
+  },
+  {
+    "id": "the-great-mistake",
+    "emoji": "🔫",
+    "title": "The Great Mistake",
+    "genre": "Biography",
+    "status": "finished",
+    "date": "Jun. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/55502632-the-great-mistake"
+  },
+  {
+    "id": "a-woman-of-no-importance",
+    "emoji": "🕵️‍♀️",
+    "title": "A Woman of No Importance",
+    "genre": "History",
+    "status": "finished",
+    "date": "Mar. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/40595446-a-woman-of-no-importance"
+  },
+  {
+    "id": "the-song-of-achilles",
+    "emoji": "⚔️",
+    "title": "The Song of Achilles",
+    "genre": "Mythology",
+    "status": "finished",
+    "date": "Feb. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/13623848-the-song-of-achilles"
+  },
+  {
+    "id": "circe",
+    "emoji": "👩‍🦳",
+    "title": "Circe",
+    "genre": "Mythology",
+    "status": "finished",
+    "date": "Feb. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/35959740-circe"
+  },
+  {
+    "id": "15-commitments",
+    "emoji": "🤝",
+    "title": "15 Commitments",
+    "genre": "Business Culture",
+    "status": "finished",
+    "date": "Jan. 2022",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/23275060-15-commitments-of-conscious-leadership"
+  },
+  {
+    "id": "weirdest-people",
+    "emoji": "👶🏼",
+    "title": "WEIRDEST People",
+    "genre": "Psychology & Economics",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/51710349-the-weirdest-people-in-the-world"
+  },
+  {
+    "id": "the-map-that-changed-the-world",
+    "emoji": "🗺",
+    "title": "The Map That Changed the World",
+    "genre": "History & Geology",
+    "status": "finished",
+    "date": "Nov. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/25014.The_Map_That_Changed_the_World"
+  },
+  {
+    "id": "dune",
+    "emoji": "🏜",
+    "title": "Dune",
+    "genre": "Sci-fi & Fantasy",
+    "status": "finished",
+    "date": "Nov. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/44767458-dune"
+  },
+  {
+    "id": "project-hail-mary",
+    "emoji": "👨‍🚀",
+    "title": "Project Hail Mary",
+    "genre": "Sci-fi",
+    "status": "finished",
+    "date": "Oct. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/54493401-project-hail-mary"
+  },
+  {
+    "id": "lifes-edge",
+    "emoji": "🦠",
+    "title": "Life's Edge",
+    "genre": "Philosophy & Science",
+    "status": "finished",
+    "date": "Aug. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/54227475-life-s-edge"
+  },
+  {
+    "id": "intro-to-fire",
+    "emoji": "🔥",
+    "title": "Intro to Fire",
+    "genre": "Ecology",
+    "status": "finished",
+    "date": "Aug. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/3789643-introduction-to-fire-in-california"
+  },
+  {
+    "id": "drawdown",
+    "emoji": "⏬",
+    "title": "Drawdown",
+    "genre": "Climate Science",
+    "status": "finished",
+    "date": "Mar. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/31624481-drawdown"
+  },
+  {
+    "id": "the-story-of-more",
+    "emoji": "🌍",
+    "title": "The Story of More",
+    "genre": "Climate Science",
+    "status": "finished",
+    "date": "Feb. 2021",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/49960370-the-story-of-more"
+  },
+  {
+    "id": "seveneves",
+    "emoji": "🌑",
+    "title": "Seveneves",
+    "genre": "Hard Sci-fi",
+    "status": "finished",
+    "date": "Feb. 2020",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/22816087-seveneves"
+  }
+]

@@ -24,6 +24,10 @@
     {
       "src": "fonts/**/*",
       "use": "@vercel/static"
+    },
+    {
+      "src": "books/**/*.json",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -34,6 +38,10 @@
     {
       "src": "/api/images",
       "dest": "/api/images.js"
+    },
+    {
+      "src": "/api/books",
+      "dest": "/api/books.js"
     },
     {
       "src": "/(.*)",
