@@ -84,15 +84,25 @@
       font-size: 1.5rem;
     }
     
+    /* Tab content */
+    .tab-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    
     /* Book preview card */
     .book-preview {
       padding: 1.5rem;
+      padding-top: 3rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       flex: 1;
       background: #fafafa;
+      position: relative;
     }
     .book-preview-card {
       background: white;
@@ -124,6 +134,27 @@
     .book-preview-date {
       color: var(--color-text-secondary);
       font-size: 0.8rem;
+    }
+    .book-preview-header {
+      position: absolute;
+      top: 0.75rem;
+      right: 1rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #999;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    
+    /* Fix form clipping */
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+    }
+    #book-editor-panel {
+      overflow: hidden;
     }
   </style>
 </head>
@@ -285,7 +316,7 @@
     
     <!-- Book Preview Panel -->
     <div class="preview-panel book-preview" id="book-preview-panel" style="display: none;">
-      <div class="preview-header" style="position: absolute; top: 0; left: 0; right: 0;">Preview</div>
+      <div class="preview-header book-preview-header">Preview</div>
       <div class="book-preview-card" id="book-preview-card">
         <span class="book-preview-emoji" id="preview-emoji">📚</span>
         <span class="book-preview-title" id="preview-title">Book Title</span>
