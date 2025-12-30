@@ -1,12 +1,33 @@
 [
   {
+    "id": "the-art-of-doing-science-and-engineering",
+    "emoji": "🔬",
+    "title": "The Art of Doing Science and Engineering",
+    "genre": "Science & Engineering",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/530415.The_Art_of_Doing_Science_and_Engineering",
+    "favorite": false
+  },
+  {
+    "id": "wolf-hall",
+    "emoji": "🏰",
+    "title": "Wolf Hall",
+    "genre": "Historical Fiction",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/6101138-wolf-hall",
+    "favorite": false
+  },
+  {
     "id": "outliers",
     "emoji": "🎯",
     "title": "Outliers",
     "genre": "Non-fiction",
     "status": "finished",
     "date": "Dec. 2025",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/3228917-outliers"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/3228917-outliers",
+    "favorite": false
   },
   {
     "id": "lonesome-dove",
@@ -15,7 +36,8 @@
     "genre": "Western Fiction",
     "status": "finished",
     "date": "Nov. 2025",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/256008.Lonesome_Dove"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/256008.Lonesome_Dove",
+    "favorite": true
   },
   {
     "id": "skunk-works",
@@ -24,7 +46,8 @@
     "genre": "Memoir",
     "status": "finished",
     "date": "Oct. 2025",
-    "goodreadsUrl": ""
+    "goodreadsUrl": "",
+    "favorite": false
   },
   {
     "id": "careless-people",
@@ -33,7 +56,8 @@
     "genre": "Memoir",
     "status": "finished",
     "date": "Oct. 2025",
-    "goodreadsUrl": ""
+    "goodreadsUrl": "",
+    "favorite": false
   },
   {
     "id": "salt",
@@ -42,7 +66,8 @@
     "genre": "History",
     "status": "finished",
     "date": "Sept. 2025",
-    "goodreadsUrl": ""
+    "goodreadsUrl": "",
+    "favorite": false
   },
   {
     "id": "meditations",
@@ -51,7 +76,8 @@
     "genre": "Philosophy",
     "status": "finished",
     "date": "Sept. 2025",
-    "goodreadsUrl": ""
+    "goodreadsUrl": "",
+    "favorite": true
   },
   {
     "id": "children-of-time",
@@ -60,7 +86,8 @@
     "genre": "Science Fiction",
     "status": "finished",
     "date": "Jul. 2025",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/25499718-children-of-time"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/25499718-children-of-time",
+    "favorite": false
   },
   {
     "id": "the-coming-wave",
@@ -69,7 +96,8 @@
     "genre": "Technology & Society",
     "status": "finished",
     "date": "Jun. 2025",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/90590134-the-coming-wave"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/90590134-the-coming-wave",
+    "favorite": false
   },
   {
     "id": "poor-charlies-almanack",
@@ -78,7 +106,8 @@
     "genre": "Business & Philosophy",
     "status": "finished",
     "date": "Apr. 2025",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/944652.Poor_Charlie_s_Almanack"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/944652.Poor_Charlie_s_Almanack",
+    "favorite": false
   },
   {
     "id": "boom",
@@ -87,7 +116,8 @@
     "genre": "Business",
     "status": "finished",
     "date": "Jan. 2025",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/205307264-boom"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/205307264-boom",
+    "favorite": true
   },
   {
     "id": "postwar",
@@ -96,7 +126,8 @@
     "genre": "History",
     "status": "reading",
     "date": "",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/29658.Postwar"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/29658.Postwar",
+    "favorite": false
   },
   {
     "id": "the-path-between-the-seas",
@@ -105,7 +136,8 @@
     "genre": "History",
     "status": "finished",
     "date": "Nov. 2024",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/2372.The_Path_Between_the_Seas"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/2372.The_Path_Between_the_Seas",
+    "favorite": false
   },
   {
     "id": "all-the-presidents-men",
@@ -114,7 +146,8 @@
     "genre": "Journalism",
     "status": "finished",
     "date": "Nov. 2024",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/96123.All_the_President_s_Men"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/96123.All_the_President_s_Men",
+    "favorite": false
   },
   {
     "id": "midnight-in-the-garden",
@@ -123,7 +156,8 @@
     "genre": "True Crime",
     "status": "finished",
     "date": "Oct. 2024",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/386187.Midnight_in_the_Garden_of_Good_and_Evil"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/386187.Midnight_in_the_Garden_of_Good_and_Evil",
+    "favorite": false
   },
   {
     "id": "exhalation",
@@ -132,7 +166,8 @@
     "genre": "Science Fiction",
     "status": "finished",
     "date": "Jul. 2024",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/41160292-exhalation"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/41160292-exhalation",
+    "favorite": false
   },
   {
     "id": "sea-of-tranquility",
@@ -141,7 +176,8 @@
     "genre": "Time Travel",
     "status": "reading",
     "date": "",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/58446227-sea-of-tranquility"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/58446227-sea-of-tranquility",
+    "favorite": false
   },
   {
     "id": "artemis",
@@ -150,7 +186,8 @@
     "genre": "Science Fiction",
     "status": "finished",
     "date": "Apr. 2024",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/34928122-artemis"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/34928122-artemis",
+    "favorite": false
   },
   {
     "id": "drunk",
@@ -159,7 +196,8 @@
     "genre": "Anthropology",
     "status": "finished",
     "date": "Jan. 2024",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/55643282-drunk"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/55643282-drunk",
+    "favorite": false
   },
   {
     "id": "trick-mirror",
@@ -168,7 +206,8 @@
     "genre": "Essays",
     "status": "finished",
     "date": "Dec. 2023",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/43126457-trick-mirror"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/43126457-trick-mirror",
+    "favorite": false
   },
   {
     "id": "invention-and-innovation",
@@ -177,7 +216,8 @@
     "genre": "History",
     "status": "finished",
     "date": "May 2023",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/61102803-invention-and-innovation"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/61102803-invention-and-innovation",
+    "favorite": false
   },
   {
     "id": "liftoff",
@@ -186,7 +226,8 @@
     "genre": "Business",
     "status": "finished",
     "date": "Apr. 2023",
-    "goodreadsUrl": "https://www.goodreads.com/en/book/show/53402132"
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/53402132",
+    "favorite": false
   },
   {
     "id": "thinking-in-systems",
@@ -195,7 +236,8 @@
     "genre": "Business",
     "status": "finished",
     "date": "Feb. 2023",
-    "goodreadsUrl": "https://www.goodreads.com/en/book/show/3828902"
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/3828902",
+    "favorite": false
   },
   {
     "id": "team-of-rivals",
@@ -204,7 +246,8 @@
     "genre": "Biography",
     "status": "finished",
     "date": "Jan. 2023",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/2199.Team_of_Rivals"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/2199.Team_of_Rivals",
+    "favorite": true
   },
   {
     "id": "give-and-take",
@@ -213,7 +256,8 @@
     "genre": "Business",
     "status": "finished",
     "date": "Jan. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/16158498-give-and-take"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/16158498-give-and-take",
+    "favorite": false
   },
   {
     "id": "the-underground-railroad",
@@ -222,7 +266,8 @@
     "genre": "Historical Fiction",
     "status": "finished",
     "date": "Dec. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/30555488-the-underground-railroad"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/30555488-the-underground-railroad",
+    "favorite": false
   },
   {
     "id": "the-stone-sky",
@@ -231,7 +276,8 @@
     "genre": "Science Fiction",
     "status": "finished",
     "date": "Dec. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/31817749-the-stone-sky"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/31817749-the-stone-sky",
+    "favorite": false
   },
   {
     "id": "the-obelisk-gate",
@@ -240,7 +286,8 @@
     "genre": "Science Fiction",
     "status": "finished",
     "date": "Nov. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/26228034-the-obelisk-gate"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/26228034-the-obelisk-gate",
+    "favorite": false
   },
   {
     "id": "the-fifth-season",
@@ -249,7 +296,8 @@
     "genre": "Science Fiction",
     "status": "finished",
     "date": "Nov. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/en/book/show/19161852-the-fifth-season"
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/19161852-the-fifth-season",
+    "favorite": false
   },
   {
     "id": "this-is-your-mind-on-plants",
@@ -258,7 +306,8 @@
     "genre": "Nonfiction, Science",
     "status": "finished",
     "date": "Oct. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/en/book/show/56015023-this-is-your-mind-on-plants"
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/56015023-this-is-your-mind-on-plants",
+    "favorite": false
   },
   {
     "id": "upheaval",
@@ -267,7 +316,8 @@
     "genre": "History",
     "status": "finished",
     "date": "Sept. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/41716904-upheaval"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/41716904-upheaval",
+    "favorite": false
   },
   {
     "id": "never-let-me-go",
@@ -276,7 +326,8 @@
     "genre": "Speculative Fiction",
     "status": "finished",
     "date": "Jul. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/6334.Never_Let_Me_Go"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/6334.Never_Let_Me_Go",
+    "favorite": false
   },
   {
     "id": "invisible-child",
@@ -285,7 +336,8 @@
     "genre": "Biography",
     "status": "finished",
     "date": "Jul. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/57359691-invisible-child"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/57359691-invisible-child",
+    "favorite": false
   },
   {
     "id": "the-great-mistake",
@@ -294,7 +346,8 @@
     "genre": "Biography",
     "status": "finished",
     "date": "Jun. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/55502632-the-great-mistake"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/55502632-the-great-mistake",
+    "favorite": false
   },
   {
     "id": "a-woman-of-no-importance",
@@ -303,7 +356,8 @@
     "genre": "History",
     "status": "finished",
     "date": "Mar. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/40595446-a-woman-of-no-importance"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/40595446-a-woman-of-no-importance",
+    "favorite": false
   },
   {
     "id": "the-song-of-achilles",
@@ -312,7 +366,8 @@
     "genre": "Mythology",
     "status": "finished",
     "date": "Feb. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/13623848-the-song-of-achilles"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/13623848-the-song-of-achilles",
+    "favorite": false
   },
   {
     "id": "circe",
@@ -321,7 +376,8 @@
     "genre": "Mythology",
     "status": "finished",
     "date": "Feb. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/35959740-circe"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/35959740-circe",
+    "favorite": false
   },
   {
     "id": "15-commitments",
@@ -330,7 +386,8 @@
     "genre": "Business Culture",
     "status": "finished",
     "date": "Jan. 2022",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/23275060-15-commitments-of-conscious-leadership"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/23275060-15-commitments-of-conscious-leadership",
+    "favorite": false
   },
   {
     "id": "weirdest-people",
@@ -339,7 +396,8 @@
     "genre": "Psychology & Economics",
     "status": "reading",
     "date": "",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/51710349-the-weirdest-people-in-the-world"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/51710349-the-weirdest-people-in-the-world",
+    "favorite": false
   },
   {
     "id": "the-map-that-changed-the-world",
@@ -348,7 +406,8 @@
     "genre": "History & Geology",
     "status": "finished",
     "date": "Nov. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/25014.The_Map_That_Changed_the_World"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/25014.The_Map_That_Changed_the_World",
+    "favorite": false
   },
   {
     "id": "dune",
@@ -357,7 +416,8 @@
     "genre": "Sci-fi & Fantasy",
     "status": "finished",
     "date": "Nov. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/44767458-dune"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/44767458-dune",
+    "favorite": false
   },
   {
     "id": "project-hail-mary",
@@ -366,7 +426,8 @@
     "genre": "Sci-fi",
     "status": "finished",
     "date": "Oct. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/54493401-project-hail-mary"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/54493401-project-hail-mary",
+    "favorite": false
   },
   {
     "id": "lifes-edge",
@@ -375,7 +436,8 @@
     "genre": "Philosophy & Science",
     "status": "finished",
     "date": "Aug. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/54227475-life-s-edge"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/54227475-life-s-edge",
+    "favorite": false
   },
   {
     "id": "intro-to-fire",
@@ -384,7 +446,8 @@
     "genre": "Ecology",
     "status": "finished",
     "date": "Aug. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/3789643-introduction-to-fire-in-california"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/3789643-introduction-to-fire-in-california",
+    "favorite": false
   },
   {
     "id": "drawdown",
@@ -393,7 +456,8 @@
     "genre": "Climate Science",
     "status": "finished",
     "date": "Mar. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/31624481-drawdown"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/31624481-drawdown",
+    "favorite": false
   },
   {
     "id": "the-story-of-more",
@@ -402,7 +466,8 @@
     "genre": "Climate Science",
     "status": "finished",
     "date": "Feb. 2021",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/49960370-the-story-of-more"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/49960370-the-story-of-more",
+    "favorite": false
   },
   {
     "id": "seveneves",
@@ -411,6 +476,7 @@
     "genre": "Hard Sci-fi",
     "status": "finished",
     "date": "Feb. 2020",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/22816087-seveneves"
+    "goodreadsUrl": "https://www.goodreads.com/book/show/22816087-seveneves",
+    "favorite": false
   }
 ]

@@ -222,6 +222,15 @@ section h2 {
   color: #856404;
 }
 
+.bookshelf li.favorite {
+  background-color: #fef9e7;
+}
+
+/* External link indicator */
+.external-link-indicator {
+  opacity: 0.25;
+}
+
 /* Posts List */
 .posts-list {
   list-style: none;
@@ -601,6 +610,8 @@ section h2 {
   border: 2px dashed var(--color-border);
   border-radius: 4px;
   padding: var(--spacing-unit);
+  margin-left: var(--spacing-unit);
+  margin-right: var(--spacing-unit);
   text-align: center;
   color: var(--color-text-secondary);
   font-size: 0.875rem;

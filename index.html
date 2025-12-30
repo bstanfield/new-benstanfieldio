@@ -15,9 +15,9 @@
       <li><a href="#about">About</a></li>
       <li><a href="#bookshelf">Bookshelf</a></li>
       <li><a href="#posts">Writing</a></li>
-      <li><a href="https://wren.co" target="_blank">Wren ↗</a></li>
-      <li><a href="https://linkedin.com/in/benstanfield" target="_blank">LinkedIn ↗</a></li>
-      <li><a href="https://github.com/benstanfield" target="_blank">GitHub ↗</a></li>
+      <li><a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a></li>
+      <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn <span class="external-link-indicator">↗</span></a></li>
+      <li><a href="https://github.com/bstanfield" target="_blank">GitHub <span class="external-link-indicator">↗</span></a></li>
     </ul>
   </nav>
 
@@ -33,17 +33,14 @@
       <div class="profile-bio">
         <p>
           I'm Benjamin Stanfield, Co-founder and Product/Design Lead at 
-          <a href="https://wren.co" target="_blank">Wren ↗</a> and <a href="https://topo.io" target="_blank">Topo ↗</a>.
+          <a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a> and <a href="https://toposdata.com" target="_blank">Topos (Acq.) <span class="external-link-indicator">↗</span></a>.
         </p>
         <p>
           I love basketball, board games, typography, fun cocktails, and a good book.
           I currently live in California, cozied up against the hills.
         </p>
         <p>
-          Previously, I studied at the <a href="https://iovine-young.usc.edu" target="_blank">Iovine & Young Academy ↗</a> at USC.
-        </p>
-        <p>
-          Email: <a href="mailto:ben@benstanfield.io">ben@benstanfield.io</a>
+          Previously, I studied at the <a href="https://iovine-young.usc.edu" target="_blank">Iovine & Young Academy <span class="external-link-indicator">↗</span></a> at USC.
         </p>
       </div>
     </section>
@@ -66,10 +63,10 @@
 
     <footer class="site-footer">
       <ul class="footer-links">
-        <li><a href="https://wren.co" target="_blank">Wren ↗</a></li>
-        <li><a href="https://topo.io" target="_blank">Topo ↗</a></li>
-        <li><a href="https://linkedin.com/in/benstanfield" target="_blank">LinkedIn ↗</a></li>
-        <li><a href="https://github.com/benstanfield" target="_blank">GitHub ↗</a></li>
+        <li><a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a></li>
+        <li><a href="https://toposdata.com" target="_blank">Topos <span class="external-link-indicator">↗</span></a></li>
+        <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn <span class="external-link-indicator">↗</span></a></li>
+        <li><a href="https://github.com/bstanfield" target="_blank">GitHub <span class="external-link-indicator">↗</span></a></li>
       </ul>
     </footer>
   </main>
@@ -94,7 +91,7 @@
       const navLinks = document.getElementById('nav-links');
       if (navLinks) {
         const editorLi = document.createElement('li');
-        editorLi.innerHTML = '<a href="/editor.html" style="color: #e91e63;">Editor ✏️</a>';
+        editorLi.innerHTML = '<a href="/editor.html" style="color: #e91e63;">Editor</a>';
         navLinks.appendChild(editorLi);
       }
       
@@ -243,12 +240,13 @@
         bookshelfEl.innerHTML = sortedBooks.map(book => {
           const hasGoodreads = book.goodreadsUrl && book.goodreadsUrl.length > 0;
           const titleContent = hasGoodreads
-            ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title} ↗</a>`
+            ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title} <span class="external-link-indicator">↗</span></a>`
             : `<span class="book-title">${book.title}</span>`;
+          const favoriteClass = book.favorite ? ' favorite' : '';
           
           if (book.status === 'reading') {
             return `
-              <li>
+              <li class="${favoriteClass}">
                 <span class="book-emoji">${book.emoji}</span>
                 ${titleContent}
                 <span class="book-genre">${book.genre}</span>
@@ -257,7 +255,7 @@
             `;
           } else {
             return `
-              <li>
+              <li class="${favoriteClass}">
                 <span class="book-emoji">${book.emoji}</span>
                 ${titleContent}
                 <span class="book-genre">${book.genre}</span>
@@ -316,10 +314,10 @@
         </article>
         <footer class="site-footer">
           <ul class="footer-links">
-            <li><a href="https://wren.co" target="_blank">Wren ↗</a></li>
-            <li><a href="https://topo.io" target="_blank">Topo ↗</a></li>
-            <li><a href="https://linkedin.com/in/benstanfield" target="_blank">LinkedIn ↗</a></li>
-            <li><a href="https://github.com/benstanfield" target="_blank">GitHub ↗</a></li>
+            <li><a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a></li>
+            <li><a href="https://toposdata.com" target="_blank">Topos <span class="external-link-indicator">↗</span></a></li>
+            <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn <span class="external-link-indicator">↗</span></a></li>
+            <li><a href="https://github.com/bstanfield" target="_blank">GitHub <span class="external-link-indicator">↗</span></a></li>
           </ul>
         </footer>
       `;

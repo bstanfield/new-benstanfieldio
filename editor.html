@@ -113,6 +113,10 @@
       align-items: baseline;
       gap: 0.5rem;
       max-width: 100%;
+      transition: background-color 0.2s;
+    }
+    .book-preview-card.favorite {
+      background-color: #fef9e7;
     }
     .book-preview-emoji {
       font-size: 1.25rem;
@@ -297,6 +301,12 @@
           <label>Goodreads URL</label>
           <input type="url" id="book-goodreads" placeholder="https://www.goodreads.com/book/show/...">
         </div>
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" id="book-favorite">
+            Favorite (gold highlight)
+          </label>
+        </div>
       </div>
       
       <div class="editor-actions">
@@ -440,6 +450,7 @@
     const bookDate = document.getElementById('book-date');
     const bookDateGroup = document.getElementById('book-date-group');
     const bookGoodreads = document.getElementById('book-goodreads');
+    const bookFavorite = document.getElementById('book-favorite');
     const saveBookBtn = document.getElementById('save-book-btn');
     const deleteBookBtn = document.getElementById('delete-book-btn');
     const newBookBtn = document.getElementById('new-book-btn');
@@ -491,6 +502,7 @@
       bookGenre.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
       bookDate.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
       bookGoodreads.addEventListener('input', handleBookEdit);
+      bookFavorite.addEventListener('change', () => { handleBookEdit(); updateBookPreview(); });
       
       // Book status radio handlers
       document.querySelectorAll('input[name="book-status"]').forEach(radio => {
@@ -808,6 +820,7 @@
       bookGenre.value = book.genre;
       bookDate.value = book.date || '';
       bookGoodreads.value = book.goodreadsUrl || '';
+      bookFavorite.checked = book.favorite || false;
       
       // Set status radio
       document.querySelector(`input[name="book-status"][value="${book.status}"]`).checked = true;
@@ -828,6 +841,7 @@
       bookGenre.value = '';
       bookDate.value = '';
       bookGoodreads.value = '';
+      bookFavorite.checked = false;
       document.querySelector('input[name="book-status"][value="finished"]').checked = true;
       bookDateGroup.style.display = 'flex';
       deleteBookBtn.style.display = 'none';
@@ -848,10 +862,18 @@
       const genre = bookGenre.value || 'Genre';
       const status = document.querySelector('input[name="book-status"]:checked').value;
       const date = bookDate.value;
+      const favorite = bookFavorite.checked;
       
       document.getElementById('preview-emoji').textContent = emoji;
       document.getElementById('preview-title').textContent = title;
       document.getElementById('preview-genre').textContent = genre;
+      
+      const previewCard = document.getElementById('book-preview-card');
+      if (favorite) {
+        previewCard.classList.add('favorite');
+      } else {
+        previewCard.classList.remove('favorite');
+      }
       
       const statusEl = document.getElementById('preview-status');
       const dateEl = document.getElementById('preview-date');
@@ -873,6 +895,7 @@
       const status = document.querySelector('input[name="book-status"]:checked').value;
       const date = status === 'reading' ? '' : bookDate.value.trim();
       const goodreadsUrl = bookGoodreads.value.trim();
+      const favorite = bookFavorite.checked;
 
       if (!title) { setBookStatus('Title is required', 'error'); return; }
       if (!emoji) { setBookStatus('Emoji is required', 'error'); return; }
@@ -882,7 +905,7 @@
       // Generate ID from title
       const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-      const bookData = { id, emoji, title, genre, status, date, goodreadsUrl };
+      const bookData = { id, emoji, title, genre, status, date, goodreadsUrl, favorite };
 
       // Update or add book
       if (currentBookIndex !== null) {
