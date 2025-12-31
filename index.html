@@ -1,180 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Benjamin Stanfield</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    // Apply saved theme immediately to prevent flash
-    (function() {
-      // Priority: localStorage → system preference → time-based (5 PM+) → light (fallback)
-      let theme = localStorage.getItem('theme');
-      
-      if (!theme) {
-        // Check system preference
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (prefersDark) {
-          theme = 'dark';
-        } else {
-          // Check local time - if past 5 PM, use dark mode
-          const currentHour = new Date().getHours();
-          theme = currentHour >= 17 ? 'dark' : 'light';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Benjamin Stanfield</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      // Apply saved theme immediately to prevent flash
+      (function () {
+        // Priority: localStorage → system preference → time-based (5 PM+) → light (fallback)
+        let theme = localStorage.getItem("theme");
+
+        if (!theme) {
+          // Check system preference
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          if (prefersDark) {
+            theme = "dark";
+          } else {
+            // Check local time - if past 5 PM, use dark mode
+            const currentHour = new Date().getHours();
+            theme = currentHour >= 17 ? "dark" : "light";
+          }
         }
-      }
-      
-      document.documentElement.setAttribute('data-theme', theme);
-    })();
-  </script>
-</head>
-<body>
-  <!-- Theme Toggle -->
-  <div class="theme-toggle">
-    <button id="theme-toggle-btn">Dark</button>
-    <span id="time-display"></span>
-  </div>
 
-  <!-- Right-aligned navigation -->
-  <nav class="site-nav">
-    <ul id="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#bookshelf">Bookshelf</a></li>
-      <li><a href="#posts">Writing</a></li>
-      <li><a href="https://wren.co" target="_blank">Wren</a></li>
-      <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
-      <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
-    </ul>
-  </nav>
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+      <button id="theme-toggle-btn">Dark</button>
+      <span id="time-display"></span>
+    </div>
 
-  <main class="container">
-    <!-- Profile Section -->
-    <section id="about" class="profile">
-      <img 
-        src="/images/ben-smiling-pic.png" 
-        alt="Benjamin Stanfield" 
-        class="profile-photo"
-        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect fill=%22%23e5e5e5%22 width=%22140%22 height=%22140%22/></svg>'"
-      >
-      <div class="profile-bio">
-        <p>
-          I'm Benjamin Stanfield, Co-founder and Product/Design Lead at 
-          <a href="https://wren.co" target="_blank">Wren</a> and <a href="https://toposdata.com" target="_blank">Topos (Acq.)</a>.
-        </p>
-        <p>
-          I love basketball, board games, typography, fun cocktails, and a good book.
-          I currently live in California, cozied up against the hills.
-        </p>
-        <p>
-          Previously, I studied at the <a href="https://iovine-young.usc.edu" target="_blank">Iovine & Young Academy</a> at USC.
-        </p>
-      </div>
-    </section>
-
-    <!-- Posts Section -->
-    <section id="posts">
-      <h2>Writing</h2>
-      <ul class="posts-list" id="posts-list">
-        <li class="loading">Loading posts...</li>
-      </ul>
-    </section>
-
-    <!-- Bookshelf Section -->
-    <section id="bookshelf">
-      <h2>Bookshelf</h2>
-      <p class="bookshelf-intro">Books in <span class="gold-text">gold</span> are all-time favorites. Please recommend me more books!</p>
-      <ul class="bookshelf" id="bookshelf-list">
-        <li class="loading">Loading books...</li>
-      </ul>
-      <div class="genre-breakdown" id="genre-breakdown" style="display: none;">
-        <div class="genre-bar" id="genre-bar"></div>
-        <div class="genre-legend" id="genre-legend"></div>
-      </div>
-    </section>
-
-    <footer class="site-footer">
-      <ul class="footer-links">
+    <!-- Right-aligned navigation -->
+    <nav class="site-nav">
+      <ul id="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#posts">Writing</a></li>
+        <li><a href="#bookshelf">Bookshelf</a></li>
         <li><a href="https://wren.co" target="_blank">Wren</a></li>
-        <li><a href="https://toposdata.com" target="_blank">Topos</a></li>
-        <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
-        <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
+        <li>
+          <a href="https://www.linkedin.com/in/meetben/" target="_blank"
+            >LinkedIn</a
+          >
+        </li>
+        <li>
+          <a href="https://github.com/bstanfield" target="_blank">GitHub</a>
+        </li>
       </ul>
-    </footer>
-  </main>
+    </nav>
 
-  <script>
-    // Theme Toggle
-    function initThemeToggle() {
-      const btn = document.getElementById('theme-toggle-btn');
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      
-      // Update button text based on current theme
-      btn.textContent = currentTheme === 'light' ? 'Dark' : 'Light';
-      
-      btn.addEventListener('click', () => {
-        const theme = document.documentElement.getAttribute('data-theme');
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        btn.textContent = newTheme === 'light' ? 'Dark' : 'Light';
-      });
-      
-      // Listen for system preference changes (optional enhancement)
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only apply if user hasn't manually set a preference
-        if (!localStorage.getItem('theme')) {
-          const newTheme = e.matches ? 'dark' : 'light';
-          document.documentElement.setAttribute('data-theme', newTheme);
-          btn.textContent = newTheme === 'light' ? 'Dark' : 'Light';
-        }
-      });
-    }
-    
-    // Time Display
-    function updateTimeDisplay() {
-      const timeDisplay = document.getElementById('time-display');
-      if (!timeDisplay) return;
-      
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      
-      // Format as 12-hour with AM/PM
-      const hours12 = hours % 12 || 12;
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const minutesStr = minutes.toString().padStart(2, '0');
-      
-      timeDisplay.textContent = `${hours12}:${minutesStr} ${ampm}`;
-    }
-    
-    // Configuration
-    const PRODUCTION_URL = 'https://new-benstanfieldio-kappa.vercel.app';
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    // Get API base URL based on toggle state
-    function getApiBase() {
-      if (!isLocalhost) return ''; // Always use relative URLs in production
-      const useProduction = localStorage.getItem('useProductionApi') === 'true';
-      return useProduction ? PRODUCTION_URL : '';
-    }
-    
-    // Create dev toggle and editor link (only shown on localhost)
-    function createDevToggle() {
-      if (!isLocalhost) return;
-      
-      // Add editor link to nav
-      const navLinks = document.getElementById('nav-links');
-      if (navLinks) {
-        const editorLi = document.createElement('li');
-        editorLi.innerHTML = '<a href="/editor.html" style="color: #e91e63;">Editor</a>';
-        navLinks.appendChild(editorLi);
+    <main class="container">
+      <!-- Profile Section -->
+      <section id="about" class="profile">
+        <img
+          src="/images/ben-smiling-pic.png"
+          alt="Benjamin Stanfield"
+          class="profile-photo"
+          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect fill=%22%23e5e5e5%22 width=%22140%22 height=%22140%22/></svg>'"
+        />
+        <div class="profile-bio">
+          <h2>Benjamin Stanfield</h2>
+          <p>
+            I'm Ben, Co-founder and Head of Product Design at
+            <a href="https://wren.co" target="_blank">Wren</a> and
+            <a href="https://toposdata.com" target="_blank">Topos (Acq.)</a>.
+          </p>
+          <p>
+            I love basketball, board games, typography,
+            <a href="https://drinks.benstanfield.io/" target="_blank"
+              >fun cocktails</a
+            >, and a good book. I currently live in California, cozied up
+            against the hills.
+          </p>
+          <p>
+            Previously, I studied at the
+            <a href="https://iovine-young.usc.edu" target="_blank"
+              >Iovine & Young Academy</a
+            >
+            at USC, and learned nearly as much in three months during
+            <a href="https://www.ycombinator.com/" target="_blank"
+              >Y Combinator</a
+            >.
+          </p>
+          <br />
+          <p>Current interests:</p>
+          <ul>
+            <li>
+              <b>Climate action & optimism.</b> This is core to my past 6 years
+              at Wren.
+            </li>
+            <li>
+              <b>Catalytic philanthropy.</b> In 2023, I co-founded a non-profit
+              to raise grants for critical early-stage climate solutions. Many
+              others are doing great work here, including
+              <a href="https://givinggreen.org/" target="_blank">Giving Green</a
+              >.
+            </li>
+            <li>
+              <b>AI UX Design.</b> Designing truthful, intuitive human+AI
+              systems is shaping up to be the defining design challenge of the
+              21st century.
+            </li>
+            <li>
+              <b>Marvels of engineering.</b> I am fascinated by the
+              <i>art</i> of engineering, and the principles of a well designed
+              system. I recommend reading
+              <a
+                href="https://www.goodreads.com/book/show/56829.Skunk_Works"
+                target="_blank"
+                >Skunk Works</a
+              >
+              by Ben Rich, or
+              <a
+                href="https://www.goodreads.com/book/show/530415.The_Art_of_Doing_Science_and_Engineering"
+                target="_blank"
+                >The Art of Doing Science & Engineering</a
+              >
+              by Richard Hamming.
+            </li>
+            <li>
+              <b>Reading (real) books.</b> After ~10 hours a day on screens, — I
+              recommend a physical book. Support local bookstores at
+              <a href="https://bookshop.org/" target="_blank">Bookshop.org</a>.
+              And check out some great
+              <a href="https://stripepress.com/" target="_blank"
+                >Stripe Press</a
+              >
+              books, like
+              <a
+                href="https://www.goodreads.com/book/show/205307264-boom"
+                target="_blank"
+                >Boom</a
+              >.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Posts Section -->
+      <section id="posts">
+        <h2>Writing</h2>
+        <ul class="posts-list" id="posts-list">
+          <li class="loading">Loading posts...</li>
+        </ul>
+      </section>
+
+      <!-- Bookshelf Section -->
+      <section id="bookshelf">
+        <h2>Bookshelf</h2>
+        <p class="bookshelf-intro">
+          Books in <span class="gold-text">gold</span> are favorites. I tend to
+          gravitate toward history, science (fiction), and biographies.
+        </p>
+        <ul class="bookshelf" id="bookshelf-list">
+          <li class="loading">Loading books...</li>
+        </ul>
+        <div class="genre-breakdown" id="genre-breakdown" style="display: none">
+          <div class="genre-bar" id="genre-bar"></div>
+          <div class="genre-legend" id="genre-legend"></div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <ul class="footer-links">
+          <li><a href="https://wren.co" target="_blank">Wren</a></li>
+          <li><a href="https://toposdata.com" target="_blank">Topos</a></li>
+          <li>
+            <a href="https://www.linkedin.com/in/meetben/" target="_blank"
+              >LinkedIn</a
+            >
+          </li>
+          <li>
+            <a href="https://github.com/bstanfield" target="_blank">GitHub</a>
+          </li>
+        </ul>
+      </footer>
+    </main>
+
+    <script>
+      // Theme Toggle
+      function initThemeToggle() {
+        const btn = document.getElementById("theme-toggle-btn");
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme") || "light";
+
+        // Update button text based on current theme
+        btn.textContent = currentTheme === "light" ? "Dark" : "Light";
+
+        btn.addEventListener("click", () => {
+          const theme = document.documentElement.getAttribute("data-theme");
+          const newTheme = theme === "light" ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          btn.textContent = newTheme === "light" ? "Dark" : "Light";
+        });
+
+        // Listen for system preference changes (optional enhancement)
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", (e) => {
+            // Only apply if user hasn't manually set a preference
+            if (!localStorage.getItem("theme")) {
+              const newTheme = e.matches ? "dark" : "light";
+              document.documentElement.setAttribute("data-theme", newTheme);
+              btn.textContent = newTheme === "light" ? "Dark" : "Light";
+            }
+          });
       }
-      
-      const useProduction = localStorage.getItem('useProductionApi') === 'true';
-      
-      const toggle = document.createElement('div');
-      toggle.id = 'dev-toggle';
-      toggle.style.cssText = `
+
+      // Time Display
+      function updateTimeDisplay() {
+        const timeDisplay = document.getElementById("time-display");
+        if (!timeDisplay) return;
+
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        // Format as 12-hour with AM/PM
+        const hours12 = hours % 12 || 12;
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const minutesStr = minutes.toString().padStart(2, "0");
+
+        timeDisplay.textContent = `${hours12}:${minutesStr} ${ampm}`;
+      }
+
+      // Configuration
+      const PRODUCTION_URL = "https://new-benstanfieldio-kappa.vercel.app";
+      const isLocalhost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+
+      // Get API base URL based on toggle state
+      function getApiBase() {
+        if (!isLocalhost) return ""; // Always use relative URLs in production
+        const useProduction =
+          localStorage.getItem("useProductionApi") === "true";
+        return useProduction ? PRODUCTION_URL : "";
+      }
+
+      // Create dev toggle and editor link (only shown on localhost)
+      function createDevToggle() {
+        if (!isLocalhost) return;
+
+        // Add editor link to nav
+        const navLinks = document.getElementById("nav-links");
+        if (navLinks) {
+          const editorLi = document.createElement("li");
+          editorLi.innerHTML =
+            '<a href="/editor.html" style="color: #e91e63;">Editor</a>';
+          navLinks.appendChild(editorLi);
+        }
+
+        const useProduction =
+          localStorage.getItem("useProductionApi") === "true";
+
+        const toggle = document.createElement("div");
+        toggle.id = "dev-toggle";
+        toggle.style.cssText = `
         position: fixed;
         bottom: 1rem;
         right: 1rem;
@@ -190,11 +279,11 @@
         gap: 0.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       `;
-      
-      toggle.innerHTML = `
+
+        toggle.innerHTML = `
         <span style="opacity: 0.7;">API:</span>
         <button id="toggle-local" style="
-          background: ${!useProduction ? '#0066cc' : '#444'};
+          background: ${!useProduction ? "#0066cc" : "#444"};
           color: #fff;
           border: none;
           padding: 0.25rem 0.5rem;
@@ -203,7 +292,7 @@
           font-size: 0.7rem;
         ">Local</button>
         <button id="toggle-prod" style="
-          background: ${useProduction ? '#0066cc' : '#444'};
+          background: ${useProduction ? "#0066cc" : "#444"};
           color: #fff;
           border: none;
           padding: 0.25rem 0.5rem;
@@ -212,238 +301,258 @@
           font-size: 0.7rem;
         ">Prod</button>
       `;
-      
-      document.body.appendChild(toggle);
-      
-      document.getElementById('toggle-local').addEventListener('click', () => {
-        localStorage.setItem('useProductionApi', 'false');
-        window.location.reload();
-      });
-      
-      document.getElementById('toggle-prod').addEventListener('click', () => {
-        localStorage.setItem('useProductionApi', 'true');
-        window.location.reload();
-      });
-    }
-    
-    // Fetch and render posts
-    async function loadPosts() {
-      const postsListEl = document.getElementById('posts-list');
-      const apiBase = getApiBase();
-      
-      try {
-        const response = await fetch(`${apiBase}/api/posts`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts');
-        }
-        
-        const posts = await response.json();
-        
-        // Filter published posts and sort by date
-        const publishedPosts = posts
-          .filter(post => post.published !== false)
-          .sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        if (publishedPosts.length === 0) {
-          postsListEl.innerHTML = '<li>No posts yet.</li>';
-          return;
-        }
-        
-        postsListEl.innerHTML = publishedPosts.map(post => {
-          const date = new Date(post.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+
+        document.body.appendChild(toggle);
+
+        document
+          .getElementById("toggle-local")
+          .addEventListener("click", () => {
+            localStorage.setItem("useProductionApi", "false");
+            window.location.reload();
           });
-          
-          // Get first paragraph as excerpt
-          const excerpt = post.content
-            .replace(/^#.*$/gm, '') // Remove headings
-            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links
-            .replace(/[*_`]/g, '') // Remove formatting
-            .trim()
-            .split('\n')[0]
-            .slice(0, 150);
-          
-          return `
+
+        document.getElementById("toggle-prod").addEventListener("click", () => {
+          localStorage.setItem("useProductionApi", "true");
+          window.location.reload();
+        });
+      }
+
+      // Fetch and render posts
+      async function loadPosts() {
+        const postsListEl = document.getElementById("posts-list");
+        const apiBase = getApiBase();
+
+        try {
+          const response = await fetch(`${apiBase}/api/posts`);
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch posts");
+          }
+
+          const posts = await response.json();
+
+          // Filter published posts and sort by date
+          const publishedPosts = posts
+            .filter((post) => post.published !== false)
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+          if (publishedPosts.length === 0) {
+            postsListEl.innerHTML = "<li>No posts yet.</li>";
+            return;
+          }
+
+          postsListEl.innerHTML = publishedPosts
+            .map((post) => {
+              const date = new Date(post.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+
+              // Get first paragraph as excerpt
+              const excerpt = post.content
+                .replace(/^#.*$/gm, "") // Remove headings
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Remove links
+                .replace(/[*_`]/g, "") // Remove formatting
+                .trim()
+                .split("\n")[0]
+                .slice(0, 150);
+
+              return `
             <li>
               <a href="?post=${post.slug}" class="post-link">${post.title}</a>
               <span class="post-date">${date}</span>
-              ${excerpt ? `<p class="post-excerpt">${excerpt}${excerpt.length >= 150 ? '...' : ''}</p>` : ''}
+              ${
+                excerpt
+                  ? `<p class="post-excerpt">${excerpt}${
+                      excerpt.length >= 150 ? "..." : ""
+                    }</p>`
+                  : ""
+              }
             </li>
           `;
-        }).join('');
-        
-      } catch (error) {
-        console.error('Error loading posts:', error);
-        postsListEl.innerHTML = '<li>No posts yet.</li>';
+            })
+            .join("");
+        } catch (error) {
+          console.error("Error loading posts:", error);
+          postsListEl.innerHTML = "<li>No posts yet.</li>";
+        }
       }
-    }
-    
-    // Fetch and render books
-    async function loadBooks() {
-      const bookshelfEl = document.getElementById('bookshelf-list');
-      const apiBase = getApiBase();
-      
-      try {
-        const response = await fetch(`${apiBase}/api/books`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch books');
-        }
-        
-        const data = await response.json();
-        const books = data.books || [];
-        
-        if (books.length === 0) {
-          bookshelfEl.innerHTML = '<li>No books yet.</li>';
-          return;
-        }
-        
-        // Sort: reading first, then by date descending
-        const sortedBooks = [...books].sort((a, b) => {
-          if (a.status === 'reading' && b.status !== 'reading') return -1;
-          if (a.status !== 'reading' && b.status === 'reading') return 1;
-          // For finished books, sort by date
-          if (a.date && b.date) {
-            return new Date(b.date) - new Date(a.date);
+
+      // Fetch and render books
+      async function loadBooks() {
+        const bookshelfEl = document.getElementById("bookshelf-list");
+        const apiBase = getApiBase();
+
+        try {
+          const response = await fetch(`${apiBase}/api/books`);
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch books");
           }
-          return 0;
-        });
-        
-        // Separate reading and finished books
-        const readingBooks = sortedBooks.filter(b => b.status === 'reading');
-        const finishedBooks = sortedBooks.filter(b => b.status !== 'reading');
-        
-        const renderBook = (book) => {
-          const hasGoodreads = book.goodreadsUrl && book.goodreadsUrl.length > 0;
-          const titleContent = hasGoodreads
-            ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title}</a>`
-            : `<span class="book-title">${book.title}</span>`;
-          const favoriteClass = book.favorite ? ' favorite' : '';
-          
-          return `
+
+          const data = await response.json();
+          const books = data.books || [];
+
+          if (books.length === 0) {
+            bookshelfEl.innerHTML = "<li>No books yet.</li>";
+            return;
+          }
+
+          // Sort: reading first, then by date descending
+          const sortedBooks = [...books].sort((a, b) => {
+            if (a.status === "reading" && b.status !== "reading") return -1;
+            if (a.status !== "reading" && b.status === "reading") return 1;
+            // For finished books, sort by date
+            if (a.date && b.date) {
+              return new Date(b.date) - new Date(a.date);
+            }
+            return 0;
+          });
+
+          // Separate reading and finished books
+          const readingBooks = sortedBooks.filter(
+            (b) => b.status === "reading"
+          );
+          const finishedBooks = sortedBooks.filter(
+            (b) => b.status !== "reading"
+          );
+
+          const renderBook = (book) => {
+            const hasGoodreads =
+              book.goodreadsUrl && book.goodreadsUrl.length > 0;
+            const titleContent = hasGoodreads
+              ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title}</a>`
+              : `<span class="book-title">${book.title}</span>`;
+            const favoriteClass = book.favorite ? " favorite" : "";
+
+            return `
             <li class="${favoriteClass}">
               <span class="book-emoji">${book.emoji}</span>
               ${titleContent}
-              ${book.author ? `<span class="book-author">${book.author}</span>` : ''}
+              ${
+                book.author
+                  ? `<span class="book-author">${book.author}</span>`
+                  : ""
+              }
             </li>
           `;
-        };
-        
-        let html = '';
-        
-        if (readingBooks.length > 0) {
-          html += '<div class="bookshelf-subheader">Reading now</div>';
-          html += readingBooks.map(renderBook).join('');
+          };
+
+          let html = "";
+
+          if (readingBooks.length > 0) {
+            html += '<div class="bookshelf-subheader">Reading now</div>';
+            html += readingBooks.map(renderBook).join("");
+          }
+
+          if (finishedBooks.length > 0) {
+            html += '<div class="bookshelf-subheader">Finished</div>';
+            html += finishedBooks.map(renderBook).join("");
+          }
+
+          bookshelfEl.innerHTML = html;
+
+          // Render genre breakdown
+          renderGenreBreakdown(books);
+        } catch (error) {
+          console.error("Error loading books:", error);
+          bookshelfEl.innerHTML = "<li>Error loading books.</li>";
         }
-        
-        if (finishedBooks.length > 0) {
-          html += '<div class="bookshelf-subheader">Finished</div>';
-          html += finishedBooks.map(renderBook).join('');
-        }
-        
-        bookshelfEl.innerHTML = html;
-        
-        // Render genre breakdown
-        renderGenreBreakdown(books);
-        
-      } catch (error) {
-        console.error('Error loading books:', error);
-        bookshelfEl.innerHTML = '<li>Error loading books.</li>';
       }
-    }
-    
-    // Genre colors for visualization
-    const genreColors = [
-      '#3b82f6', // blue
-      '#eab308', // yellow
-      '#22c55e', // green
-      '#f97316', // orange
-      '#8b5cf6', // purple
-      '#ec4899', // pink
-      '#14b8a6', // teal
-      '#ef4444', // red
-      '#6366f1', // indigo
-      '#84cc16', // lime
-      '#f59e0b', // amber
-      '#06b6d4', // cyan
-    ];
-    
-    function renderGenreBreakdown(books) {
-      const genreBreakdown = document.getElementById('genre-breakdown');
-      const genreBar = document.getElementById('genre-bar');
-      const genreLegend = document.getElementById('genre-legend');
-      
-      // Count books by genre
-      const genreCounts = {};
-      books.forEach(book => {
-        const genre = book.genre || 'Other';
-        genreCounts[genre] = (genreCounts[genre] || 0) + 1;
-      });
-      
-      // Sort by count descending
-      const sortedGenres = Object.entries(genreCounts)
-        .sort((a, b) => b[1] - a[1]);
-      
-      const total = books.length;
-      
-      // Build bar segments
-      let barHtml = '';
-      let legendHtml = '';
-      
-      sortedGenres.forEach(([genre, count], index) => {
-        const percent = ((count / total) * 100).toFixed(1);
-        const color = genreColors[index % genreColors.length];
-        
-        barHtml += `<div class="genre-bar-segment" style="width: ${percent}%; background-color: ${color};"></div>`;
-        
-        legendHtml += `
+
+      // Genre colors for visualization
+      const genreColors = [
+        "#3b82f6", // blue
+        "#eab308", // yellow
+        "#22c55e", // green
+        "#f97316", // orange
+        "#8b5cf6", // purple
+        "#ec4899", // pink
+        "#14b8a6", // teal
+        "#ef4444", // red
+        "#6366f1", // indigo
+        "#84cc16", // lime
+        "#f59e0b", // amber
+        "#06b6d4", // cyan
+      ];
+
+      function renderGenreBreakdown(books) {
+        const genreBreakdown = document.getElementById("genre-breakdown");
+        const genreBar = document.getElementById("genre-bar");
+        const genreLegend = document.getElementById("genre-legend");
+
+        // Count books by genre
+        const genreCounts = {};
+        books.forEach((book) => {
+          const genre = book.genre || "Other";
+          genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+        });
+
+        // Sort by count descending
+        const sortedGenres = Object.entries(genreCounts).sort(
+          (a, b) => b[1] - a[1]
+        );
+
+        const total = books.length;
+
+        // Build bar segments
+        let barHtml = "";
+        let legendHtml = "";
+
+        sortedGenres.forEach(([genre, count], index) => {
+          const percent = ((count / total) * 100).toFixed(1);
+          const color = genreColors[index % genreColors.length];
+
+          barHtml += `<div class="genre-bar-segment" style="width: ${percent}%; background-color: ${color};"></div>`;
+
+          legendHtml += `
           <div class="genre-legend-item">
             <span class="genre-dot" style="background-color: ${color};"></span>
             <span class="genre-name">${genre}</span>
             <span class="genre-percent">${percent}%</span>
           </div>
         `;
-      });
-      
-      genreBar.innerHTML = barHtml;
-      genreLegend.innerHTML = legendHtml;
-      genreBreakdown.style.display = 'block';
-    }
-    
-    // Check if viewing a single post
-    async function checkSinglePost() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get('post');
-      const apiBase = getApiBase();
-      
-      if (slug) {
-        try {
-          const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`);
-          
-          if (!response.ok) {
-            throw new Error('Post not found');
+        });
+
+        genreBar.innerHTML = barHtml;
+        genreLegend.innerHTML = legendHtml;
+        genreBreakdown.style.display = "block";
+      }
+
+      // Check if viewing a single post
+      async function checkSinglePost() {
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get("post");
+        const apiBase = getApiBase();
+
+        if (slug) {
+          try {
+            const response = await fetch(
+              `${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`
+            );
+
+            if (!response.ok) {
+              throw new Error("Post not found");
+            }
+
+            const post = await response.json();
+            displaySinglePost(post);
+          } catch (error) {
+            console.error("Error loading post:", error);
           }
-          
-          const post = await response.json();
-          displaySinglePost(post);
-        } catch (error) {
-          console.error('Error loading post:', error);
         }
       }
-    }
-    
-    function displaySinglePost(post) {
-      const main = document.querySelector('main.container');
-      const date = new Date(post.date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      
-      main.innerHTML = `
+
+      function displaySinglePost(post) {
+        const main = document.querySelector("main.container");
+        const date = new Date(post.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        main.innerHTML = `
         <article>
           <header style="margin-bottom: 2rem;">
             <a href="/" style="font-size: 0.875rem; color: var(--color-text-secondary);">← Back</a>
@@ -463,23 +572,23 @@
           </ul>
         </footer>
       `;
-    }
-    
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      initThemeToggle();
-      updateTimeDisplay();
-      setInterval(updateTimeDisplay, 60000); // Update every minute
-      createDevToggle();
-      loadBooks();
-      
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('post')) {
-        checkSinglePost();
-      } else {
-        loadPosts();
       }
-    });
-  </script>
-</body>
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        initThemeToggle();
+        updateTimeDisplay();
+        setInterval(updateTimeDisplay, 60000); // Update every minute
+        createDevToggle();
+        loadBooks();
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("post")) {
+          checkSinglePost();
+        } else {
+          loadPosts();
+        }
+      });
+    </script>
+  </body>
 </html>
