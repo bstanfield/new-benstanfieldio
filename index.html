@@ -266,7 +266,11 @@
           return 0;
         });
         
-        bookshelfEl.innerHTML = sortedBooks.map(book => {
+        // Separate reading and finished books
+        const readingBooks = sortedBooks.filter(b => b.status === 'reading');
+        const finishedBooks = sortedBooks.filter(b => b.status !== 'reading');
+        
+        const renderBook = (book) => {
           const hasGoodreads = book.goodreadsUrl && book.goodreadsUrl.length > 0;
           const titleContent = hasGoodreads
             ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title}</a>`
@@ -274,25 +278,27 @@
           const favoriteClass = book.favorite ? ' favorite' : '';
           const meta = book.author ? `${book.genre} • ${book.author}` : book.genre;
           
-          if (book.status === 'reading') {
-            return `
-              <li class="${favoriteClass}">
-                <span class="book-emoji">${book.emoji}</span>
-                ${titleContent}
-                <span class="book-meta">${meta}</span>
-                <span class="book-status reading">Reading now</span>
-              </li>
-            `;
-          } else {
-            return `
-              <li class="${favoriteClass}">
-                <span class="book-emoji">${book.emoji}</span>
-                ${titleContent}
-                <span class="book-meta">${meta}</span>
-              </li>
-            `;
-          }
-        }).join('');
+          return `
+            <li class="${favoriteClass}">
+              ${titleContent}
+              <span class="book-meta">${meta}</span>
+            </li>
+          `;
+        };
+        
+        let html = '';
+        
+        if (readingBooks.length > 0) {
+          html += '<div class="bookshelf-subheader">Reading now</div>';
+          html += readingBooks.map(renderBook).join('');
+        }
+        
+        if (finishedBooks.length > 0) {
+          html += '<div class="bookshelf-subheader">Finished</div>';
+          html += finishedBooks.map(renderBook).join('');
+        }
+        
+        bookshelfEl.innerHTML = html;
         
       } catch (error) {
         console.error('Error loading books:', error);

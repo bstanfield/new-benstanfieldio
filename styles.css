@@ -230,11 +230,6 @@ section h2 {
   border-bottom: none;
 }
 
-.book-emoji {
-  margin-right: calc(var(--spacing-unit) * 0.5);
-  flex-shrink: 0;
-}
-
 .book-title {
   flex: 1;
 }
@@ -246,21 +241,41 @@ section h2 {
   white-space: nowrap;
 }
 
-.book-status {
-  font-size: 0.75rem;
-  padding: 0.125rem 0.5rem;
-  border-radius: 3px;
-  margin-left: var(--spacing-unit);
-  white-space: nowrap;
-}
-
-.book-status.reading {
-  background-color: var(--color-reading-bg);
-  color: var(--color-reading-text);
-}
 
 .bookshelf li.favorite {
-  background-color: var(--color-favorite-bg);
+  background-color: #d4a520;
+  color: #1a1a1a;
+}
+
+.bookshelf li.favorite a {
+  color: #1a1a1a;
+}
+
+[data-theme="dark"] .bookshelf li.favorite {
+  background-color: #b8860b;
+  color: #1a1a1a;
+}
+
+[data-theme="dark"] .bookshelf li.favorite a {
+  color: #1a1a1a;
+}
+
+[data-theme="dark"] .bookshelf li.favorite .book-meta {
+  color: #444;
+}
+
+.bookshelf-subheader {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--spacing-unit) * 1.5);
+  margin-bottom: calc(var(--spacing-unit) * 0.5);
+  padding-bottom: calc(var(--spacing-unit) * 0.25);
+}
+
+.bookshelf-subheader:first-child {
+  margin-top: 0;
 }
 
 /* Posts List */
