@@ -243,6 +243,8 @@ section h2 {
   color: var(--color-text-secondary);
   margin-left: var(--spacing-unit);
   white-space: nowrap;
+  opacity: 0.5;
+  font-size: 14px;
 }
 
 
