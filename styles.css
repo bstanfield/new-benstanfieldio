@@ -738,7 +738,7 @@ section h2 {
     text-align: left;
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: calc(var(--spacing-unit) * 2) var(--spacing-unit) 0;
+    padding: 0 var(--spacing-unit);
   }
   
   .site-nav .name {
@@ -747,7 +747,9 @@ section h2 {
   
   .theme-toggle {
     position: static;
-    margin-bottom: var(--spacing-unit);
+    max-width: var(--max-width);
+    margin: 0 auto var(--spacing-unit);
+    padding: calc(var(--spacing-unit) * 2) var(--spacing-unit) 0;
   }
   
   .site-nav ul {
