@@ -736,7 +736,13 @@ section h2 {
   .site-nav {
     position: static;
     text-align: left;
-    margin-bottom: calc(var(--spacing-unit) * 2);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--spacing-unit) * 2) var(--spacing-unit) 0;
+  }
+  
+  .site-nav .name {
+    margin-bottom: calc(var(--spacing-unit) * 0.75);
   }
   
   .theme-toggle {
@@ -746,8 +752,12 @@ section h2 {
   
   .site-nav ul {
     display: flex;
-    gap: var(--spacing-unit);
+    gap: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
     flex-wrap: wrap;
+  }
+  
+  .container {
+    padding-top: calc(var(--spacing-unit) * 1.5);
   }
   
   .profile {
