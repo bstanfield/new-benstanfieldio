@@ -37,7 +37,7 @@
   --color-background: #ffffff;
   --color-border: #e5e5e5;
   --color-code-bg: #f5f5f5;
-  --color-favorite-bg: #fef9e7;
+  --color-favorite-bg: #fcf9ee;
   --color-reading-bg: #fff3cd;
   --color-reading-text: #856404;
   
@@ -244,6 +244,7 @@ section h2 {
   font-size: 0.875rem;
   margin-left: var(--spacing-unit);
   white-space: nowrap;
+  opacity: 0.5;
 }
 
 
@@ -717,3 +718,4 @@ section h2 {
     display: none;
   }
 }
+
