@@ -2,6 +2,6 @@
   "title": "Hello, World",
   "slug": "hello-world",
   "date": "2025-12-30",
-  "content": "# Welcome to my blog, Mimi!\n\nThis is my first post on the new site. I built this using a simple **GitHub-powered CMS** that lets me write in Markdown and publish instantly.\n\n## How it works\n\nThe editor commits posts directly to the GitHub repository, which triggers a Vercel rebuild. Within about 30 seconds, the new content is live.\n\n## Features\n\n- Markdown support with live preview\n- Image uploads\n- Clean, minimal design\n- No database required\n\n> The best writing tools get out of your way and let you focus on the words.\n\nMore posts coming soon!",
+  "content": "# Welcome to my blog\n\nThis is my first post on the new site. I built this using a simple **GitHub-powered CMS** that lets me write in Markdown and publish instantly.\n\n## How it works\n\nThe editor commits posts directly to the GitHub repository, which triggers a Vercel rebuild. Within about 30 seconds, the new content is live.\n\n## Features\n\n- Markdown support with live preview\n- Image uploads\n- Clean, minimal design\n- No database required\n\n> The best writing tools get out of your way and let you focus on the words.\n\nMore posts coming soon!",
   "published": true
 }
