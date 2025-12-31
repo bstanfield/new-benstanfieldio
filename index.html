@@ -72,18 +72,18 @@
             <a href="https://toposdata.com" target="_blank">Topos (Acq.)</a>.
           </p>
           <p>
-            I love basketball, board games, typography,
+            I love basketball, typography,
             <a href="https://drinks.benstanfield.io/" target="_blank"
               >fun cocktails</a
-            >, and a good book. I currently live in California, cozied up
-            against the hills.
+            >, and espresso. I currently live in Saratoga, California, cozied up
+            against the Santa Cruz mountains.
           </p>
           <p>
             Previously, I studied at the
             <a href="https://iovine-young.usc.edu" target="_blank"
               >Iovine & Young Academy</a
             >
-            at USC, and learned nearly as much in three months during
+            at USC, and
             <a href="https://www.ycombinator.com/" target="_blank"
               >Y Combinator</a
             >.
@@ -96,23 +96,31 @@
               at Wren.
             </li>
             <li>
-              <b>Catalytic philanthropy.</b> In 2023, I co-founded a non-profit
-              to raise grants for critical early-stage climate solutions. Many
-              others are doing great work here, including
-              <a href="https://givinggreen.org/" target="_blank">Giving Green</a
+              <b>Catalytic philanthropy.</b> In 2023, I formed Wren's non-profit
+              branch to raise grants for critical early-stage climate solutions.
+              Many others are doing great work here, including
+              <a href="https://givinggreen.org/" target="_blank"
+                >Giving Green</a
+              >
+              and
+              <a href="https://www.terrasetclimate.org/" target="_blank"
+                >Terraset</a
               >.
             </li>
             <li>
-              <b>AI UX Design.</b> Designing truthful, intuitive human+AI
-              systems is shaping up to be the defining design challenge of the
-              21st century.
+              <b>AI UX Design.</b> Truthful, intuitive human+AI interaction is a
+              key design challenge of this century.
+              <a href="https://toposdata.com/" target="_blank">Topos</a> is
+              designing AI tools to help energy developers synthesize vast
+              amounts of government data and make better decisions about
+              deploying green energy.
             </li>
             <li>
               <b>Marvels of engineering.</b> I am fascinated by the
               <i>art</i> of engineering, and the principles of a well designed
               system. I recommend reading
               <a
-                href="https://www.goodreads.com/book/show/56829.Skunk_Works"
+                href="https://www.goodreads.com/book/show/101438.Skunk_Works"
                 target="_blank"
                 >Skunk Works</a
               >
@@ -125,19 +133,15 @@
               by Richard Hamming.
             </li>
             <li>
-              <b>Reading (real) books.</b> After ~10 hours a day on screens, — I
+              <b>Reading (real) books.</b> After ~10 hours a day on screens, I
               recommend a physical book. Support local bookstores at
-              <a href="https://bookshop.org/" target="_blank">Bookshop.org</a>.
-              And check out some great
-              <a href="https://stripepress.com/" target="_blank"
+              <a href="https://bookshop.org/" target="_blank">Bookshop.org</a>,
+              and check out some great
+              <a href="https://press.stripe.com/" target="_blank"
                 >Stripe Press</a
               >
-              books, like
-              <a
-                href="https://www.goodreads.com/book/show/205307264-boom"
-                target="_blank"
-                >Boom</a
-              >.
+              prints, like
+              <a href="https://press.stripe.com/boom" target="_blank">Boom</a>.
             </li>
           </ul>
         </div>
@@ -155,8 +159,9 @@
       <section id="bookshelf">
         <h2>Bookshelf</h2>
         <p class="bookshelf-intro">
-          Books in <span class="gold-text">gold</span> are favorites. I tend to
-          gravitate toward history, science (fiction), and biographies.
+          Books in <span class="gold-text">gold</span> are favorites. I lean
+          towards history, science (fiction), and biographies, but you'll find
+          some other genres sprinkled in.
         </p>
         <ul class="bookshelf" id="bookshelf-list">
           <li class="loading">Loading books...</li>
@@ -317,6 +322,23 @@
         });
       }
 
+      // Hide Writing section and nav link
+      function hideWritingSection() {
+        const postsSection = document.getElementById("posts");
+        if (postsSection) {
+          postsSection.style.display = "none";
+        }
+        
+        // Remove Writing link from nav
+        const navLinks = document.getElementById("nav-links");
+        if (navLinks) {
+          const writingLink = navLinks.querySelector('a[href="#posts"]');
+          if (writingLink && writingLink.parentElement) {
+            writingLink.parentElement.remove();
+          }
+        }
+      }
+
       // Fetch and render posts
       async function loadPosts() {
         const postsListEl = document.getElementById("posts-list");
@@ -337,7 +359,7 @@
             .sort((a, b) => new Date(b.date) - new Date(a.date));
 
           if (publishedPosts.length === 0) {
-            postsListEl.innerHTML = "<li>No posts yet.</li>";
+            hideWritingSection();
             return;
           }
 
@@ -375,7 +397,7 @@
             .join("");
         } catch (error) {
           console.error("Error loading posts:", error);
-          postsListEl.innerHTML = "<li>No posts yet.</li>";
+          hideWritingSection();
         }
       }
 

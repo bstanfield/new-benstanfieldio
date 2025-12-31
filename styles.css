@@ -756,15 +756,7 @@ section h2 {
 /* Responsive */
 @media (max-width: 900px) {
   .site-nav {
-    position: static;
-    text-align: left;
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 var(--spacing-unit);
-  }
-  
-  .site-nav .name {
-    margin-bottom: calc(var(--spacing-unit) * 0.75);
+    display: none;
   }
   
   .theme-toggle {
@@ -772,12 +764,6 @@ section h2 {
     max-width: var(--max-width);
     margin: 0 auto var(--spacing-unit);
     padding: calc(var(--spacing-unit) * 2) var(--spacing-unit) 0;
-  }
-  
-  .site-nav ul {
-    display: flex;
-    gap: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
-    flex-wrap: wrap;
   }
   
   .container {
