@@ -265,8 +265,7 @@ section h2 {
 }
 
 .bookshelf-intro {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
+  color: var(--color-text);
   margin-bottom: calc(var(--spacing-unit) * 1.5);
 }
 
