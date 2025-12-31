@@ -71,6 +71,10 @@
       <ul class="bookshelf" id="bookshelf-list">
         <li class="loading">Loading books...</li>
       </ul>
+      <div class="genre-breakdown" id="genre-breakdown" style="display: none;">
+        <div class="genre-bar" id="genre-bar"></div>
+        <div class="genre-legend" id="genre-legend"></div>
+      </div>
     </section>
 
     <footer class="site-footer">
@@ -302,10 +306,71 @@
         
         bookshelfEl.innerHTML = html;
         
+        // Render genre breakdown
+        renderGenreBreakdown(books);
+        
       } catch (error) {
         console.error('Error loading books:', error);
         bookshelfEl.innerHTML = '<li>Error loading books.</li>';
       }
+    }
+    
+    // Genre colors for visualization
+    const genreColors = [
+      '#3b82f6', // blue
+      '#eab308', // yellow
+      '#22c55e', // green
+      '#f97316', // orange
+      '#8b5cf6', // purple
+      '#ec4899', // pink
+      '#14b8a6', // teal
+      '#ef4444', // red
+      '#6366f1', // indigo
+      '#84cc16', // lime
+      '#f59e0b', // amber
+      '#06b6d4', // cyan
+    ];
+    
+    function renderGenreBreakdown(books) {
+      const genreBreakdown = document.getElementById('genre-breakdown');
+      const genreBar = document.getElementById('genre-bar');
+      const genreLegend = document.getElementById('genre-legend');
+      
+      // Count books by genre
+      const genreCounts = {};
+      books.forEach(book => {
+        const genre = book.genre || 'Other';
+        genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+      });
+      
+      // Sort by count descending
+      const sortedGenres = Object.entries(genreCounts)
+        .sort((a, b) => b[1] - a[1]);
+      
+      const total = books.length;
+      
+      // Build bar segments
+      let barHtml = '';
+      let legendHtml = '';
+      
+      sortedGenres.forEach(([genre, count], index) => {
+        const percent = ((count / total) * 100).toFixed(1);
+        const color = genreColors[index % genreColors.length];
+        
+        barHtml += `<div class="genre-bar-segment" style="width: ${percent}%; background-color: ${color};"></div>`;
+        
+        legendHtml += `
+          <div class="genre-legend-item">
+            <span class="genre-dot" style="background-color: ${color};"></span>
+            <span class="genre-name">${genre}</span>
+            <span class="genre-percent">${percent}%</span>
+          </div>
+        `;
+      });
+      
+      genreBar.innerHTML = barHtml;
+      genreLegend.innerHTML = legendHtml;
+      genreBreakdown.style.display = 'block';
     }
     
     // Check if viewing a single post

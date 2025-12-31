@@ -273,6 +273,56 @@ section h2 {
   margin-top: 0;
 }
 
+/* Genre breakdown visualization */
+.genre-breakdown {
+  margin-top: calc(var(--spacing-unit) * 2);
+  padding-top: calc(var(--spacing-unit) * 1.5);
+  border-top: 1px solid var(--color-border);
+}
+
+.genre-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.genre-bar-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.genre-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-top: calc(var(--spacing-unit) * 0.75);
+  font-size: 0.8rem;
+}
+
+.genre-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.genre-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.genre-name {
+  color: var(--color-text);
+}
+
+.genre-percent {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
 /* Posts List */
 .posts-list {
   list-style: none;
