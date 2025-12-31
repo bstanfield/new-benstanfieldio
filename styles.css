@@ -230,6 +230,11 @@ section h2 {
   border-bottom: none;
 }
 
+.book-emoji {
+  margin-right: calc(var(--spacing-unit) * 0.5);
+  flex-shrink: 0;
+}
+
 .book-title {
   flex: 1;
 }
@@ -243,25 +248,7 @@ section h2 {
 
 
 .bookshelf li.favorite {
-  background-color: #d4a520;
-  color: #1a1a1a;
-}
-
-.bookshelf li.favorite a {
-  color: #1a1a1a;
-}
-
-[data-theme="dark"] .bookshelf li.favorite {
-  background-color: #b8860b;
-  color: #1a1a1a;
-}
-
-[data-theme="dark"] .bookshelf li.favorite a {
-  color: #1a1a1a;
-}
-
-[data-theme="dark"] .bookshelf li.favorite .book-meta {
-  color: #444;
+  background-color: var(--color-favorite-bg);
 }
 
 .bookshelf-subheader {
