@@ -6,8 +6,20 @@
   <title>Benjamin Stanfield</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Apply saved theme immediately to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
 </head>
 <body>
+  <!-- Theme Toggle -->
+  <div class="theme-toggle">
+    <button id="theme-toggle-btn">Dark</button>
+  </div>
+
   <!-- Right-aligned navigation -->
   <nav class="site-nav">
     <div class="name">Benjamin Stanfield</div>
@@ -15,9 +27,9 @@
       <li><a href="#about">About</a></li>
       <li><a href="#bookshelf">Bookshelf</a></li>
       <li><a href="#posts">Writing</a></li>
-      <li><a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a></li>
-      <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn <span class="external-link-indicator">↗</span></a></li>
-      <li><a href="https://github.com/bstanfield" target="_blank">GitHub <span class="external-link-indicator">↗</span></a></li>
+      <li><a href="https://wren.co" target="_blank">Wren</a></li>
+      <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
+      <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
     </ul>
   </nav>
 
@@ -33,14 +45,14 @@
       <div class="profile-bio">
         <p>
           I'm Benjamin Stanfield, Co-founder and Product/Design Lead at 
-          <a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a> and <a href="https://toposdata.com" target="_blank">Topos (Acq.) <span class="external-link-indicator">↗</span></a>.
+          <a href="https://wren.co" target="_blank">Wren</a> and <a href="https://toposdata.com" target="_blank">Topos (Acq.)</a>.
         </p>
         <p>
           I love basketball, board games, typography, fun cocktails, and a good book.
           I currently live in California, cozied up against the hills.
         </p>
         <p>
-          Previously, I studied at the <a href="https://iovine-young.usc.edu" target="_blank">Iovine & Young Academy <span class="external-link-indicator">↗</span></a> at USC.
+          Previously, I studied at the <a href="https://iovine-young.usc.edu" target="_blank">Iovine & Young Academy</a> at USC.
         </p>
       </div>
     </section>
@@ -63,15 +75,32 @@
 
     <footer class="site-footer">
       <ul class="footer-links">
-        <li><a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a></li>
-        <li><a href="https://toposdata.com" target="_blank">Topos <span class="external-link-indicator">↗</span></a></li>
-        <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn <span class="external-link-indicator">↗</span></a></li>
-        <li><a href="https://github.com/bstanfield" target="_blank">GitHub <span class="external-link-indicator">↗</span></a></li>
+        <li><a href="https://wren.co" target="_blank">Wren</a></li>
+        <li><a href="https://toposdata.com" target="_blank">Topos</a></li>
+        <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
+        <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
       </ul>
     </footer>
   </main>
 
   <script>
+    // Theme Toggle
+    function initThemeToggle() {
+      const btn = document.getElementById('theme-toggle-btn');
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      
+      // Update button text based on current theme
+      btn.textContent = currentTheme === 'light' ? 'Dark' : 'Light';
+      
+      btn.addEventListener('click', () => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        btn.textContent = newTheme === 'light' ? 'Dark' : 'Light';
+      });
+    }
+    
     // Configuration
     const PRODUCTION_URL = 'https://new-benstanfieldio-kappa.vercel.app';
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -240,16 +269,17 @@
         bookshelfEl.innerHTML = sortedBooks.map(book => {
           const hasGoodreads = book.goodreadsUrl && book.goodreadsUrl.length > 0;
           const titleContent = hasGoodreads
-            ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title} <span class="external-link-indicator">↗</span></a>`
+            ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title}</a>`
             : `<span class="book-title">${book.title}</span>`;
           const favoriteClass = book.favorite ? ' favorite' : '';
+          const meta = book.author ? `${book.genre} • ${book.author}` : book.genre;
           
           if (book.status === 'reading') {
             return `
               <li class="${favoriteClass}">
                 <span class="book-emoji">${book.emoji}</span>
                 ${titleContent}
-                <span class="book-genre">${book.genre}</span>
+                <span class="book-meta">${meta}</span>
                 <span class="book-status reading">Reading now</span>
               </li>
             `;
@@ -258,8 +288,7 @@
               <li class="${favoriteClass}">
                 <span class="book-emoji">${book.emoji}</span>
                 ${titleContent}
-                <span class="book-genre">${book.genre}</span>
-                <span class="book-date">${book.date}</span>
+                <span class="book-meta">${meta}</span>
               </li>
             `;
           }
@@ -314,10 +343,10 @@
         </article>
         <footer class="site-footer">
           <ul class="footer-links">
-            <li><a href="https://wren.co" target="_blank">Wren <span class="external-link-indicator">↗</span></a></li>
-            <li><a href="https://toposdata.com" target="_blank">Topos <span class="external-link-indicator">↗</span></a></li>
-            <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn <span class="external-link-indicator">↗</span></a></li>
-            <li><a href="https://github.com/bstanfield" target="_blank">GitHub <span class="external-link-indicator">↗</span></a></li>
+            <li><a href="https://wren.co" target="_blank">Wren</a></li>
+            <li><a href="https://toposdata.com" target="_blank">Topos</a></li>
+            <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
           </ul>
         </footer>
       `;
@@ -325,6 +354,7 @@
     
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
+      initThemeToggle();
       createDevToggle();
       loadBooks();
       

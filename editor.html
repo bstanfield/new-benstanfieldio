@@ -277,6 +277,10 @@
           <input type="text" id="book-title" placeholder="Book title...">
         </div>
         <div class="form-group">
+          <label>Author</label>
+          <input type="text" id="book-author" placeholder="e.g., Frank Herbert">
+        </div>
+        <div class="form-group">
           <label>Genre</label>
           <input type="text" id="book-genre" placeholder="e.g., Science Fiction, History...">
         </div>
@@ -446,6 +450,7 @@
     const booksList = document.getElementById('books-list');
     const bookEmoji = document.getElementById('book-emoji');
     const bookTitleInput = document.getElementById('book-title');
+    const bookAuthor = document.getElementById('book-author');
     const bookGenre = document.getElementById('book-genre');
     const bookDate = document.getElementById('book-date');
     const bookDateGroup = document.getElementById('book-date-group');
@@ -499,6 +504,7 @@
       deleteBookBtn.addEventListener('click', deleteBook);
       bookEmoji.addEventListener('input', updateBookPreview);
       bookTitleInput.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
+      bookAuthor.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
       bookGenre.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
       bookDate.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
       bookGoodreads.addEventListener('input', handleBookEdit);
@@ -817,6 +823,7 @@
       
       bookEmoji.value = book.emoji;
       bookTitleInput.value = book.title;
+      bookAuthor.value = book.author || '';
       bookGenre.value = book.genre;
       bookDate.value = book.date || '';
       bookGoodreads.value = book.goodreadsUrl || '';
@@ -838,6 +845,7 @@
       currentBookIndex = null;
       bookEmoji.value = '📚';
       bookTitleInput.value = '';
+      bookAuthor.value = '';
       bookGenre.value = '';
       bookDate.value = '';
       bookGoodreads.value = '';
@@ -859,6 +867,7 @@
     function updateBookPreview() {
       const emoji = bookEmoji.value || '📚';
       const title = bookTitleInput.value || 'Book Title';
+      const author = bookAuthor.value || 'Author';
       const genre = bookGenre.value || 'Genre';
       const status = document.querySelector('input[name="book-status"]:checked').value;
       const date = bookDate.value;
@@ -866,7 +875,7 @@
       
       document.getElementById('preview-emoji').textContent = emoji;
       document.getElementById('preview-title').textContent = title;
-      document.getElementById('preview-genre').textContent = genre;
+      document.getElementById('preview-genre').textContent = `${genre} • ${author}`;
       
       const previewCard = document.getElementById('book-preview-card');
       if (favorite) {
@@ -891,6 +900,7 @@
     async function saveBook() {
       const emoji = bookEmoji.value.trim();
       const title = bookTitleInput.value.trim();
+      const author = bookAuthor.value.trim();
       const genre = bookGenre.value.trim();
       const status = document.querySelector('input[name="book-status"]:checked').value;
       const date = status === 'reading' ? '' : bookDate.value.trim();
@@ -905,7 +915,7 @@
       // Generate ID from title
       const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-      const bookData = { id, emoji, title, genre, status, date, goodreadsUrl, favorite };
+      const bookData = { id, emoji, title, author, genre, status, date, goodreadsUrl, favorite };
 
       // Update or add book
       if (currentBookIndex !== null) {
