@@ -9,8 +9,22 @@
   <script>
     // Apply saved theme immediately to prevent flash
     (function() {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      // Priority: localStorage → system preference → time-based (5 PM+) → light (fallback)
+      let theme = localStorage.getItem('theme');
+      
+      if (!theme) {
+        // Check system preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          theme = 'dark';
+        } else {
+          // Check local time - if past 5 PM, use dark mode
+          const currentHour = new Date().getHours();
+          theme = currentHour >= 17 ? 'dark' : 'light';
+        }
+      }
+      
+      document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
 </head>
@@ -18,6 +32,7 @@
   <!-- Theme Toggle -->
   <div class="theme-toggle">
     <button id="theme-toggle-btn">Dark</button>
+    <span id="time-display"></span>
   </div>
 
   <!-- Right-aligned navigation -->
@@ -103,6 +118,33 @@
         localStorage.setItem('theme', newTheme);
         btn.textContent = newTheme === 'light' ? 'Dark' : 'Light';
       });
+      
+      // Listen for system preference changes (optional enhancement)
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        // Only apply if user hasn't manually set a preference
+        if (!localStorage.getItem('theme')) {
+          const newTheme = e.matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          btn.textContent = newTheme === 'light' ? 'Dark' : 'Light';
+        }
+      });
+    }
+    
+    // Time Display
+    function updateTimeDisplay() {
+      const timeDisplay = document.getElementById('time-display');
+      if (!timeDisplay) return;
+      
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      
+      // Format as 12-hour with AM/PM
+      const hours12 = hours % 12 || 12;
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const minutesStr = minutes.toString().padStart(2, '0');
+      
+      timeDisplay.textContent = `${hours12}:${minutesStr} ${ampm}`;
     }
     
     // Configuration
@@ -426,6 +468,8 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       initThemeToggle();
+      updateTimeDisplay();
+      setInterval(updateTimeDisplay, 60000); // Update every minute
       createDevToggle();
       loadBooks();
       

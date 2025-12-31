@@ -91,6 +91,9 @@ body {
   top: calc(var(--spacing-unit) * 2);
   left: calc(var(--spacing-unit) * 2);
   z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .theme-toggle button {
@@ -108,6 +111,12 @@ body {
 .theme-toggle button:hover {
   border-color: var(--color-text-secondary);
   color: var(--color-text);
+}
+
+.theme-toggle #time-display {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
 }
 
 /* Typography */
