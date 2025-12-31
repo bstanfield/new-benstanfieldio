@@ -68,6 +68,7 @@
     <!-- Bookshelf Section -->
     <section id="bookshelf">
       <h2>Bookshelf</h2>
+      <p class="bookshelf-intro">Books in <span class="gold-text">gold</span> are all-time favorites. Please recommend me more books!</p>
       <ul class="bookshelf" id="bookshelf-list">
         <li class="loading">Loading books...</li>
       </ul>
@@ -285,9 +286,7 @@
             <li class="${favoriteClass}">
               <span class="book-emoji">${book.emoji}</span>
               ${titleContent}
-              <span class="book-meta">
-                <span class="book-genre">${book.genre}</span>${book.author ? ` • <span class="book-author">${book.author}</span>` : ''}
-              </span>
+              ${book.author ? `<span class="book-author">${book.author}</span>` : ''}
             </li>
           `;
         };

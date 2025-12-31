@@ -239,19 +239,10 @@ section h2 {
   flex: 1;
 }
 
-.book-meta {
-  font-size: 0.875rem;
-  margin-left: var(--spacing-unit);
-  white-space: nowrap;
-}
-
-.book-genre {
-  color: var(--color-text-secondary);
-  opacity: 0.5;
-}
-
 .book-author {
   color: var(--color-text-secondary);
+  margin-left: var(--spacing-unit);
+  white-space: nowrap;
 }
 
 
@@ -271,6 +262,19 @@ section h2 {
 
 .bookshelf-subheader:first-child {
   margin-top: 0;
+}
+
+.bookshelf-intro {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+.gold-text {
+  color: #b8860b;
+  background-color: var(--color-favorite-bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
 }
 
 /* Genre breakdown visualization */
@@ -771,7 +775,7 @@ section h2 {
     height: 100px;
   }
   
-  .book-meta {
+  .book-author {
     display: none;
   }
 }
