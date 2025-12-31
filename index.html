@@ -276,13 +276,14 @@
             ? `<a href="${book.goodreadsUrl}" target="_blank" class="book-title">${book.title}</a>`
             : `<span class="book-title">${book.title}</span>`;
           const favoriteClass = book.favorite ? ' favorite' : '';
-          const meta = book.author ? `${book.genre} • ${book.author}` : book.genre;
           
           return `
             <li class="${favoriteClass}">
               <span class="book-emoji">${book.emoji}</span>
               ${titleContent}
-              <span class="book-meta">${meta}</span>
+              <span class="book-meta">
+                <span class="book-genre">${book.genre}</span>${book.author ? ` • <span class="book-author">${book.author}</span>` : ''}
+              </span>
             </li>
           `;
         };

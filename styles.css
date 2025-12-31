@@ -240,11 +240,18 @@ section h2 {
 }
 
 .book-meta {
-  color: var(--color-text-secondary);
   font-size: 0.875rem;
   margin-left: var(--spacing-unit);
   white-space: nowrap;
+}
+
+.book-genre {
+  color: var(--color-text-secondary);
   opacity: 0.5;
+}
+
+.book-author {
+  color: var(--color-text-secondary);
 }
 
 
