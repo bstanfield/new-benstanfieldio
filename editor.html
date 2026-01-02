@@ -89,6 +89,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-height: 0;
       overflow: hidden;
     }
     
@@ -203,7 +204,7 @@
       <!-- Books List -->
       <div id="books-tab" class="tab-content" style="display: none;">
         <div class="sidebar-header">
-          <h2>Books</h2>
+          <h2 id="books-header">Books</h2>
           <button class="btn btn-small btn-secondary" id="new-book-btn">+ New</button>
         </div>
         <ul class="posts-sidebar-list" id="books-list">
@@ -547,7 +548,7 @@
       if (tab === 'posts') {
         postsTabBtn.classList.add('active');
         booksTabBtn.classList.remove('active');
-        postsTab.style.display = 'block';
+        postsTab.style.display = 'flex';
         booksTab.style.display = 'none';
         postEditorPanel.style.display = 'flex';
         bookEditorPanel.style.display = 'none';
@@ -557,7 +558,7 @@
         postsTabBtn.classList.remove('active');
         booksTabBtn.classList.add('active');
         postsTab.style.display = 'none';
-        booksTab.style.display = 'block';
+        booksTab.style.display = 'flex';
         postEditorPanel.style.display = 'none';
         bookEditorPanel.style.display = 'flex';
         postPreviewPanel.style.display = 'none';
@@ -795,18 +796,39 @@
     }
 
     function renderBooksList() {
+      // Update header with book count
+      const booksHeader = document.getElementById('books-header');
+      if (booksHeader) {
+        booksHeader.textContent = `Books (${books.length})`;
+      }
+
       if (books.length === 0) {
         booksList.innerHTML = '<li><button disabled style="color: var(--color-text-secondary);">No books yet</button></li>';
         return;
       }
 
-      booksList.innerHTML = books.map((book, index) => {
-        const isActive = currentBookIndex === index;
+      // Create array with original indices, then sort
+      const sortedBooks = books
+        .map((book, index) => ({ book, originalIndex: index }))
+        .sort((a, b) => {
+          // Reading books always come first
+          if (a.book.status === 'reading' && b.book.status !== 'reading') return -1;
+          if (a.book.status !== 'reading' && b.book.status === 'reading') return 1;
+          
+          // For finished books, sort by date (most recent first)
+          if (a.book.date && b.book.date) {
+            return new Date(b.book.date) - new Date(a.book.date);
+          }
+          return 0;
+        });
+
+      booksList.innerHTML = sortedBooks.map(({ book, originalIndex }) => {
+        const isActive = currentBookIndex === originalIndex;
         const statusText = book.status === 'reading' ? '📖' : '';
         
         return `
           <li>
-            <button class="${isActive ? 'active' : ''}" onclick="selectBook(${index})">
+            <button class="${isActive ? 'active' : ''}" onclick="selectBook(${originalIndex})">
               <span class="post-item-title">${statusText} ${book.emoji} ${book.title}</span>
               <span class="post-item-date">${book.status === 'reading' ? 'Reading' : book.date}</span>
             </button>
