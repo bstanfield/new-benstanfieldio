@@ -196,12 +196,35 @@ img {
   margin-bottom: calc(var(--spacing-unit) * 2);
 }
 
+.profile-photo-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  margin-bottom: calc(var(--spacing-unit) * 0.5);
+}
+
 .profile-photo {
   width: 100px;
   height: 100px;
   object-fit: cover;
   flex-shrink: 0;
-  margin-bottom: calc(var(--spacing-unit) * 0.5);
+}
+
+#profile-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.profile-photo-original {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
 }
 
 .profile-bio {
@@ -796,9 +819,10 @@ section h2 {
     padding: var(--spacing-unit);
   }
   
+  .profile-photo-container,
   .profile-photo {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
   
   .book-author {

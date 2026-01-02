@@ -58,12 +58,16 @@
     <main class="container">
       <!-- Profile Section -->
       <section id="about" class="profile">
-        <img
-          src="/images/ben-smiling-pic.png"
-          alt="Benjamin Stanfield"
-          class="profile-photo"
-          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect fill=%22%23e5e5e5%22 width=%22140%22 height=%22140%22/></svg>'"
-        />
+        <div class="profile-photo-container">
+          <canvas id="profile-canvas" class="profile-photo"></canvas>
+          <img
+            id="profile-image"
+            src="/images/ben-smiling-pic.png"
+            alt="Benjamin Stanfield"
+            class="profile-photo profile-photo-original"
+            onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect fill=%22%23e5e5e5%22 width=%22140%22 height=%22140%22/></svg>'"
+          />
+        </div>
         <div class="profile-bio">
           <h2>Benjamin Stanfield</h2>
           <p>
@@ -616,11 +620,83 @@
       `;
       }
 
+      // Profile Photo Pixelation Effect
+      function initPixelationEffect() {
+        const img = document.getElementById("profile-image");
+        const canvas = document.getElementById("profile-canvas");
+        
+        if (!img || !canvas) return;
+        
+        const ctx = canvas.getContext("2d");
+        const duration = 5000; // 5 seconds
+        const startTime = Date.now();
+        
+        // Wait for image to load
+        const startEffect = () => {
+          const container = document.querySelector(".profile-photo-container");
+          const size = container ? container.offsetWidth : 100;
+          canvas.width = size;
+          canvas.height = size;
+          
+          // Pixelation levels (pixel block sizes, from most pixelated to least)
+          const levels = [50, 33, 25, 20, 16, 12, 10, 8, 6, 5, 4, 3, 2, 1];
+          
+          function drawPixelated(pixelSize) {
+            // Calculate scaled dimensions
+            const scaledWidth = Math.ceil(size / pixelSize);
+            const scaledHeight = Math.ceil(size / pixelSize);
+            
+            // Draw image at small size
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+            
+            // Scale it back up (pixelated due to imageSmoothingEnabled = false)
+            ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight, 0, 0, size, size);
+          }
+          
+          function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Map progress to pixel level
+            const levelIndex = Math.floor(progress * (levels.length - 1));
+            const pixelSize = levels[Math.min(levelIndex, levels.length - 1)];
+            
+            // Clear and redraw
+            ctx.clearRect(0, 0, size, size);
+            drawPixelated(pixelSize);
+            
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              // Animation complete - fade in the original image
+              img.style.opacity = "1";
+              // Fade out canvas after a brief moment
+              setTimeout(() => {
+                canvas.style.opacity = "0";
+                canvas.style.transition = "opacity 0.5s ease-out";
+              }, 100);
+            }
+          }
+          
+          // Start with most pixelated version
+          drawPixelated(levels[0]);
+          animate();
+        };
+        
+        if (img.complete) {
+          startEffect();
+        } else {
+          img.onload = startEffect;
+        }
+      }
+
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         initThemeToggle();
         updateTimeDisplay();
         setInterval(updateTimeDisplay, 60000); // Update every minute
+        initPixelationEffect();
         createDevToggle();
         loadBooks();
 
