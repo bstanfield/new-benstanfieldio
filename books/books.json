@@ -1,5 +1,16 @@
 [
   {
+    "id": "empire-of-pain",
+    "emoji": "📚",
+    "title": "Empire of Pain",
+    "author": "Patrick Keefe",
+    "genre": "Nonfiction",
+    "status": "finished",
+    "date": "Dec. 2025",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/43868109-empire-of-pain",
+    "favorite": false
+  },
+  {
     "id": "the-art-of-doing-science-engineering",
     "emoji": "🔬",
     "title": "The Art of Doing Science & Engineering",
