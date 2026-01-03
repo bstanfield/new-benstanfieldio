@@ -96,8 +96,10 @@
           <p>Current interests:</p>
           <ul>
             <li>
-              <b>Climate action & optimism.</b> This is core to my past 6 years
-              at Wren.
+              <b>Climate action & optimism.</b> This has driven my work at
+              <a href="https://wren.co" target="_blank">Wren</a> for the past
+              6 years—helping over a million people understand their carbon
+              footprint and funding $20M+ in climate solutions along the way.
             </li>
             <li>
               <b>Catalytic philanthropy.</b> In 2023, I formed Wren's non-profit
@@ -628,50 +630,110 @@
         if (!img || !canvas) return;
         
         const ctx = canvas.getContext("2d");
-        const duration = 5000; // 5 seconds
-        const startTime = Date.now();
+        const container = document.querySelector(".profile-photo-container");
+        const initialDuration = 3000; // 3 seconds for initial animation
+        const hoverDuration = 2000; // 2 seconds for hover animations
+        let initialAnimationComplete = false;
+        let hoverAnimationId = null;
+        let isHovering = false;
+        let size = 100;
         
-        // Wait for image to load
-        const startEffect = () => {
-          const container = document.querySelector(".profile-photo-container");
-          const size = container ? container.offsetWidth : 100;
-          canvas.width = size;
-          canvas.height = size;
+        // Pixelation levels (pixel block sizes, from most pixelated to least)
+        const levels = [50, 33, 25, 20, 16, 12, 10, 8, 6, 5, 4, 3, 2, 1];
+        // Hover levels - just the last few for subtle effect
+        const hoverLevels = [5, 4, 3, 2, 1];
+        
+        function drawPixelated(pixelSize) {
+          const scaledWidth = Math.ceil(size / pixelSize);
+          const scaledHeight = Math.ceil(size / pixelSize);
           
-          // Pixelation levels (pixel block sizes, from most pixelated to least)
-          const levels = [50, 33, 25, 20, 16, 12, 10, 8, 6, 5, 4, 3, 2, 1];
-          
-          function drawPixelated(pixelSize) {
-            // Calculate scaled dimensions
-            const scaledWidth = Math.ceil(size / pixelSize);
-            const scaledHeight = Math.ceil(size / pixelSize);
-            
-            // Draw image at small size
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
-            
-            // Scale it back up (pixelated due to imageSmoothingEnabled = false)
-            ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight, 0, 0, size, size);
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+          ctx.drawImage(canvas, 0, 0, scaledWidth, scaledHeight, 0, 0, size, size);
+        }
+        
+        // Hover animation function
+        function animateHover(reverse) {
+          if (hoverAnimationId) {
+            cancelAnimationFrame(hoverAnimationId);
           }
+          
+          const startTime = Date.now();
+          
+          // Show canvas, hide original image
+          canvas.style.transition = "none";
+          canvas.style.opacity = "1";
+          img.style.transition = "none";
+          img.style.opacity = "0";
           
           function animate() {
             const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
+            const progress = Math.min(elapsed / hoverDuration, 1);
             
-            // Map progress to pixel level
+            // If reverse (hover out), go from pixelated to clear
+            // If not reverse (hover in), go from clear to pixelated
+            const adjustedProgress = reverse ? progress : 1 - progress;
+            const levelIndex = Math.floor(adjustedProgress * (hoverLevels.length - 1));
+            const pixelSize = hoverLevels[Math.min(levelIndex, hoverLevels.length - 1)];
+            
+            ctx.clearRect(0, 0, size, size);
+            drawPixelated(pixelSize);
+            
+            if (progress < 1) {
+              hoverAnimationId = requestAnimationFrame(animate);
+            } else if (reverse) {
+              // Animation complete and we're returning to clear - show original
+              img.style.transition = "opacity 0.2s ease-out";
+              img.style.opacity = "1";
+              setTimeout(() => {
+                canvas.style.transition = "opacity 0.2s ease-out";
+                canvas.style.opacity = "0";
+              }, 50);
+            }
+          }
+          
+          animate();
+        }
+        
+        // Set up hover listeners
+        function setupHoverListeners() {
+          container.addEventListener("mouseenter", () => {
+            if (!initialAnimationComplete) return;
+            isHovering = true;
+            animateHover(false); // Animate to pixelated
+          });
+          
+          container.addEventListener("mouseleave", () => {
+            if (!initialAnimationComplete) return;
+            isHovering = false;
+            animateHover(true); // Animate back to clear
+          });
+        }
+        
+        // Initial animation
+        const startEffect = () => {
+          size = container ? container.offsetWidth : 100;
+          canvas.width = size;
+          canvas.height = size;
+          
+          const startTime = Date.now();
+          
+          function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / initialDuration, 1);
+            
             const levelIndex = Math.floor(progress * (levels.length - 1));
             const pixelSize = levels[Math.min(levelIndex, levels.length - 1)];
             
-            // Clear and redraw
             ctx.clearRect(0, 0, size, size);
             drawPixelated(pixelSize);
             
             if (progress < 1) {
               requestAnimationFrame(animate);
             } else {
-              // Animation complete - fade in the original image
+              // Initial animation complete
+              initialAnimationComplete = true;
               img.style.opacity = "1";
-              // Fade out canvas after a brief moment
               setTimeout(() => {
                 canvas.style.opacity = "0";
                 canvas.style.transition = "opacity 0.5s ease-out";
@@ -679,9 +741,9 @@
             }
           }
           
-          // Start with most pixelated version
           drawPixelated(levels[0]);
           animate();
+          setupHoverListeners();
         };
         
         if (img.complete) {
