@@ -1,5 +1,16 @@
 [
   {
+    "id": "the-martian",
+    "emoji": "👾",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "May 2018",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/18007564-the-martian",
+    "favorite": true
+  },
+  {
     "id": "empire-of-pain",
     "emoji": "💊",
     "title": "Empire of Pain",
