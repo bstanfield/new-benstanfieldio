@@ -1,5 +1,16 @@
 [
   {
+    "id": "the-innovator-s-dilemma",
+    "emoji": "♟️",
+    "title": "The Innovator's Dilemma",
+    "author": "Clayton Christensen",
+    "genre": "Business",
+    "status": "finished",
+    "date": "June 2016",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/2615.The_Innovator_s_Dilemma",
+    "favorite": false
+  },
+  {
     "id": "the-omnivore-s-dilemma",
     "emoji": "🥦",
     "title": "The Omnivore's Dilemma",
