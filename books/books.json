@@ -1,5 +1,16 @@
 [
   {
+    "id": "the-omnivore-s-dilemma",
+    "emoji": "🥦",
+    "title": "The Omnivore's Dilemma",
+    "author": "Michael Pollan",
+    "genre": "Nonfiction",
+    "status": "finished",
+    "date": "April 2017",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/3109.The_Omnivore_s_Dilemma",
+    "favorite": false
+  },
+  {
     "id": "the-bully-pulpit",
     "emoji": "🫎",
     "title": "The Bully Pulpit",
