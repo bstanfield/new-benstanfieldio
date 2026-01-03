@@ -1,5 +1,16 @@
 [
   {
+    "id": "the-bully-pulpit",
+    "emoji": "📚",
+    "title": "The Bully Pulpit",
+    "author": "Doris Kearns Goodwin",
+    "genre": "Biography",
+    "status": "finished",
+    "date": "April 2019",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/17334495-the-bully-pulpit",
+    "favorite": true
+  },
+  {
     "id": "the-martian",
     "emoji": "👾",
     "title": "The Martian",
