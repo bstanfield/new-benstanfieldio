@@ -246,6 +246,10 @@ img {
   flex: 1;
 }
 
+.profile-bio h2 {
+  font-style: italic;
+}
+
 .profile-bio p {
   margin-bottom: calc(var(--spacing-unit) * 0.75);
 }

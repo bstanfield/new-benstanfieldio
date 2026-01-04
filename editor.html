@@ -230,6 +230,7 @@
       <textarea 
         class="editor-textarea" 
         id="post-content" 
+        spellcheck="true"
         placeholder="Write your post in Markdown...
 
 # Heading 1
@@ -538,6 +539,39 @@
             saveBook();
           }
         }
+      });
+
+      // URL paste handler for markdown links
+      postContent.addEventListener('paste', (e) => {
+        const selectedText = postContent.value.substring(
+          postContent.selectionStart,
+          postContent.selectionEnd
+        );
+
+        // Only proceed if text is selected
+        if (!selectedText) return;
+
+        const pastedText = e.clipboardData.getData('text');
+
+        // Check if pasted content looks like a URL
+        const urlPattern = /^https?:\/\/\S+$/i;
+        if (!urlPattern.test(pastedText.trim())) return;
+
+        // Prevent default paste and insert markdown link
+        e.preventDefault();
+        const markdownLink = `[${selectedText}](${pastedText.trim()})`;
+
+        const start = postContent.selectionStart;
+        const end = postContent.selectionEnd;
+        postContent.value =
+          postContent.value.substring(0, start) +
+          markdownLink +
+          postContent.value.substring(end);
+        postContent.selectionStart = postContent.selectionEnd =
+          start + markdownLink.length;
+
+        handlePostEdit();
+        updatePostPreview();
       });
     }
     

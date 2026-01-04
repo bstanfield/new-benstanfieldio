@@ -58,9 +58,9 @@ export default async function handler(req, res) {
       content, // Already base64 encoded
     });
 
-    // Return the URL to the image
-    // In production, this will be served by Vercel from the repo
-    const imageUrl = `/${path}`;
+    // Return the raw GitHub URL for immediate availability
+    // This works in both local dev and production without needing git pull
+    const imageUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${path}`;
 
     return res.status(201).json({
       success: true,
