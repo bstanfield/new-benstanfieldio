@@ -102,7 +102,7 @@ async function handlePost(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { title, content, published = true } = req.body;
+  const { title, content, published = true, coverImage } = req.body;
 
   if (!title || !content) {
     return res.status(400).json({ error: 'Title and content are required' });
@@ -120,6 +120,7 @@ async function handlePost(req, res) {
     date: new Date().toISOString().split('T')[0],
     content,
     published,
+    ...(coverImage && { coverImage }),
   };
 
   // Check if post already exists
@@ -156,7 +157,7 @@ async function handlePut(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { slug, title, content, published, sha } = req.body;
+  const { slug, title, content, published, coverImage, sha } = req.body;
 
   if (!slug || !sha) {
     return res.status(400).json({ error: 'Slug and SHA are required' });
@@ -185,6 +186,7 @@ async function handlePut(req, res) {
     title: title || existingPost.title,
     content: content !== undefined ? content : existingPost.content,
     published: published !== undefined ? published : existingPost.published,
+    coverImage: coverImage !== undefined ? coverImage : existingPost.coverImage,
   };
 
   // Save the update

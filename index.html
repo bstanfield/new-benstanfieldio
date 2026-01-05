@@ -436,21 +436,29 @@
                 .replace(/^#.*$/gm, "") // Remove headings
                 .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Remove links
                 .replace(/[*_`]/g, "") // Remove formatting
+                .replace(/!\[[^\]]*\]\([^)]+\)/g, "") // Remove images
                 .trim()
                 .split("\n")[0]
                 .slice(0, 150);
 
+              const thumbnail = post.coverImage 
+                ? `<a href="?post=${post.slug}" class="post-thumbnail-link"><img src="${post.coverImage}" alt="" class="post-thumbnail"></a>`
+                : '';
+
               return `
-            <li>
-              <a href="?post=${post.slug}" class="post-link">${post.title}</a>
-              <span class="post-date">${date}</span>
-              ${
-                excerpt
-                  ? `<p class="post-excerpt">${excerpt}${
-                      excerpt.length >= 150 ? "..." : ""
-                    }</p>`
-                  : ""
-              }
+            <li class="${post.coverImage ? 'has-thumbnail' : ''}">
+              ${thumbnail}
+              <div class="post-text">
+                <a href="?post=${post.slug}" class="post-link">${post.title}</a>
+                <span class="post-date">${date}</span>
+                ${
+                  excerpt
+                    ? `<p class="post-excerpt">${excerpt}${
+                        excerpt.length >= 150 ? "..." : ""
+                      }</p>`
+                    : ""
+                }
+              </div>
             </li>
           `;
             })
@@ -654,10 +662,15 @@
           day: "numeric",
         });
 
+        const heroImage = post.coverImage 
+          ? `<img src="${post.coverImage}" alt="${post.title}" class="post-hero-image">`
+          : '';
+
         main.innerHTML = `
         <article>
           <header style="margin-bottom: 2rem;">
             <a href="/" style="font-size: 0.875rem; color: var(--color-text-secondary);">← Back</a>
+            ${heroImage}
             <h1 style="margin-top: 1rem;">${post.title}</h1>
             <time style="color: var(--color-text-secondary); font-size: 0.9rem;">${date}</time>
           </header>

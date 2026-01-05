@@ -222,6 +222,56 @@
     .book-preview-date {
       color: var(--color-text-secondary);
     }
+    
+    /* Cover image upload */
+    .cover-image-section {
+      padding: var(--spacing-unit);
+      border-bottom: 1px solid var(--color-border);
+      background-color: var(--color-code-bg);
+    }
+    .cover-image-section label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .cover-image-upload {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .cover-image-preview {
+      width: 120px;
+      height: 80px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-background);
+    }
+    .cover-image-preview.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .cover-image-preview.empty:hover {
+      border-color: var(--color-link);
+      color: var(--color-link);
+    }
+    .cover-image-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .cover-image-actions .btn {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -280,6 +330,21 @@
 
     <!-- Post Editor Panel -->
     <div class="editor-panel" id="post-editor-panel">
+      <!-- Cover Image Section -->
+      <div class="cover-image-section">
+        <label>Cover Image</label>
+        <div class="cover-image-upload">
+          <div class="cover-image-preview empty" id="cover-image-preview" onclick="document.getElementById('cover-image-input').click()">
+            + Add cover
+          </div>
+          <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
+          <div class="cover-image-actions" id="cover-image-actions" style="display: none;">
+            <button class="btn btn-secondary" id="change-cover-btn">Change</button>
+            <button class="btn btn-danger" id="remove-cover-btn">Remove</button>
+          </div>
+        </div>
+      </div>
+      
       <div class="editor-header">
         <input 
           type="text" 
@@ -514,6 +579,14 @@
     const imageUploadZone = document.getElementById('image-upload-zone');
     const imageInput = document.getElementById('image-input');
     
+    // DOM Elements - Cover Image
+    const coverImagePreview = document.getElementById('cover-image-preview');
+    const coverImageInput = document.getElementById('cover-image-input');
+    const coverImageActions = document.getElementById('cover-image-actions');
+    const changeCoverBtn = document.getElementById('change-cover-btn');
+    const removeCoverBtn = document.getElementById('remove-cover-btn');
+    let currentCoverImage = null;
+    
     // DOM Elements - Books
     const booksList = document.getElementById('books-list');
     const bookEmoji = document.getElementById('book-emoji');
@@ -566,6 +639,11 @@
       publishedCheckbox.addEventListener('change', handlePostEdit);
       postContent.addEventListener('input', updatePostPreview);
       
+      // Cover image handlers
+      coverImageInput.addEventListener('change', handleCoverImageSelect);
+      changeCoverBtn.addEventListener('click', () => coverImageInput.click());
+      removeCoverBtn.addEventListener('click', removeCoverImage);
+
       // Book handlers
       newBookBtn.addEventListener('click', createNewBook);
       saveBookBtn.addEventListener('click', saveBook);
@@ -754,6 +832,7 @@
           postTitle.value = currentPost.title;
           postContent.value = currentPost.content;
           publishedCheckbox.checked = currentPost.published !== false;
+          setCoverImage(currentPost.coverImage || null);
           deletePostBtn.style.display = 'inline-flex';
           isPostDirty = false;
           updatePostPreview();
@@ -772,6 +851,7 @@
       postTitle.value = '';
       postContent.value = '';
       publishedCheckbox.checked = true;
+      setCoverImage(null);
       deletePostBtn.style.display = 'none';
       isPostDirty = false;
       previewContent.innerHTML = '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
@@ -782,6 +862,67 @@
     function handlePostEdit() {
       isPostDirty = true;
       setPostStatus('Unsaved changes', '');
+    }
+    
+    // Cover Image Functions
+    async function handleCoverImageSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.startsWith('image/')) {
+        setPostStatus('Please select an image file', 'error');
+        return;
+      }
+      
+      setPostStatus('Uploading cover image...', 'saving');
+      
+      const apiBase = getApiBase();
+      try {
+        const base64 = await fileToBase64(file);
+        
+        const response = await fetch(`${apiBase}/api/images`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
+          body: JSON.stringify({ filename: `cover-${file.name}`, content: base64, contentType: file.type })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setCoverImage(result.url);
+          handlePostEdit();
+          setPostStatus('Cover uploaded!', 'saved');
+          setTimeout(() => { if (postStatusIndicator.textContent === 'Cover uploaded!') setPostStatus('Unsaved changes', ''); }, 2000);
+        } else {
+          const error = await response.json();
+          setPostStatus(error.error || 'Failed to upload cover', 'error');
+        }
+      } catch (error) {
+        console.error('Error uploading cover:', error);
+        setPostStatus('Error uploading cover', 'error');
+      }
+      
+      // Reset input so same file can be selected again
+      coverImageInput.value = '';
+    }
+    
+    function setCoverImage(url) {
+      currentCoverImage = url;
+      if (url) {
+        coverImagePreview.innerHTML = `<img src="${url}" class="cover-image-preview" style="width: 120px; height: 80px; object-fit: cover; border-radius: 4px;">`;
+        coverImagePreview.classList.remove('empty');
+        coverImagePreview.onclick = null;
+        coverImageActions.style.display = 'flex';
+      } else {
+        coverImagePreview.innerHTML = '+ Add cover';
+        coverImagePreview.classList.add('empty');
+        coverImagePreview.onclick = () => coverImageInput.click();
+        coverImageActions.style.display = 'none';
+      }
+    }
+    
+    function removeCoverImage() {
+      setCoverImage(null);
+      handlePostEdit();
     }
 
     function updatePostPreview() {
@@ -797,6 +938,7 @@
       const title = postTitle.value.trim();
       const content = postContent.value.trim();
       const published = publishedCheckbox.checked;
+      const coverImage = currentCoverImage;
 
       if (!title) { setPostStatus('Title is required', 'error'); return; }
       if (!content) { setPostStatus('Content is required', 'error'); return; }
@@ -806,18 +948,18 @@
       const apiBase = getApiBase();
       try {
         let response;
-        
+
         if (currentPost) {
           response = await fetch(`${apiBase}/api/posts`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-            body: JSON.stringify({ slug: currentPost.slug, title, content, published, sha: currentPost.sha })
+            body: JSON.stringify({ slug: currentPost.slug, title, content, published, coverImage, sha: currentPost.sha })
           });
         } else {
           response = await fetch(`${apiBase}/api/posts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-            body: JSON.stringify({ title, content, published })
+            body: JSON.stringify({ title, content, published, coverImage })
           });
         }
 
