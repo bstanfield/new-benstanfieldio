@@ -490,6 +490,10 @@ section h2 {
   color: var(--color-text-secondary);
 }
 
+[data-theme="dark"] .back-link {
+  color: var(--color-text);
+}
+
 .back-link:hover {
   background-color: var(--color-border);
   text-decoration: none;
