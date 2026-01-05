@@ -157,7 +157,7 @@ async function handlePut(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { slug, title, content, published, coverImage, sha } = req.body;
+  const { slug, newSlug, title, content, published, coverImage, sha } = req.body;
 
   if (!slug || !sha) {
     return res.status(400).json({ error: 'Slug and SHA are required' });
@@ -165,6 +165,7 @@ async function handlePut(req, res) {
 
   // Get existing post
   let existingPost;
+  let currentSha = sha;
   try {
     const { data } = await octokit.repos.getContent({
       owner,
@@ -173,6 +174,7 @@ async function handlePut(req, res) {
     });
 
     existingPost = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
+    currentSha = data.sha;
   } catch (error) {
     if (error.status === 404) {
       return res.status(404).json({ error: 'Post not found' });
@@ -180,26 +182,69 @@ async function handlePut(req, res) {
     throw error;
   }
 
+  // Determine final slug
+  const finalSlug = newSlug && newSlug !== slug ? newSlug : slug;
+
   // Update fields
   const updatedPost = {
     ...existingPost,
+    slug: finalSlug,
     title: title || existingPost.title,
     content: content !== undefined ? content : existingPost.content,
     published: published !== undefined ? published : existingPost.published,
     coverImage: coverImage !== undefined ? coverImage : existingPost.coverImage,
   };
 
-  // Save the update
-  const { data } = await octokit.repos.createOrUpdateFileContents({
-    owner,
-    repo,
-    path: `posts/${slug}.json`,
-    message: `Update post: ${updatedPost.title}`,
-    content: Buffer.from(JSON.stringify(updatedPost, null, 2)).toString('base64'),
-    sha,
-  });
+  // If slug is changing, we need to delete old file and create new one
+  if (newSlug && newSlug !== slug) {
+    // Check if new slug already exists
+    try {
+      await octokit.repos.getContent({
+        owner,
+        repo,
+        path: `posts/${newSlug}.json`,
+      });
+      return res.status(409).json({ error: 'A post with this URL already exists' });
+    } catch (error) {
+      if (error.status !== 404) {
+        throw error;
+      }
+      // 404 is expected - new slug doesn't exist yet
+    }
 
-  updatedPost.sha = data.content.sha;
+    // Delete old file
+    await octokit.repos.deleteFile({
+      owner,
+      repo,
+      path: `posts/${slug}.json`,
+      message: `Rename post: ${slug} -> ${newSlug}`,
+      sha: currentSha,
+    });
+
+    // Create new file
+    const { data } = await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path: `posts/${newSlug}.json`,
+      message: `Rename post: ${updatedPost.title}`,
+      content: Buffer.from(JSON.stringify(updatedPost, null, 2)).toString('base64'),
+    });
+
+    updatedPost.sha = data.content.sha;
+  } else {
+    // Save the update to same file
+    const { data } = await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path: `posts/${slug}.json`,
+      message: `Update post: ${updatedPost.title}`,
+      content: Buffer.from(JSON.stringify(updatedPost, null, 2)).toString('base64'),
+      sha: currentSha,
+    });
+
+    updatedPost.sha = data.content.sha;
+  }
+
   return res.status(200).json(updatedPost);
 }
 

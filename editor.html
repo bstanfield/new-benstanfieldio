@@ -996,10 +996,12 @@
         let response;
 
         if (currentPost) {
+          // Include newSlug if slug was changed
+          const newSlug = slug !== currentPost.slug ? slug : undefined;
           response = await fetch(`${apiBase}/api/posts`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-            body: JSON.stringify({ slug: currentPost.slug, title, content, published, coverImage, sha: currentPost.sha })
+            body: JSON.stringify({ slug: currentPost.slug, newSlug, title, content, published, coverImage, sha: currentPost.sha })
           });
         } else {
           response = await fetch(`${apiBase}/api/posts`, {
