@@ -85,12 +85,6 @@
     </script>
   </head>
   <body>
-    <!-- Theme Toggle -->
-    <div class="theme-toggle">
-      <button id="theme-toggle-btn">Dark</button>
-      <span id="time-display"></span>
-    </div>
-
     <!-- Right-aligned navigation -->
     <nav class="site-nav">
       <ul id="nav-links">
@@ -245,55 +239,44 @@
             <a href="https://github.com/bstanfield" target="_blank">GitHub</a>
           </li>
         </ul>
+        <button id="theme-toggle-btn" class="theme-toggle-btn">Dark</button>
       </footer>
     </main>
 
     <script>
       // Theme Toggle
       function initThemeToggle() {
-        const btn = document.getElementById("theme-toggle-btn");
-        const currentTheme =
-          document.documentElement.getAttribute("data-theme") || "light";
-
         // Update button text based on current theme
-        btn.textContent = currentTheme === "light" ? "Dark" : "Light";
+        function updateThemeButton() {
+          const btn = document.getElementById("theme-toggle-btn");
+          if (!btn) return;
+          const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+          btn.textContent = currentTheme === "light" ? "Dark" : "Light";
+        }
+        
+        updateThemeButton();
 
-        btn.addEventListener("click", () => {
-          const theme = document.documentElement.getAttribute("data-theme");
-          const newTheme = theme === "light" ? "dark" : "light";
-          document.documentElement.setAttribute("data-theme", newTheme);
-          localStorage.setItem("theme", newTheme);
-          btn.textContent = newTheme === "light" ? "Dark" : "Light";
+        // Use event delegation so it works after page transitions
+        document.addEventListener("click", (e) => {
+          if (e.target.id === "theme-toggle-btn") {
+            const theme = document.documentElement.getAttribute("data-theme");
+            const newTheme = theme === "light" ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+            e.target.textContent = newTheme === "light" ? "Dark" : "Light";
+          }
         });
 
-        // Listen for system preference changes (optional enhancement)
+        // Listen for system preference changes
         window
           .matchMedia("(prefers-color-scheme: dark)")
           .addEventListener("change", (e) => {
-            // Only apply if user hasn't manually set a preference
             if (!localStorage.getItem("theme")) {
               const newTheme = e.matches ? "dark" : "light";
               document.documentElement.setAttribute("data-theme", newTheme);
-              btn.textContent = newTheme === "light" ? "Dark" : "Light";
+              updateThemeButton();
             }
           });
-      }
-
-      // Time Display
-      function updateTimeDisplay() {
-        const timeDisplay = document.getElementById("time-display");
-        if (!timeDisplay) return;
-
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-
-        // Format as 12-hour with AM/PM
-        const hours12 = hours % 12 || 12;
-        const ampm = hours >= 12 ? "PM" : "AM";
-        const minutesStr = minutes.toString().padStart(2, "0");
-
-        timeDisplay.textContent = `${hours12}:${minutesStr} ${ampm}`;
       }
 
       // Configuration
@@ -691,6 +674,7 @@
             <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
             <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
           </ul>
+          <button id="theme-toggle-btn" class="theme-toggle-btn">${document.documentElement.getAttribute('data-theme') === 'light' ? 'Dark' : 'Light'}</button>
         </footer>
       `;
       }
@@ -900,8 +884,6 @@
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         initThemeToggle();
-        updateTimeDisplay();
-        setInterval(updateTimeDisplay, 60000); // Update every minute
         initPixelationEffect();
         createDevToggle();
         loadBooks();
