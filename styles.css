@@ -106,6 +106,7 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -277,6 +278,7 @@ img {
 /* Sections */
 section {
   margin-bottom: calc(var(--spacing-unit) * 3);
+  scroll-margin-top: 0;
 }
 
 section h2 {
@@ -476,6 +478,29 @@ section h2 {
 }
 
 /* Single Post View */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-code-bg);
+  border-radius: 8px;
+  transition: background-color 0.15s;
+  color: var(--color-text-secondary);
+}
+
+.back-link:hover {
+  background-color: var(--color-border);
+  text-decoration: none;
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
 .post-content {
   font-family: var(--font-serif);
   font-size: 1.05rem;

@@ -88,9 +88,9 @@
     <!-- Right-aligned navigation -->
     <nav class="site-nav">
       <ul id="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#posts">Writing</a></li>
-        <li><a href="#bookshelf">Bookshelf</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#posts">Writing</a></li>
+        <li><a href="/#bookshelf">Bookshelf</a></li>
         <li><a href="https://wren.co" target="_blank">Wren</a></li>
         <li>
           <a href="https://www.linkedin.com/in/meetben/" target="_blank"
@@ -637,6 +637,8 @@
 
             const post = await response.json();
             displaySinglePost(post);
+            // Reset scroll position to top for direct URL navigation
+            window.scrollTo(0, 0);
           } catch (error) {
             console.error("Error loading post:", error);
           }
@@ -658,7 +660,9 @@
         main.innerHTML = `
         <article>
           <header style="margin-bottom: 2rem;">
-            <a href="/" style="font-size: 0.875rem; color: var(--color-text-secondary);">← Back</a>
+            <a href="/" class="back-link">
+              <img src="/images/left-chevron.svg" alt="Back" class="back-icon">
+            </a>
             ${heroImage}
             <h1 style="margin-top: 1rem;">${post.title}</h1>
             <time style="color: var(--color-text-secondary); font-size: 0.9rem;">${date}</time>
@@ -828,6 +832,8 @@
           if (response.ok) {
             const post = await response.json();
             displaySinglePost(post);
+            // Reset scroll position to top
+            window.scrollTo(0, 0);
           }
         } catch (error) {
           console.error("Error loading post:", error);
@@ -881,6 +887,29 @@
         });
       }
 
+      // Smooth scroll for anchor links
+      function initSmoothScroll() {
+        document.addEventListener("click", (e) => {
+          const link = e.target.closest("a");
+          if (!link) return;
+          
+          const href = link.getAttribute("href");
+          if (!href) return;
+          
+          // Handle anchor links (both #anchor and /#anchor)
+          const anchorMatch = href.match(/^\/?#(.+)$/);
+          if (anchorMatch) {
+            const targetId = anchorMatch[1];
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              e.preventDefault();
+              targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+              history.pushState(null, "", `#${targetId}`);
+            }
+          }
+        });
+      }
+
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         initThemeToggle();
@@ -888,6 +917,7 @@
         createDevToggle();
         loadBooks();
         initPageTransitions();
+        initSmoothScroll();
         
         // Add initial fade-in
         const main = document.querySelector("main.container");
