@@ -223,54 +223,40 @@
       color: var(--color-text-secondary);
     }
     
-    /* Cover image upload */
-    .cover-image-section {
-      padding: var(--spacing-unit);
-      border-bottom: 1px solid var(--color-border);
-      background-color: var(--color-code-bg);
-    }
-    .cover-image-section label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-text-secondary);
-      margin-bottom: 0.5rem;
-    }
-    .cover-image-upload {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .cover-image-preview {
-      width: 120px;
-      height: 80px;
+    /* Cover image inline */
+    .cover-image-inline {
+      width: 48px;
+      height: 48px;
       border-radius: 4px;
-      object-fit: cover;
-      border: 1px solid var(--color-border);
-      background-color: var(--color-background);
-    }
-    .cover-image-preview.empty {
+      border: 1px dashed var(--color-border);
+      background-color: var(--color-code-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--color-text-secondary);
-      font-size: 0.75rem;
       cursor: pointer;
+      flex-shrink: 0;
+      overflow: hidden;
+      transition: border-color 0.15s, background-color 0.15s;
     }
-    .cover-image-preview.empty:hover {
+    .cover-image-inline:hover {
       border-color: var(--color-link);
+      background-color: var(--color-background);
+    }
+    .cover-image-inline .cover-placeholder {
+      color: var(--color-text-secondary);
+      font-size: 1.25rem;
+      font-weight: 300;
+    }
+    .cover-image-inline:hover .cover-placeholder {
       color: var(--color-link);
     }
-    .cover-image-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+    .cover-image-inline img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    .cover-image-actions .btn {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
+    .cover-image-inline.has-image {
+      border-style: solid;
     }
   </style>
 </head>
@@ -330,22 +316,11 @@
 
     <!-- Post Editor Panel -->
     <div class="editor-panel" id="post-editor-panel">
-      <!-- Cover Image Section -->
-      <div class="cover-image-section">
-        <label>Cover Image</label>
-        <div class="cover-image-upload">
-          <div class="cover-image-preview empty" id="cover-image-preview" onclick="document.getElementById('cover-image-input').click()">
-            + Add cover
-          </div>
-          <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
-          <div class="cover-image-actions" id="cover-image-actions" style="display: none;">
-            <button class="btn btn-secondary" id="change-cover-btn">Change</button>
-            <button class="btn btn-danger" id="remove-cover-btn">Remove</button>
-          </div>
-        </div>
-      </div>
-      
       <div class="editor-header">
+        <div class="cover-image-inline" id="cover-image-preview" onclick="document.getElementById('cover-image-input').click()" title="Add cover image">
+          <span class="cover-placeholder">+</span>
+        </div>
+        <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
         <input 
           type="text" 
           class="editor-title-input" 
@@ -582,9 +557,6 @@
     // DOM Elements - Cover Image
     const coverImagePreview = document.getElementById('cover-image-preview');
     const coverImageInput = document.getElementById('cover-image-input');
-    const coverImageActions = document.getElementById('cover-image-actions');
-    const changeCoverBtn = document.getElementById('change-cover-btn');
-    const removeCoverBtn = document.getElementById('remove-cover-btn');
     let currentCoverImage = null;
     
     // DOM Elements - Books
@@ -641,8 +613,7 @@
       
       // Cover image handlers
       coverImageInput.addEventListener('change', handleCoverImageSelect);
-      changeCoverBtn.addEventListener('click', () => coverImageInput.click());
-      removeCoverBtn.addEventListener('click', removeCoverImage);
+      coverImagePreview.addEventListener('contextmenu', handleCoverRightClick);
 
       // Book handlers
       newBookBtn.addEventListener('click', createNewBook);
@@ -908,21 +879,24 @@
     function setCoverImage(url) {
       currentCoverImage = url;
       if (url) {
-        coverImagePreview.innerHTML = `<img src="${url}" class="cover-image-preview" style="width: 120px; height: 80px; object-fit: cover; border-radius: 4px;">`;
-        coverImagePreview.classList.remove('empty');
-        coverImagePreview.onclick = null;
-        coverImageActions.style.display = 'flex';
+        coverImagePreview.innerHTML = `<img src="${url}" alt="Cover">`;
+        coverImagePreview.classList.add('has-image');
+        coverImagePreview.title = 'Click to change, right-click to remove';
       } else {
-        coverImagePreview.innerHTML = '+ Add cover';
-        coverImagePreview.classList.add('empty');
-        coverImagePreview.onclick = () => coverImageInput.click();
-        coverImageActions.style.display = 'none';
+        coverImagePreview.innerHTML = '<span class="cover-placeholder">+</span>';
+        coverImagePreview.classList.remove('has-image');
+        coverImagePreview.title = 'Add cover image';
       }
     }
     
-    function removeCoverImage() {
-      setCoverImage(null);
-      handlePostEdit();
+    function handleCoverRightClick(e) {
+      if (currentCoverImage) {
+        e.preventDefault();
+        if (confirm('Remove cover image?')) {
+          setCoverImage(null);
+          handlePostEdit();
+        }
+      }
     }
 
     function updatePostPreview() {
