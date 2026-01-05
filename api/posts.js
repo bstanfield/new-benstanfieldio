@@ -102,14 +102,14 @@ async function handlePost(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { title, content, published = true, coverImage } = req.body;
+  const { title, content, published = true, coverImage, slug: customSlug } = req.body;
 
   if (!title || !content) {
     return res.status(400).json({ error: 'Title and content are required' });
   }
 
-  // Generate slug from title
-  const slug = title
+  // Use custom slug if provided, otherwise generate from title
+  const slug = customSlug || title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
