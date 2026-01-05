@@ -48,6 +48,10 @@
       "dest": "/api/books.js"
     },
     {
+      "src": "/writing/(.+)",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }

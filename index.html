@@ -442,14 +442,14 @@
                 .slice(0, 150);
 
               const thumbnail = post.coverImage 
-                ? `<a href="?post=${post.slug}" class="post-thumbnail-link"><img src="${post.coverImage}" alt="" class="post-thumbnail"></a>`
+                ? `<a href="/writing/${post.slug}" class="post-thumbnail-link"><img src="${post.coverImage}" alt="" class="post-thumbnail"></a>`
                 : '';
 
               return `
             <li class="${post.coverImage ? 'has-thumbnail' : ''}">
               ${thumbnail}
               <div class="post-text">
-                <a href="?post=${post.slug}" class="post-link">${post.title}</a>
+                <a href="/writing/${post.slug}" class="post-link">${post.title}</a>
                 <span class="post-date">${date}</span>
                 ${
                   excerpt
@@ -631,9 +631,15 @@
       }
 
       // Check if viewing a single post
+      // Get post slug from URL path (/writing/slug)
+      function getPostSlugFromPath() {
+        const path = window.location.pathname;
+        const match = path.match(/^\/writing\/(.+)$/);
+        return match ? match[1] : null;
+      }
+
       async function checkSinglePost() {
-        const params = new URLSearchParams(window.location.search);
-        const slug = params.get("post");
+        const slug = getPostSlugFromPath();
         const apiBase = getApiBase();
 
         if (slug) {
@@ -820,6 +826,77 @@
         }
       }
 
+      // Page Transitions
+      async function navigateToPost(slug) {
+        const main = document.querySelector("main.container");
+        
+        // Fade out
+        main.classList.add("page-transition-out");
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Update URL
+        history.pushState({ slug }, "", `/writing/${slug}`);
+        
+        // Load post
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`);
+          if (response.ok) {
+            const post = await response.json();
+            displaySinglePost(post);
+          }
+        } catch (error) {
+          console.error("Error loading post:", error);
+        }
+        
+        // Fade in
+        main.classList.remove("page-transition-out");
+        main.classList.add("page-transition-in");
+        setTimeout(() => main.classList.remove("page-transition-in"), 300);
+      }
+      
+      async function navigateToHome() {
+        const main = document.querySelector("main.container");
+        
+        // Fade out
+        main.classList.add("page-transition-out");
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Update URL
+        history.pushState({}, "", "/");
+        
+        // Restore home content
+        location.reload(); // Simple reload for home - keeps all sections intact
+      }
+      
+      function initPageTransitions() {
+        // Intercept post link clicks
+        document.addEventListener("click", (e) => {
+          const link = e.target.closest("a");
+          if (!link) return;
+          
+          const href = link.getAttribute("href");
+          
+          // Handle post links
+          if (href && href.startsWith("/writing/")) {
+            e.preventDefault();
+            const slug = href.replace("/writing/", "");
+            navigateToPost(slug);
+          }
+          
+          // Handle back to home links
+          if (href === "/" && getPostSlugFromPath()) {
+            e.preventDefault();
+            navigateToHome();
+          }
+        });
+        
+        // Handle browser back/forward
+        window.addEventListener("popstate", () => {
+          location.reload();
+        });
+      }
+
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         initThemeToggle();
@@ -828,9 +905,14 @@
         initPixelationEffect();
         createDevToggle();
         loadBooks();
+        initPageTransitions();
+        
+        // Add initial fade-in
+        const main = document.querySelector("main.container");
+        main.classList.add("page-transition-in");
+        setTimeout(() => main.classList.remove("page-transition-in"), 300);
 
-        const params = new URLSearchParams(window.location.search);
-        if (params.get("post")) {
+        if (getPostSlugFromPath()) {
           checkSinglePost();
         } else {
           loadPosts();
