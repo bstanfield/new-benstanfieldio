@@ -312,8 +312,6 @@ section {
 
 section h2 {
   margin-bottom: calc(var(--spacing-unit) * 1.5);
-  padding-bottom: calc(var(--spacing-unit) * 0.5);
-  border-bottom: 1px solid var(--color-border);
 }
 
 /* Bookshelf */
