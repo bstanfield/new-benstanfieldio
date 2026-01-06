@@ -162,6 +162,16 @@ npm run dev
 
 Visit `http://localhost:3000` for the landing page, `http://localhost:3000/editor.html` for the editor.
 
+### API Toggle (Dev Only)
+
+To switch between local and production API on localhost, add `?api_toggle=true` to the URL:
+
+```
+http://localhost:3000/?api_toggle=true
+```
+
+This shows a toggle in the bottom right to switch between Local and Prod API endpoints.
+
 ### Image Cleanup
 
 When images are removed from posts, they remain in the `images/` directory. A cleanup script helps manage orphaned images:
@@ -196,6 +206,21 @@ npm run deploy
 | `npm run dev` | Start local dev server (also checks for orphaned images) |
 | `npm run deploy` | Deploy to Vercel production |
 | `npm run cleanup:images` | Interactively delete orphaned images |
+
+## Accessibility Controls
+
+Fixed controls in the bottom right corner provide:
+
+### Theme Toggle
+- Switches between light and dark mode
+- Preference saved to localStorage
+- Auto-detects system preference on first visit
+
+### Text Size Toggle
+- Three sizes: Small (16px), Medium (18px), Large (20px)
+- Click the A buttons to cycle through sizes
+- Preference saved to localStorage
+- Active size is highlighted
 
 ## Design System
 

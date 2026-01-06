@@ -110,7 +110,7 @@ function renderPostPage(post) {
     
     <link rel="stylesheet" href="/styles.css" />
     <script>
-      // Apply saved theme immediately to prevent flash
+      // Apply saved theme and text size immediately to prevent flash
       (function () {
         let theme = localStorage.getItem("theme");
         if (!theme) {
@@ -123,6 +123,11 @@ function renderPostPage(post) {
           }
         }
         document.documentElement.setAttribute("data-theme", theme);
+        
+        // Apply saved text size
+        const sizes = { small: "16px", medium: "18px", large: "20px" };
+        const savedSize = localStorage.getItem("textSize") || "small";
+        document.documentElement.style.fontSize = sizes[savedSize];
       })();
     </script>
   </head>
@@ -160,9 +165,18 @@ function renderPostPage(post) {
           <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
           <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
         </ul>
-        <button id="theme-toggle-btn" class="theme-toggle-btn">Toggle</button>
       </footer>
     </main>
+
+    <!-- Fixed Controls (bottom right) -->
+    <div class="fixed-controls">
+      <div class="text-size-toggle">
+        <button class="text-size-btn" data-size="small">A</button>
+        <button class="text-size-btn" data-size="medium">A</button>
+        <button class="text-size-btn" data-size="large">A</button>
+      </div>
+      <button id="theme-toggle-btn" class="theme-toggle-btn">Dark</button>
+    </div>
 
     <script>
       // Theme Toggle
@@ -183,6 +197,29 @@ function renderPostPage(post) {
             document.documentElement.setAttribute("data-theme", newTheme);
             localStorage.setItem("theme", newTheme);
             e.target.textContent = newTheme === "light" ? "Dark" : "Light";
+          }
+        });
+      })();
+      
+      // Text Size Toggle
+      (function() {
+        const sizes = { small: "16px", medium: "18px", large: "20px" };
+        const savedSize = localStorage.getItem("textSize") || "small";
+        
+        function updateTextSizeButtons(activeSize) {
+          document.querySelectorAll(".text-size-btn").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.size === activeSize);
+          });
+        }
+        
+        updateTextSizeButtons(savedSize);
+        
+        document.addEventListener("click", (e) => {
+          if (e.target.classList.contains("text-size-btn")) {
+            const size = e.target.dataset.size;
+            document.documentElement.style.fontSize = sizes[size];
+            localStorage.setItem("textSize", size);
+            updateTextSizeButtons(size);
           }
         });
       })();

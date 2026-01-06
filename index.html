@@ -81,6 +81,11 @@
         }
 
         document.documentElement.setAttribute("data-theme", theme);
+        
+        // Apply saved text size immediately to prevent flash
+        const sizes = { small: "16px", medium: "18px", large: "20px" };
+        const savedSize = localStorage.getItem("textSize") || "small";
+        document.documentElement.style.fontSize = sizes[savedSize];
       })();
     </script>
   </head>
@@ -239,9 +244,18 @@
             <a href="https://github.com/bstanfield" target="_blank">GitHub</a>
           </li>
         </ul>
-        <button id="theme-toggle-btn" class="theme-toggle-btn">Dark</button>
       </footer>
     </main>
+
+    <!-- Fixed Controls (bottom right) -->
+    <div class="fixed-controls">
+      <div class="text-size-toggle">
+        <button class="text-size-btn" data-size="small">A</button>
+        <button class="text-size-btn" data-size="medium">A</button>
+        <button class="text-size-btn" data-size="large">A</button>
+      </div>
+      <button id="theme-toggle-btn" class="theme-toggle-btn">Dark</button>
+    </div>
 
     <script>
       // Theme Toggle
@@ -279,6 +293,36 @@
           });
       }
 
+      // Text Size Toggle
+      function initTextSizeToggle() {
+        const sizes = {
+          small: "16px",
+          medium: "18px",
+          large: "20px"
+        };
+        
+        // Load saved preference
+        const savedSize = localStorage.getItem("textSize") || "small";
+        document.documentElement.style.fontSize = sizes[savedSize];
+        updateTextSizeButtons(savedSize);
+        
+        function updateTextSizeButtons(activeSize) {
+          document.querySelectorAll(".text-size-btn").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.size === activeSize);
+          });
+        }
+        
+        // Handle clicks
+        document.addEventListener("click", (e) => {
+          if (e.target.classList.contains("text-size-btn")) {
+            const size = e.target.dataset.size;
+            document.documentElement.style.fontSize = sizes[size];
+            localStorage.setItem("textSize", size);
+            updateTextSizeButtons(size);
+          }
+        });
+      }
+
       // Configuration
       const PRODUCTION_URL = "https://new-benstanfieldio-kappa.vercel.app";
       const isLocalhost =
@@ -306,6 +350,10 @@
           navLinks.appendChild(editorLi);
         }
 
+        // Only show API toggle if ?api_toggle=true is in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("api_toggle") !== "true") return;
+
         const useProduction =
           localStorage.getItem("useProductionApi") === "true";
 
@@ -313,7 +361,7 @@
         toggle.id = "dev-toggle";
         toggle.style.cssText = `
         position: fixed;
-        bottom: 1rem;
+        bottom: 5rem;
         right: 1rem;
         background: #1a1a1a;
         color: #fff;
@@ -890,6 +938,7 @@
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         initThemeToggle();
+        initTextSizeToggle();
         initPixelationEffect();
         createDevToggle();
         loadBooks();
