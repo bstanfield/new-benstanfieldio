@@ -131,8 +131,8 @@ body {
   z-index: 100;
 }
 
-/* Footer theme toggle (mobile only) */
-.footer-theme-toggle {
+/* Footer theme toggle (mobile only, hidden by default) */
+.theme-toggle.footer-theme-toggle {
   display: none;
   margin-top: var(--spacing-unit);
 }
@@ -946,7 +946,7 @@ section h2 {
     display: none;
   }
 
-  .footer-theme-toggle {
+  .theme-toggle.footer-theme-toggle {
     display: flex;
   }
 }
