@@ -4,9 +4,12 @@
   "description": "Personal website for Benjamin Stanfield with GitHub-powered blog editor",
   "main": "index.html",
   "scripts": {
+    "predev": "node scripts/cleanup-images.js",
     "dev": "vercel dev",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "cleanup:images": "node scripts/cleanup-images.js --delete"
   },
+  "type": "module",
   "dependencies": {
     "@octokit/rest": "^20.0.2",
     "marked": "^12.0.0"
