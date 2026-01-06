@@ -207,20 +207,12 @@ npm run deploy
 | `npm run deploy` | Deploy to Vercel production |
 | `npm run cleanup:images` | Interactively delete orphaned images |
 
-## Accessibility Controls
+## Theme Toggle
 
-Fixed controls in the bottom right corner provide:
-
-### Theme Toggle
+Fixed control in the bottom right corner:
 - Switches between light and dark mode
 - Preference saved to localStorage
 - Auto-detects system preference on first visit
-
-### Text Size Toggle
-- Three sizes: Small (16px), Medium (18px), Large (20px)
-- Click the A buttons to cycle through sizes
-- Preference saved to localStorage
-- Active size is highlighted
 
 ## Design System
 

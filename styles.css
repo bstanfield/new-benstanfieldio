@@ -131,48 +131,6 @@ body {
   z-index: 100;
 }
 
-.text-size-toggle {
-  display: flex;
-  align-items: baseline;
-  background: var(--color-code-bg);
-  border-radius: 20px;
-  padding: 0.2rem;
-}
-
-.text-size-btn {
-  background: none;
-  border: none;
-  font-family: var(--font-sans);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: 16px;
-  transition: background-color 0.15s, color 0.15s;
-  line-height: 1;
-}
-
-.text-size-btn[data-size="small"] {
-  font-size: 0.7rem;
-}
-
-.text-size-btn[data-size="medium"] {
-  font-size: 0.85rem;
-}
-
-.text-size-btn[data-size="large"] {
-  font-size: 1rem;
-}
-
-.text-size-btn:hover {
-  color: var(--color-text);
-}
-
-.text-size-btn.active {
-  background: var(--color-background);
-  color: var(--color-text);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
 /* Theme Toggle (pill/segment style) */
 .theme-toggle {
   display: flex;

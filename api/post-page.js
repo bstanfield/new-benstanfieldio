@@ -123,11 +123,6 @@ function renderPostPage(post) {
           }
         }
         document.documentElement.setAttribute("data-theme", theme);
-        
-        // Apply saved text size
-        const sizes = { small: "16px", medium: "18px", large: "20px" };
-        const savedSize = localStorage.getItem("textSize") || "small";
-        document.documentElement.style.fontSize = sizes[savedSize];
       })();
     </script>
   </head>
@@ -170,11 +165,6 @@ function renderPostPage(post) {
 
     <!-- Fixed Controls (bottom right) -->
     <div class="fixed-controls">
-      <div class="text-size-toggle">
-        <button class="text-size-btn" data-size="small">A</button>
-        <button class="text-size-btn" data-size="medium">A</button>
-        <button class="text-size-btn" data-size="large">A</button>
-      </div>
       <div class="theme-toggle">
         <button class="theme-toggle-option" data-theme="light">Light</button>
         <button class="theme-toggle-option" data-theme="dark">Dark</button>
@@ -199,29 +189,6 @@ function renderPostPage(post) {
             document.documentElement.setAttribute("data-theme", newTheme);
             localStorage.setItem("theme", newTheme);
             updateThemeToggle();
-          }
-        });
-      })();
-      
-      // Text Size Toggle
-      (function() {
-        const sizes = { small: "16px", medium: "18px", large: "20px" };
-        const savedSize = localStorage.getItem("textSize") || "small";
-        
-        function updateTextSizeButtons(activeSize) {
-          document.querySelectorAll(".text-size-btn").forEach(btn => {
-            btn.classList.toggle("active", btn.dataset.size === activeSize);
-          });
-        }
-        
-        updateTextSizeButtons(savedSize);
-        
-        document.addEventListener("click", (e) => {
-          if (e.target.classList.contains("text-size-btn")) {
-            const size = e.target.dataset.size;
-            document.documentElement.style.fontSize = sizes[size];
-            localStorage.setItem("textSize", size);
-            updateTextSizeButtons(size);
           }
         });
       })();
