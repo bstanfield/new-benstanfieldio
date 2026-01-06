@@ -430,34 +430,19 @@
                 day: "numeric",
               });
 
-              // Get first paragraph as excerpt
-              const excerpt = post.content
-                .replace(/^#.*$/gm, "") // Remove headings
-                .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Remove links
-                .replace(/[*_`]/g, "") // Remove formatting
-                .replace(/!\[[^\]]*\]\([^)]+\)/g, "") // Remove images
-                .trim()
-                .split("\n")[0]
-                .slice(0, 150);
-
               const thumbnail = post.coverImage 
-                ? `<a href="/writing/${post.slug}" class="post-thumbnail-link"><img src="${post.coverImage}" alt="" class="post-thumbnail"></a>`
+                ? `<img src="${post.coverImage}" alt="" class="post-thumbnail">`
                 : '';
 
               return `
-            <li class="${post.coverImage ? 'has-thumbnail' : ''}">
-              ${thumbnail}
-              <div class="post-text">
-                <a href="/writing/${post.slug}" class="post-link">${post.title}</a>
-                <span class="post-date">${date}</span>
-                ${
-                  excerpt
-                    ? `<p class="post-excerpt">${excerpt}${
-                        excerpt.length >= 150 ? "..." : ""
-                      }</p>`
-                    : ""
-                }
-              </div>
+            <li>
+              <a href="/writing/${post.slug}" class="post-card">
+                ${thumbnail}
+                <div class="post-text">
+                  <span class="post-title">${post.title}</span>
+                  <span class="post-date">${date}</span>
+                </div>
+              </a>
             </li>
           `;
             })
