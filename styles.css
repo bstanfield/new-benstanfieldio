@@ -502,7 +502,6 @@ section h2 {
   width: 100%;
   max-height: 400px;
   object-fit: cover;
-  border-radius: 6px;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
@@ -592,6 +591,17 @@ section h2 {
 
 .post-content li {
   margin-bottom: calc(var(--spacing-unit) * 0.5);
+}
+
+/* End mark ornament */
+.post-content::after {
+  content: "❧";
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--spacing-unit) * 3);
+  opacity: 0.5;
 }
 
 /* Footer */
