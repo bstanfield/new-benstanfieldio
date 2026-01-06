@@ -1,5 +1,16 @@
 [
   {
+    "id": "the-great-mental-models",
+    "emoji": "📚",
+    "title": "The Great Mental Models",
+    "author": "Farman Street",
+    "genre": "Business",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/44245196-the-great-mental-models",
+    "favorite": false
+  },
+  {
     "id": "the-innovator-s-dilemma",
     "emoji": "♟️",
     "title": "The Innovator's Dilemma",
