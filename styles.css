@@ -64,6 +64,11 @@
   --color-reading-text: #d4a520;
 }
 
+/* Hide content while loading blog post to prevent flash */
+html.loading-post main.container {
+  visibility: hidden;
+}
+
 /* Page Transitions */
 @keyframes fadeIn {
   from {
@@ -490,8 +495,8 @@ section h2 {
   color: var(--color-text-secondary);
 }
 
-[data-theme="dark"] .back-link {
-  color: var(--color-text);
+[data-theme="dark"] .back-icon {
+  filter: invert(1) brightness(0.85);
 }
 
 .back-link:hover {

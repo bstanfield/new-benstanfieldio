@@ -81,6 +81,11 @@
         }
 
         document.documentElement.setAttribute("data-theme", theme);
+        
+        // Hide content immediately if on a blog post URL to prevent flash
+        if (window.location.pathname.match(/^\/writing\/.+$/)) {
+          document.documentElement.classList.add("loading-post");
+        }
       })();
     </script>
   </head>
@@ -639,8 +644,12 @@
             displaySinglePost(post);
             // Reset scroll position to top for direct URL navigation
             window.scrollTo(0, 0);
+            // Remove loading class to reveal content
+            document.documentElement.classList.remove("loading-post");
           } catch (error) {
             console.error("Error loading post:", error);
+            // Remove loading class even on error
+            document.documentElement.classList.remove("loading-post");
           }
         }
       }
