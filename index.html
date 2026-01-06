@@ -656,9 +656,17 @@
             <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
             <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
           </ul>
-          <button id="theme-toggle-btn" class="theme-toggle-btn">${document.documentElement.getAttribute('data-theme') === 'light' ? 'Dark' : 'Light'}</button>
+          <div class="theme-toggle footer-theme-toggle">
+            <button class="theme-toggle-option" data-theme="light">Light</button>
+            <button class="theme-toggle-option" data-theme="dark">Dark</button>
+          </div>
         </footer>
       `;
+        // Update theme toggle active state
+        const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+        document.querySelectorAll(".theme-toggle-option").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.theme === currentTheme);
+        });
       }
 
       // Profile Photo Pixelation Effect

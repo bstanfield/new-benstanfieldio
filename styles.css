@@ -598,7 +598,7 @@ section h2 {
   content: "❧";
   display: block;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 2.25rem;
   color: var(--color-text-secondary);
   margin-top: calc(var(--spacing-unit) * 3);
   opacity: 0.5;
