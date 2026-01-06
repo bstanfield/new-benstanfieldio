@@ -49,7 +49,7 @@
     },
     {
       "src": "/writing/(.+)",
-      "dest": "/index.html"
+      "dest": "/api/post-page.js"
     },
     {
       "src": "/(.*)",

@@ -64,11 +64,6 @@
   --color-reading-text: #d4a520;
 }
 
-/* Hide content while loading blog post to prevent flash */
-html.loading-post main.container {
-  visibility: hidden;
-}
-
 /* Page Transitions */
 @keyframes fadeIn {
   from {
