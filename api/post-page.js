@@ -160,10 +160,14 @@ function renderPostPage(post) {
           <li><a href="https://www.linkedin.com/in/meetben/" target="_blank">LinkedIn</a></li>
           <li><a href="https://github.com/bstanfield" target="_blank">GitHub</a></li>
         </ul>
+        <div class="theme-toggle footer-theme-toggle">
+          <button class="theme-toggle-option" data-theme="light">Light</button>
+          <button class="theme-toggle-option" data-theme="dark">Dark</button>
+        </div>
       </footer>
     </main>
 
-    <!-- Fixed Controls (bottom right) -->
+    <!-- Fixed Controls (bottom right, desktop only) -->
     <div class="fixed-controls">
       <div class="theme-toggle">
         <button class="theme-toggle-option" data-theme="light">Light</button>

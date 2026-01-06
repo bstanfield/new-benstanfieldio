@@ -120,7 +120,7 @@ body {
   transition: background-color 0.2s, color 0.2s;
 }
 
-/* Fixed Controls (bottom right) */
+/* Fixed Controls (bottom right, desktop only) */
 .fixed-controls {
   position: fixed;
   bottom: 2rem;
@@ -129,6 +129,12 @@ body {
   align-items: center;
   gap: 0.75rem;
   z-index: 100;
+}
+
+/* Footer theme toggle (mobile only) */
+.footer-theme-toggle {
+  display: none;
+  margin-top: var(--spacing-unit);
 }
 
 /* Theme Toggle (pill/segment style) */
@@ -937,8 +943,11 @@ section h2 {
   }
 
   .fixed-controls {
-    bottom: 1rem;
-    right: 1rem;
+    display: none;
+  }
+
+  .footer-theme-toggle {
+    display: flex;
   }
 }
 
