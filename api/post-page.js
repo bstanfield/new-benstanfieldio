@@ -175,28 +175,30 @@ function renderPostPage(post) {
         <button class="text-size-btn" data-size="medium">A</button>
         <button class="text-size-btn" data-size="large">A</button>
       </div>
-      <button id="theme-toggle-btn" class="theme-toggle-btn">Dark</button>
+      <div class="theme-toggle">
+        <button class="theme-toggle-option" data-theme="light">Light</button>
+        <button class="theme-toggle-option" data-theme="dark">Dark</button>
+      </div>
     </div>
 
     <script>
       // Theme Toggle
       (function() {
-        function updateThemeButton() {
-          const btn = document.getElementById("theme-toggle-btn");
-          if (!btn) return;
+        function updateThemeToggle() {
           const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
-          btn.textContent = currentTheme === "light" ? "Dark" : "Light";
+          document.querySelectorAll(".theme-toggle-option").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.theme === currentTheme);
+          });
         }
         
-        updateThemeButton();
+        updateThemeToggle();
 
         document.addEventListener("click", (e) => {
-          if (e.target.id === "theme-toggle-btn") {
-            const theme = document.documentElement.getAttribute("data-theme");
-            const newTheme = theme === "light" ? "dark" : "light";
+          if (e.target.classList.contains("theme-toggle-option")) {
+            const newTheme = e.target.dataset.theme;
             document.documentElement.setAttribute("data-theme", newTheme);
             localStorage.setItem("theme", newTheme);
-            e.target.textContent = newTheme === "light" ? "Dark" : "Light";
+            updateThemeToggle();
           }
         });
       })();
