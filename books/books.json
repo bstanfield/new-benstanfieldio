@@ -1,5 +1,16 @@
 [
   {
+    "id": "discourses-selected-writings",
+    "emoji": "🧐",
+    "title": "Discourses & Selected Writings",
+    "author": "Epictetus",
+    "genre": "Philosophy",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/4143812-discourses-and-selected-writings",
+    "favorite": false
+  },
+  {
     "id": "the-great-mental-models",
     "emoji": "🏗",
     "title": "The Great Mental Models",
