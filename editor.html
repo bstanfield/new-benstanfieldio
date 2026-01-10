@@ -1,373 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor - Benjamin Stanfield</title>
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    // Apply saved theme immediately to prevent flash
-    (function () {
-      let theme = localStorage.getItem("theme");
-      if (!theme) {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (prefersDark) {
-          theme = "dark";
-        } else {
-          const currentHour = new Date().getHours();
-          theme = currentHour >= 17 ? "dark" : "light";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editor - Benjamin Stanfield</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      // Apply saved theme immediately to prevent flash
+      (function () {
+        let theme = localStorage.getItem("theme");
+        if (!theme) {
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          if (prefersDark) {
+            theme = "dark";
+          } else {
+            const currentHour = new Date().getHours();
+            theme = currentHour >= 17 ? "dark" : "light";
+          }
         }
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <style>
+      /* Editor-specific styles */
+      .tab-buttons {
+        display: flex;
+        border-bottom: 1px solid var(--color-border);
       }
-      document.documentElement.setAttribute("data-theme", theme);
-    })();
-  </script>
-  <style>
-    /* Editor-specific styles */
-    .tab-buttons {
-      display: flex;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 0.75rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: var(--font-sans);
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-    }
-    .tab-btn.active {
-      color: var(--color-link);
-      border-bottom-color: var(--color-link);
-    }
-    .tab-btn:hover {
-      background-color: var(--color-code-bg);
-    }
-    
-    /* Book form styles */
-    .book-form {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-    .form-group label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--color-text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .form-group input[type="text"],
-    .form-group input[type="url"] {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--color-border);
-      border-radius: 4px;
-      font-size: 1rem;
-      font-family: var(--font-sans);
-    }
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--color-link);
-    }
-    .radio-group {
-      display: flex;
-      gap: 1rem;
-    }
-    .radio-group label {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-size: 0.9rem;
-      text-transform: none;
-      letter-spacing: normal;
-      cursor: pointer;
-    }
-    .emoji-input {
-      width: 4rem;
-      text-align: center;
-      font-size: 1.5rem;
-    }
-    
-    /* Tab content */
-    .tab-content {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
-    }
-    
-    /* Book preview card */
-    .book-preview {
-      padding: 1.5rem;
-      padding-top: 3rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      background: var(--color-code-bg);
-      position: relative;
-    }
-    .book-preview-card {
-      background: var(--color-background);
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      max-width: 100%;
-      transition: background-color 0.2s;
-      border: 1px solid var(--color-border);
-    }
-    .book-preview-card.favorite {
-      background-color: var(--color-favorite-bg);
-    }
-    .book-preview-emoji {
-      font-size: 1.25rem;
-    }
-    .book-preview-title {
-      font-weight: 500;
-      color: var(--color-text);
-    }
-    .book-preview-genre {
-      color: var(--color-text-secondary);
-      font-size: 0.875rem;
-    }
-    .book-preview-status {
-      font-size: 0.75rem;
-      padding: 0.125rem 0.5rem;
-      border-radius: 3px;
-      background-color: var(--color-reading-bg);
-      color: var(--color-reading-text);
-    }
-    .book-preview-date {
-      color: var(--color-text-secondary);
-      font-size: 0.8rem;
-    }
-    .book-preview-header {
-      position: absolute;
-      top: 0.75rem;
-      right: 1rem;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-text-secondary);
-      background: none;
-      border: none;
-      padding: 0;
-    }
-    
-    /* Fix form clipping */
-    .editor-panel {
-      display: flex;
-      flex-direction: column;
-    }
-    #book-editor-panel {
-      overflow: hidden;
-    }
-    
-    /* Login error */
-    .login-error {
-      color: #dc3545;
-      margin-top: 1rem;
-      display: none;
-    }
-    
-    /* Login form placeholder */
-    .login-form input::placeholder {
-      color: var(--color-text-secondary);
-    }
-    
-    /* Form inputs theme support */
-    .form-group input[type="text"],
-    .form-group input[type="url"] {
-      background-color: var(--color-background);
-      color: var(--color-text);
-    }
-    .form-group input[type="text"]::placeholder,
-    .form-group input[type="url"]::placeholder {
-      color: var(--color-text-secondary);
-    }
-    .form-group input[type="text"]:focus,
-    .form-group input[type="url"]:focus {
-      border-color: var(--color-link);
-      outline: none;
-    }
-    .form-group label {
-      color: var(--color-text-secondary);
-    }
-    .radio-group label {
-      color: var(--color-text);
-    }
-    
-    /* Book preview text colors */
-    .book-preview-emoji {
-      color: var(--color-text);
-    }
-    .book-preview-date {
-      color: var(--color-text-secondary);
-    }
-    
-    /* Cover image inline */
-    .cover-image-inline {
-      width: 48px;
-      height: 48px;
-      border-radius: 4px;
-      border: 1px dashed var(--color-border);
-      background-color: var(--color-code-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      overflow: hidden;
-      transition: border-color 0.15s, background-color 0.15s;
-    }
-    .cover-image-inline:hover {
-      border-color: var(--color-link);
-      background-color: var(--color-background);
-    }
-    .cover-image-inline .cover-placeholder {
-      color: var(--color-text-secondary);
-      font-size: 1.25rem;
-      font-weight: 300;
-    }
-    .cover-image-inline:hover .cover-placeholder {
-      color: var(--color-link);
-    }
-    .cover-image-inline img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .cover-image-inline.has-image {
-      border-style: solid;
-    }
-    
-    /* URL Editor Row */
-    .url-editor-row {
-      display: flex;
-      align-items: center;
-      padding: 0.375rem var(--spacing-unit);
-      border-bottom: 1px solid var(--color-border);
-      background-color: var(--color-code-bg);
-    }
-    .url-prefix {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--color-text-secondary);
-    }
-    .url-input {
-      flex: 1;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 0.25rem 0.25rem;
-      border: none;
-      background: transparent;
-      color: var(--color-text);
-      outline: none;
-    }
-    .url-input::placeholder {
-      color: var(--color-text-secondary);
-      opacity: 0.6;
-    }
-  </style>
-</head>
-<body>
-  <!-- Login Overlay -->
-  <div class="login-overlay" id="login-overlay">
-    <div class="login-form">
-      <h1>Editor Access</h1>
-      <input 
-        type="password" 
-        id="password-input" 
-        placeholder="Enter password"
-        autocomplete="current-password"
-      >
-      <button class="btn btn-primary" id="login-btn">Enter</button>
-      <p id="login-error" class="login-error">
-        Incorrect password
-      </p>
-    </div>
-  </div>
+      .tab-btn {
+        flex: 1;
+        padding: 0.75rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: var(--font-sans);
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .tab-btn.active {
+        color: var(--color-link);
+        border-bottom-color: var(--color-link);
+      }
+      .tab-btn:hover {
+        background-color: var(--color-code-bg);
+      }
 
-  <!-- Editor Container -->
-  <div class="editor-container" id="editor-container" style="display: none;">
-    <!-- Sidebar -->
-    <aside class="editor-sidebar">
-      <div class="tab-buttons">
-        <button class="tab-btn active" id="posts-tab-btn">Posts</button>
-        <button class="tab-btn" id="books-tab-btn">Books</button>
-      </div>
-      
-      <!-- Posts List -->
-      <div id="posts-tab" class="tab-content">
-        <div class="sidebar-header">
-          <h2>Posts</h2>
-          <button class="btn btn-small btn-secondary" id="new-post-btn">+ New</button>
-        </div>
-        <ul class="posts-sidebar-list" id="posts-list">
-          <li><button disabled>Loading...</button></li>
-        </ul>
-      </div>
-      
-      <!-- Books List -->
-      <div id="books-tab" class="tab-content" style="display: none;">
-        <div class="sidebar-header">
-          <h2 id="books-header">Books</h2>
-          <button class="btn btn-small btn-secondary" id="new-book-btn">+ New</button>
-        </div>
-        <ul class="posts-sidebar-list" id="books-list">
-          <li><button disabled>Loading...</button></li>
-        </ul>
-      </div>
-      
-      <div style="padding: 1rem; border-top: 1px solid var(--color-border);">
-        <a href="/" class="btn btn-secondary" style="width: 100%; text-align: center;">← Back to Site</a>
-      </div>
-    </aside>
+      /* Book form styles */
+      .book-form {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+      }
+      .form-group label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .form-group input[type="text"],
+      .form-group input[type="url"] {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        font-size: 1rem;
+        font-family: var(--font-sans);
+      }
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--color-link);
+      }
+      .radio-group {
+        display: flex;
+        gap: 1rem;
+      }
+      .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.9rem;
+        text-transform: none;
+        letter-spacing: normal;
+        cursor: pointer;
+      }
+      .emoji-input {
+        width: 4rem;
+        text-align: center;
+        font-size: 1.5rem;
+      }
 
-    <!-- Post Editor Panel -->
-    <div class="editor-panel" id="post-editor-panel">
-      <div class="editor-header">
-        <div class="cover-image-inline" id="cover-image-preview" onclick="document.getElementById('cover-image-input').click()" title="Add cover image">
-          <span class="cover-placeholder">+</span>
-        </div>
-        <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
+      /* Tab content */
+      .tab-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* Book preview card */
+      .book-preview {
+        padding: 1.5rem;
+        padding-top: 3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        background: var(--color-code-bg);
+        position: relative;
+      }
+      .book-preview-card {
+        background: var(--color-background);
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        max-width: 100%;
+        transition: background-color 0.2s;
+        border: 1px solid var(--color-border);
+      }
+      .book-preview-card.favorite {
+        background-color: var(--color-favorite-bg);
+      }
+      .book-preview-emoji {
+        font-size: 1.25rem;
+      }
+      .book-preview-title {
+        font-weight: 500;
+        color: var(--color-text);
+      }
+      .book-preview-genre {
+        color: var(--color-text-secondary);
+        font-size: 0.875rem;
+      }
+      .book-preview-status {
+        font-size: 0.75rem;
+        padding: 0.125rem 0.5rem;
+        border-radius: 3px;
+        background-color: var(--color-reading-bg);
+        color: var(--color-reading-text);
+      }
+      .book-preview-date {
+        color: var(--color-text-secondary);
+        font-size: 0.8rem;
+      }
+      .book-preview-header {
+        position: absolute;
+        top: 0.75rem;
+        right: 1rem;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+        background: none;
+        border: none;
+        padding: 0;
+      }
+
+      /* Fix form clipping */
+      .editor-panel {
+        display: flex;
+        flex-direction: column;
+      }
+      #book-editor-panel {
+        overflow: hidden;
+      }
+
+      /* Login error */
+      .login-error {
+        color: #dc3545;
+        margin-top: 1rem;
+        display: none;
+      }
+
+      /* Login form placeholder */
+      .login-form input::placeholder {
+        color: var(--color-text-secondary);
+      }
+
+      /* Form inputs theme support */
+      .form-group input[type="text"],
+      .form-group input[type="url"] {
+        background-color: var(--color-background);
+        color: var(--color-text);
+      }
+      .form-group input[type="text"]::placeholder,
+      .form-group input[type="url"]::placeholder {
+        color: var(--color-text-secondary);
+      }
+      .form-group input[type="text"]:focus,
+      .form-group input[type="url"]:focus {
+        border-color: var(--color-link);
+        outline: none;
+      }
+      .form-group label {
+        color: var(--color-text-secondary);
+      }
+      .radio-group label {
+        color: var(--color-text);
+      }
+
+      /* Book preview text colors */
+      .book-preview-emoji {
+        color: var(--color-text);
+      }
+      .book-preview-date {
+        color: var(--color-text-secondary);
+      }
+
+      /* Cover image inline */
+      .cover-image-inline {
+        width: 48px;
+        height: 48px;
+        border-radius: 4px;
+        border: 1px dashed var(--color-border);
+        background-color: var(--color-code-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        overflow: hidden;
+        transition: border-color 0.15s, background-color 0.15s;
+      }
+      .cover-image-inline:hover {
+        border-color: var(--color-link);
+        background-color: var(--color-background);
+      }
+      .cover-image-inline .cover-placeholder {
+        color: var(--color-text-secondary);
+        font-size: 1.25rem;
+        font-weight: 300;
+      }
+      .cover-image-inline:hover .cover-placeholder {
+        color: var(--color-link);
+      }
+      .cover-image-inline img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .cover-image-inline.has-image {
+        border-style: solid;
+      }
+
+      /* URL Editor Row */
+      .url-editor-row {
+        display: flex;
+        align-items: center;
+        padding: 0.375rem var(--spacing-unit);
+        border-bottom: 1px solid var(--color-border);
+        background-color: var(--color-code-bg);
+      }
+      .url-prefix {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+      }
+      .url-input {
+        flex: 1;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        padding: 0.25rem 0.25rem;
+        border: none;
+        background: transparent;
+        color: var(--color-text);
+        outline: none;
+      }
+      .url-input::placeholder {
+        color: var(--color-text-secondary);
+        opacity: 0.6;
+      }
+
+      .preview-panel.hidden {
+        display: none !important;
+      }
+
+      /* Preview toggle button - floats at top right of editor */
+      .editor-panel {
+        position: relative;
+      }
+      .panel-toggle-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: var(--color-code-bg);
+        border: 1px solid var(--color-border);
+        padding: 0.375rem;
+        cursor: pointer;
+        color: var(--color-text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+        width: 28px;
+        height: 28px;
+        z-index: 10;
+      }
+      .panel-toggle-btn:hover {
+        background-color: var(--color-background);
+        border-color: var(--color-text-secondary);
+        color: var(--color-text);
+      }
+      .panel-toggle-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Expand editor when preview is hidden */
+      .editor-container.preview-hidden {
+        grid-template-columns: 250px 1fr !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="login-overlay">
+      <div class="login-form">
+        <h1>Editor Access</h1>
         <input
-          type="text"
-          class="editor-title-input"
-          id="post-title"
-          placeholder="Post title..."
+          type="password"
+          id="password-input"
+          placeholder="Enter password"
+          autocomplete="current-password"
+        />
+        <button class="btn btn-primary" id="login-btn">Enter</button>
+        <p id="login-error" class="login-error">Incorrect password</p>
+      </div>
+    </div>
+
+    <!-- Editor Container -->
+    <div class="editor-container" id="editor-container" style="display: none">
+      <!-- Sidebar -->
+      <aside class="editor-sidebar">
+        <div class="tab-buttons">
+          <button class="tab-btn active" id="posts-tab-btn">Posts</button>
+          <button class="tab-btn" id="books-tab-btn">Books</button>
+        </div>
+
+        <!-- Posts List -->
+        <div id="posts-tab" class="tab-content">
+          <div class="sidebar-header">
+            <h2>Posts</h2>
+            <button class="btn btn-small btn-secondary" id="new-post-btn">
+              + New
+            </button>
+          </div>
+          <ul class="posts-sidebar-list" id="posts-list">
+            <li><button disabled>Loading...</button></li>
+          </ul>
+        </div>
+
+        <!-- Books List -->
+        <div id="books-tab" class="tab-content" style="display: none">
+          <div class="sidebar-header">
+            <h2 id="books-header">Books</h2>
+            <button class="btn btn-small btn-secondary" id="new-book-btn">
+              + New
+            </button>
+          </div>
+          <ul class="posts-sidebar-list" id="books-list">
+            <li><button disabled>Loading...</button></li>
+          </ul>
+        </div>
+
+        <div style="padding: 1rem; border-top: 1px solid var(--color-border)">
+          <a
+            href="/"
+            class="btn btn-secondary"
+            style="width: 100%; text-align: center"
+            >← Back to Site</a
+          >
+        </div>
+      </aside>
+
+      <!-- Post Editor Panel -->
+      <div class="editor-panel" id="post-editor-panel">
+        <div class="editor-header">
+          <div
+            class="cover-image-inline"
+            id="cover-image-preview"
+            onclick="document.getElementById('cover-image-input').click()"
+            title="Add cover image"
+          >
+            <span class="cover-placeholder">+</span>
+          </div>
+          <input
+            type="file"
+            id="cover-image-input"
+            accept="image/*"
+            style="display: none"
+          />
+          <input
+            type="text"
+            class="editor-title-input"
+            id="post-title"
+            placeholder="Post title..."
+          />
+        </div>
+        <button
+          class="panel-toggle-btn"
+          id="post-panel-toggle"
+          title="Toggle Preview (⌘⇧P)"
         >
-      </div>
-      
-      <!-- URL Editor -->
-      <div class="url-editor-row">
-        <span class="url-prefix">/writing/</span>
-        <input type="text" id="post-slug" class="url-input" placeholder="post-url-slug">
-      </div>
-      
-      <textarea
-        class="editor-textarea" 
-        id="post-content" 
-        spellcheck="true"
-        placeholder="Write your post in Markdown...
+          <i data-lucide="panel-right-close"></i>
+        </button>
+
+        <!-- URL Editor -->
+        <div class="url-editor-row">
+          <span class="url-prefix">/writing/</span>
+          <input
+            type="text"
+            id="post-slug"
+            class="url-input"
+            placeholder="post-url-slug"
+          />
+        </div>
+
+        <div class="editor-textarea-container">
+          <textarea
+            class="editor-textarea"
+            id="post-content"
+            spellcheck="true"
+            placeholder="Write your post in Markdown...
 
 # Heading 1
 ## Heading 2
@@ -384,128 +464,205 @@
 > Blockquote
 
 `inline code`"
-      ></textarea>
-      
-      <!-- Image Upload -->
-      <div class="image-upload-zone" id="image-upload-zone">
-        <input type="file" id="image-input" accept="image/*">
-        📷 Drag & drop an image or click to upload
+          ></textarea>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="image-upload-zone" id="image-upload-zone">
+          <input type="file" id="image-input" accept="image/*" />
+          📷 Drag & drop an image or click to upload
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn btn-primary" id="save-post-btn">Save Post</button>
+          <button
+            class="btn btn-secondary"
+            id="delete-post-btn"
+            style="display: none"
+          >
+            Delete
+          </button>
+          <label
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              margin-left: 1rem;
+            "
+          >
+            <input type="checkbox" id="published-checkbox" checked />
+            Published
+          </label>
+          <span class="status-indicator" id="post-status-indicator"></span>
+        </div>
       </div>
-      
-      <div class="editor-actions">
-        <button class="btn btn-primary" id="save-post-btn">Save Post</button>
-        <button class="btn btn-secondary" id="delete-post-btn" style="display: none;">Delete</button>
-        <label style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
-          <input type="checkbox" id="published-checkbox" checked>
-          Published
-        </label>
-        <span class="status-indicator" id="post-status-indicator"></span>
-      </div>
-    </div>
-    
-    <!-- Book Editor Panel -->
-    <div class="editor-panel" id="book-editor-panel" style="display: none;">
-      <div class="book-form">
-        <div class="form-group">
-          <label>Emoji</label>
-          <input type="text" id="book-emoji" class="emoji-input" placeholder="📚" maxlength="2">
-        </div>
-        <div class="form-group">
-          <label>Title</label>
-          <input type="text" id="book-title" placeholder="Book title...">
-        </div>
-        <div class="form-group">
-          <label>Author</label>
-          <input type="text" id="book-author" placeholder="e.g., Frank Herbert">
-        </div>
-        <div class="form-group">
-          <label>Genre</label>
-          <input type="text" id="book-genre" placeholder="e.g., Science Fiction, History...">
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <div class="radio-group">
-            <label>
-              <input type="radio" name="book-status" value="finished" checked>
-              Finished
-            </label>
-            <label>
-              <input type="radio" name="book-status" value="reading">
-              Reading
+
+      <!-- Book Editor Panel -->
+      <div class="editor-panel" id="book-editor-panel" style="display: none">
+        <button
+          class="panel-toggle-btn"
+          id="book-panel-toggle"
+          title="Toggle Preview (⌘⇧P)"
+        >
+          <i data-lucide="panel-right-close"></i>
+        </button>
+        <div class="book-form">
+          <div class="form-group">
+            <label>Emoji</label>
+            <input
+              type="text"
+              id="book-emoji"
+              class="emoji-input"
+              placeholder="📚"
+              maxlength="2"
+            />
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="book-title" placeholder="Book title..." />
+          </div>
+          <div class="form-group">
+            <label>Author</label>
+            <input
+              type="text"
+              id="book-author"
+              placeholder="e.g., Frank Herbert"
+            />
+          </div>
+          <div class="form-group">
+            <label>Genre</label>
+            <input
+              type="text"
+              id="book-genre"
+              placeholder="e.g., Science Fiction, History..."
+            />
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <div class="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="book-status"
+                  value="finished"
+                  checked
+                />
+                Finished
+              </label>
+              <label>
+                <input type="radio" name="book-status" value="reading" />
+                Reading
+              </label>
+            </div>
+          </div>
+          <div class="form-group" id="book-date-group">
+            <label>Date Finished</label>
+            <input type="text" id="book-date" placeholder="e.g., Dec. 2025" />
+          </div>
+          <div class="form-group">
+            <label>Goodreads URL</label>
+            <input
+              type="url"
+              id="book-goodreads"
+              placeholder="https://www.goodreads.com/book/show/..."
+            />
+          </div>
+          <div class="form-group">
+            <label
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+              "
+            >
+              <input type="checkbox" id="book-favorite" />
+              Favorite (gold highlight)
             </label>
           </div>
         </div>
-        <div class="form-group" id="book-date-group">
-          <label>Date Finished</label>
-          <input type="text" id="book-date" placeholder="e.g., Dec. 2025">
-        </div>
-        <div class="form-group">
-          <label>Goodreads URL</label>
-          <input type="url" id="book-goodreads" placeholder="https://www.goodreads.com/book/show/...">
-        </div>
-        <div class="form-group">
-          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-            <input type="checkbox" id="book-favorite">
-            Favorite (gold highlight)
-          </label>
+
+        <div class="editor-actions">
+          <button class="btn btn-primary" id="save-book-btn">Save Book</button>
+          <button
+            class="btn btn-danger"
+            id="delete-book-btn"
+            style="display: none"
+          >
+            Delete
+          </button>
+          <span class="status-indicator" id="book-status-indicator"></span>
         </div>
       </div>
-      
-      <div class="editor-actions">
-        <button class="btn btn-primary" id="save-book-btn">Save Book</button>
-        <button class="btn btn-danger" id="delete-book-btn" style="display: none;">Delete</button>
-        <span class="status-indicator" id="book-status-indicator"></span>
+
+      <!-- Preview Panel -->
+      <div class="preview-panel" id="post-preview-panel">
+        <div class="preview-header">
+          <span>Preview</span>
+        </div>
+        <div class="preview-content post-content" id="preview-content">
+          <p style="color: var(--color-text-secondary)">
+            Preview will appear here...
+          </p>
+        </div>
+      </div>
+
+      <!-- Book Preview Panel -->
+      <div
+        class="preview-panel book-preview"
+        id="book-preview-panel"
+        style="display: none"
+      >
+        <div class="preview-header book-preview-header">
+          <span>Preview</span>
+        </div>
+        <div class="book-preview-card" id="book-preview-card">
+          <span class="book-preview-emoji" id="preview-emoji">📚</span>
+          <span class="book-preview-title" id="preview-title">Book Title</span>
+          <span class="book-preview-genre" id="preview-genre">Genre</span>
+          <span
+            class="book-preview-status"
+            id="preview-status"
+            style="display: none"
+            >Reading now</span
+          >
+          <span class="book-preview-date" id="preview-date"></span>
+        </div>
       </div>
     </div>
 
-    <!-- Preview Panel -->
-    <div class="preview-panel" id="post-preview-panel">
-      <div class="preview-header">Preview</div>
-      <div class="preview-content post-content" id="preview-content">
-        <p style="color: var(--color-text-secondary);">Preview will appear here...</p>
-      </div>
-    </div>
-    
-    <!-- Book Preview Panel -->
-    <div class="preview-panel book-preview" id="book-preview-panel" style="display: none;">
-      <div class="preview-header book-preview-header">Preview</div>
-      <div class="book-preview-card" id="book-preview-card">
-        <span class="book-preview-emoji" id="preview-emoji">📚</span>
-        <span class="book-preview-title" id="preview-title">Book Title</span>
-        <span class="book-preview-genre" id="preview-genre">Genre</span>
-        <span class="book-preview-status" id="preview-status" style="display: none;">Reading now</span>
-        <span class="book-preview-date" id="preview-date"></span>
-      </div>
-    </div>
-  </div>
+    <script>
+      // Configuration
+      const PRODUCTION_URL = "https://new-benstanfieldio-kappa.vercel.app";
+      const isLocalhost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
 
-  <script>
-    // Configuration
-    const PRODUCTION_URL = 'https://new-benstanfieldio-kappa.vercel.app';
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    // Get API base URL based on toggle state
-    function getApiBase() {
-      if (!isLocalhost) return '';
-      const useProduction = localStorage.getItem('useProductionApi') === 'true';
-      return useProduction ? PRODUCTION_URL : '';
-    }
-    
-    // Create dev toggle
-    function createDevToggle() {
-      if (!isLocalhost) return;
-      
-      const useProduction = localStorage.getItem('useProductionApi') === 'true';
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      
-      const toggle = document.createElement('div');
-      toggle.id = 'dev-toggle';
-      toggle.style.cssText = `
+      // Get API base URL based on toggle state
+      function getApiBase() {
+        if (!isLocalhost) return "";
+        const useProduction =
+          localStorage.getItem("useProductionApi") === "true";
+        return useProduction ? PRODUCTION_URL : "";
+      }
+
+      // Create dev toggle
+      function createDevToggle() {
+        if (!isLocalhost) return;
+
+        const useProduction =
+          localStorage.getItem("useProductionApi") === "true";
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+
+        const toggle = document.createElement("div");
+        toggle.id = "dev-toggle";
+        toggle.style.cssText = `
         position: fixed;
         bottom: 1rem;
         right: 1rem;
-        background: ${isDark ? '#333' : '#1a1a1a'};
-        color: ${isDark ? '#e5e5e5' : '#fff'};
+        background: ${isDark ? "#333" : "#1a1a1a"};
+        color: ${isDark ? "#e5e5e5" : "#fff"};
         padding: 0.5rem 0.75rem;
         border-radius: 6px;
         font-size: 0.75rem;
@@ -515,13 +672,13 @@
         align-items: center;
         gap: 0.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        border: 1px solid ${isDark ? '#444' : 'transparent'};
+        border: 1px solid ${isDark ? "#444" : "transparent"};
       `;
-      
-      const activeColor = isDark ? '#6bb3ff' : '#0066cc';
-      const inactiveColor = isDark ? '#555' : '#444';
-      
-      toggle.innerHTML = `
+
+        const activeColor = isDark ? "#6bb3ff" : "#0066cc";
+        const inactiveColor = isDark ? "#555" : "#444";
+
+        toggle.innerHTML = `
         <span style="opacity: 0.7;">API:</span>
         <button id="toggle-local" style="
           background: ${!useProduction ? activeColor : inactiveColor};
@@ -542,853 +699,1307 @@
           font-size: 0.7rem;
         ">Prod</button>
       `;
-      
-      document.body.appendChild(toggle);
-      
-      document.getElementById('toggle-local').addEventListener('click', () => {
-        localStorage.setItem('useProductionApi', 'false');
-        window.location.reload();
-      });
-      
-      document.getElementById('toggle-prod').addEventListener('click', () => {
-        localStorage.setItem('useProductionApi', 'true');
-        window.location.reload();
-      });
-    }
 
-    // State
-    let password = '';
-    let activeTab = 'posts';
-    
-    // Posts state
-    let posts = [];
-    let currentPost = null;
-    let isPostDirty = false;
-    
-    // Books state
-    let books = [];
-    let booksSha = null;
-    let currentBookIndex = null;
-    let isBookDirty = false;
+        document.body.appendChild(toggle);
 
-    // DOM Elements - Posts
-    const loginOverlay = document.getElementById('login-overlay');
-    const editorContainer = document.getElementById('editor-container');
-    const passwordInput = document.getElementById('password-input');
-    const loginBtn = document.getElementById('login-btn');
-    const loginError = document.getElementById('login-error');
-    const postsList = document.getElementById('posts-list');
-    const postTitle = document.getElementById('post-title');
-    const postContent = document.getElementById('post-content');
-    const previewContent = document.getElementById('preview-content');
-    const savePostBtn = document.getElementById('save-post-btn');
-    const deletePostBtn = document.getElementById('delete-post-btn');
-    const newPostBtn = document.getElementById('new-post-btn');
-    const publishedCheckbox = document.getElementById('published-checkbox');
-    const postStatusIndicator = document.getElementById('post-status-indicator');
-    const imageUploadZone = document.getElementById('image-upload-zone');
-    const imageInput = document.getElementById('image-input');
-    
-    // DOM Elements - Cover Image
-    const coverImagePreview = document.getElementById('cover-image-preview');
-    const coverImageInput = document.getElementById('cover-image-input');
-    let currentCoverImage = null;
-    
-    // DOM Elements - URL Editor
-    const postSlugInput = document.getElementById('post-slug');
-    let customSlug = false; // Track if user manually edited the slug
+        document
+          .getElementById("toggle-local")
+          .addEventListener("click", () => {
+            localStorage.setItem("useProductionApi", "false");
+            window.location.reload();
+          });
 
-    // DOM Elements - Books
-    const booksList = document.getElementById('books-list');
-    const bookEmoji = document.getElementById('book-emoji');
-    const bookTitleInput = document.getElementById('book-title');
-    const bookAuthor = document.getElementById('book-author');
-    const bookGenre = document.getElementById('book-genre');
-    const bookDate = document.getElementById('book-date');
-    const bookDateGroup = document.getElementById('book-date-group');
-    const bookGoodreads = document.getElementById('book-goodreads');
-    const bookFavorite = document.getElementById('book-favorite');
-    const saveBookBtn = document.getElementById('save-book-btn');
-    const deleteBookBtn = document.getElementById('delete-book-btn');
-    const newBookBtn = document.getElementById('new-book-btn');
-    const bookStatusIndicator = document.getElementById('book-status-indicator');
-    
-    // DOM Elements - Tabs
-    const postsTabBtn = document.getElementById('posts-tab-btn');
-    const booksTabBtn = document.getElementById('books-tab-btn');
-    const postsTab = document.getElementById('posts-tab');
-    const booksTab = document.getElementById('books-tab');
-    const postEditorPanel = document.getElementById('post-editor-panel');
-    const bookEditorPanel = document.getElementById('book-editor-panel');
-    const postPreviewPanel = document.getElementById('post-preview-panel');
-    const bookPreviewPanel = document.getElementById('book-preview-panel');
-
-    // Initialize
-    function init() {
-      const savedPassword = sessionStorage.getItem('editor_password');
-      if (savedPassword) {
-        password = savedPassword;
-        showEditor();
+        document.getElementById("toggle-prod").addEventListener("click", () => {
+          localStorage.setItem("useProductionApi", "true");
+          window.location.reload();
+        });
       }
 
-      // Login handlers
-      loginBtn.addEventListener('click', handleLogin);
-      passwordInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleLogin();
-      });
-      
-      // Tab handlers
-      postsTabBtn.addEventListener('click', () => switchTab('posts'));
-      booksTabBtn.addEventListener('click', () => switchTab('books'));
-      
-      // Post handlers
-      newPostBtn.addEventListener('click', createNewPost);
-      savePostBtn.addEventListener('click', savePost);
-      deletePostBtn.addEventListener('click', deletePost);
-      postTitle.addEventListener('input', handlePostEdit);
-      postContent.addEventListener('input', handlePostEdit);
-      publishedCheckbox.addEventListener('change', handlePostEdit);
-      postContent.addEventListener('input', updatePostPreview);
-      
-      // Cover image handlers
-      coverImageInput.addEventListener('change', handleCoverImageSelect);
-      coverImagePreview.addEventListener('contextmenu', handleCoverRightClick);
-      
-      // URL editor handlers
-      postSlugInput.addEventListener('input', handleSlugEdit);
-      postTitle.addEventListener('input', handleTitleChangeForSlug);
+      // State
+      let password = "";
+      let activeTab = "posts";
 
-      // Book handlers
-      newBookBtn.addEventListener('click', createNewBook);
-      saveBookBtn.addEventListener('click', saveBook);
-      deleteBookBtn.addEventListener('click', deleteBook);
-      bookEmoji.addEventListener('input', updateBookPreview);
-      bookTitleInput.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
-      bookAuthor.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
-      bookGenre.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
-      bookDate.addEventListener('input', () => { handleBookEdit(); updateBookPreview(); });
-      bookGoodreads.addEventListener('input', handleBookEdit);
-      bookFavorite.addEventListener('change', () => { handleBookEdit(); updateBookPreview(); });
-      
-      // Book status radio handlers
-      document.querySelectorAll('input[name="book-status"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-          handleBookEdit();
-          updateBookPreview();
-          // Show/hide date field based on status
-          bookDateGroup.style.display = radio.value === 'reading' ? 'none' : 'flex';
-        });
-      });
+      // Posts state
+      let posts = [];
+      let currentPost = null;
+      let isPostDirty = false;
+      let autoSaveInterval = null;
 
-      // Image upload
-      imageUploadZone.addEventListener('click', () => imageInput.click());
-      imageInput.addEventListener('change', handleImageSelect);
-      imageUploadZone.addEventListener('dragover', handleDragOver);
-      imageUploadZone.addEventListener('dragleave', handleDragLeave);
-      imageUploadZone.addEventListener('drop', handleDrop);
+      // Books state
+      let books = [];
+      let booksSha = null;
+      let currentBookIndex = null;
+      let isBookDirty = false;
 
-      // Keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-          e.preventDefault();
-          if (activeTab === 'posts') {
-            savePost();
-          } else {
-            saveBook();
-          }
+      // DOM Elements - Posts
+      const loginOverlay = document.getElementById("login-overlay");
+      const editorContainer = document.getElementById("editor-container");
+      const passwordInput = document.getElementById("password-input");
+      const loginBtn = document.getElementById("login-btn");
+      const loginError = document.getElementById("login-error");
+      const postsList = document.getElementById("posts-list");
+      const postTitle = document.getElementById("post-title");
+      const postContent = document.getElementById("post-content");
+      const previewContent = document.getElementById("preview-content");
+      const savePostBtn = document.getElementById("save-post-btn");
+      const deletePostBtn = document.getElementById("delete-post-btn");
+      const newPostBtn = document.getElementById("new-post-btn");
+      const publishedCheckbox = document.getElementById("published-checkbox");
+      const postStatusIndicator = document.getElementById(
+        "post-status-indicator"
+      );
+      const imageUploadZone = document.getElementById("image-upload-zone");
+      const imageInput = document.getElementById("image-input");
+
+      // DOM Elements - Cover Image
+      const coverImagePreview = document.getElementById("cover-image-preview");
+      const coverImageInput = document.getElementById("cover-image-input");
+      let currentCoverImage = null;
+
+      // DOM Elements - URL Editor
+      const postSlugInput = document.getElementById("post-slug");
+      let customSlug = false; // Track if user manually edited the slug
+
+      // DOM Elements - Books
+      const booksList = document.getElementById("books-list");
+      const bookEmoji = document.getElementById("book-emoji");
+      const bookTitleInput = document.getElementById("book-title");
+      const bookAuthor = document.getElementById("book-author");
+      const bookGenre = document.getElementById("book-genre");
+      const bookDate = document.getElementById("book-date");
+      const bookDateGroup = document.getElementById("book-date-group");
+      const bookGoodreads = document.getElementById("book-goodreads");
+      const bookFavorite = document.getElementById("book-favorite");
+      const saveBookBtn = document.getElementById("save-book-btn");
+      const deleteBookBtn = document.getElementById("delete-book-btn");
+      const newBookBtn = document.getElementById("new-book-btn");
+      const bookStatusIndicator = document.getElementById(
+        "book-status-indicator"
+      );
+
+      // DOM Elements - Tabs
+      const postsTabBtn = document.getElementById("posts-tab-btn");
+      const booksTabBtn = document.getElementById("books-tab-btn");
+      const postsTab = document.getElementById("posts-tab");
+      const booksTab = document.getElementById("books-tab");
+      const postEditorPanel = document.getElementById("post-editor-panel");
+      const bookEditorPanel = document.getElementById("book-editor-panel");
+      const postPreviewPanel = document.getElementById("post-preview-panel");
+      const bookPreviewPanel = document.getElementById("book-preview-panel");
+      const postPanelToggle = document.getElementById("post-panel-toggle");
+      const bookPanelToggle = document.getElementById("book-panel-toggle");
+
+      // Preview panel state
+      let isPreviewVisible = true;
+
+      // Load preview state from localStorage
+      function loadPreviewState() {
+        const savedState = localStorage.getItem("editor_preview_visible");
+        if (savedState !== null) {
+          isPreviewVisible = savedState === "true";
         }
-      });
+      }
 
-      // URL paste handler for markdown links
-      postContent.addEventListener('paste', (e) => {
-        const selectedText = postContent.value.substring(
-          postContent.selectionStart,
-          postContent.selectionEnd
+      // Save preview state to localStorage
+      function savePreviewState() {
+        localStorage.setItem(
+          "editor_preview_visible",
+          isPreviewVisible.toString()
+        );
+      }
+
+      // Load last selected post from localStorage
+      function getLastSelectedPost() {
+        return localStorage.getItem("editor_last_post_slug");
+      }
+
+      // Save last selected post to localStorage
+      function saveLastSelectedPost(slug) {
+        if (slug) {
+          localStorage.setItem("editor_last_post_slug", slug);
+        } else {
+          localStorage.removeItem("editor_last_post_slug");
+        }
+      }
+
+      // Initialize
+      function init() {
+        // Initialize Lucide icons immediately
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+
+        const savedPassword = sessionStorage.getItem("editor_password");
+        if (savedPassword) {
+          password = savedPassword;
+          showEditor();
+        }
+
+        // Login handlers
+        loginBtn.addEventListener("click", handleLogin);
+        passwordInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") handleLogin();
+        });
+
+        // Cleanup auto-save interval on page unload
+        window.addEventListener("beforeunload", () => {
+          if (autoSaveInterval) {
+            clearInterval(autoSaveInterval);
+          }
+        });
+
+        // Tab handlers
+        postsTabBtn.addEventListener("click", () => switchTab("posts"));
+        booksTabBtn.addEventListener("click", () => switchTab("books"));
+
+        // Post handlers
+        newPostBtn.addEventListener("click", createNewPost);
+        savePostBtn.addEventListener("click", savePost);
+        deletePostBtn.addEventListener("click", deletePost);
+        postTitle.addEventListener("input", handlePostEdit);
+        postContent.addEventListener("input", handlePostEdit);
+        publishedCheckbox.addEventListener("change", () => {
+          handlePostEdit();
+          // Update auto-save when publish status changes
+          updateAutoSave();
+        });
+        postContent.addEventListener("input", updatePostPreview);
+
+        // Cover image handlers
+        coverImageInput.addEventListener("change", handleCoverImageSelect);
+        coverImagePreview.addEventListener(
+          "contextmenu",
+          handleCoverRightClick
         );
 
-        // Only proceed if text is selected
-        if (!selectedText) return;
+        // URL editor handlers
+        postSlugInput.addEventListener("input", handleSlugEdit);
+        postTitle.addEventListener("input", handleTitleChangeForSlug);
 
-        const pastedText = e.clipboardData.getData('text');
-
-        // Check if pasted content looks like a URL
-        const urlPattern = /^https?:\/\/\S+$/i;
-        if (!urlPattern.test(pastedText.trim())) return;
-
-        // Prevent default paste and insert markdown link
-        e.preventDefault();
-        const markdownLink = `[${selectedText}](${pastedText.trim()})`;
-
-        const start = postContent.selectionStart;
-        const end = postContent.selectionEnd;
-        postContent.value =
-          postContent.value.substring(0, start) +
-          markdownLink +
-          postContent.value.substring(end);
-        postContent.selectionStart = postContent.selectionEnd =
-          start + markdownLink.length;
-
-        handlePostEdit();
-        updatePostPreview();
-      });
-    }
-    
-    // Tab switching
-    function switchTab(tab) {
-      activeTab = tab;
-      
-      if (tab === 'posts') {
-        postsTabBtn.classList.add('active');
-        booksTabBtn.classList.remove('active');
-        postsTab.style.display = 'flex';
-        booksTab.style.display = 'none';
-        postEditorPanel.style.display = 'flex';
-        bookEditorPanel.style.display = 'none';
-        postPreviewPanel.style.display = 'flex';
-        bookPreviewPanel.style.display = 'none';
-      } else {
-        postsTabBtn.classList.remove('active');
-        booksTabBtn.classList.add('active');
-        postsTab.style.display = 'none';
-        booksTab.style.display = 'flex';
-        postEditorPanel.style.display = 'none';
-        bookEditorPanel.style.display = 'flex';
-        postPreviewPanel.style.display = 'none';
-        bookPreviewPanel.style.display = 'flex';
-      }
-    }
-
-    async function handleLogin() {
-      password = passwordInput.value;
-      const apiBase = getApiBase();
-      
-      try {
-        const response = await fetch(`${apiBase}/api/posts`, {
-          headers: { 'Authorization': `Bearer ${password}` }
+        // Book handlers
+        newBookBtn.addEventListener("click", createNewBook);
+        saveBookBtn.addEventListener("click", saveBook);
+        deleteBookBtn.addEventListener("click", deleteBook);
+        bookEmoji.addEventListener("input", updateBookPreview);
+        bookTitleInput.addEventListener("input", () => {
+          handleBookEdit();
+          updateBookPreview();
+        });
+        bookAuthor.addEventListener("input", () => {
+          handleBookEdit();
+          updateBookPreview();
+        });
+        bookGenre.addEventListener("input", () => {
+          handleBookEdit();
+          updateBookPreview();
+        });
+        bookDate.addEventListener("input", () => {
+          handleBookEdit();
+          updateBookPreview();
+        });
+        bookGoodreads.addEventListener("input", handleBookEdit);
+        bookFavorite.addEventListener("change", () => {
+          handleBookEdit();
+          updateBookPreview();
         });
 
-        if (response.ok) {
-          sessionStorage.setItem('editor_password', password);
-          showEditor();
-        } else {
-          loginError.style.display = 'block';
-          passwordInput.value = '';
-        }
-      } catch (error) {
-        sessionStorage.setItem('editor_password', password);
-        showEditor();
+        // Book status radio handlers
+        document
+          .querySelectorAll('input[name="book-status"]')
+          .forEach((radio) => {
+            radio.addEventListener("change", () => {
+              handleBookEdit();
+              updateBookPreview();
+              // Show/hide date field based on status
+              bookDateGroup.style.display =
+                radio.value === "reading" ? "none" : "flex";
+            });
+          });
+
+        // Image upload
+        imageUploadZone.addEventListener("click", () => imageInput.click());
+        imageInput.addEventListener("change", handleImageSelect);
+        imageUploadZone.addEventListener("dragover", handleDragOver);
+        imageUploadZone.addEventListener("dragleave", handleDragLeave);
+        imageUploadZone.addEventListener("drop", handleDrop);
+
+        // Preview toggle handlers
+        postPanelToggle.addEventListener("click", () => togglePreview());
+        bookPanelToggle.addEventListener("click", () => togglePreview());
+
+        // Keyboard shortcuts
+        document.addEventListener("keydown", (e) => {
+          // Save shortcut (Cmd/Ctrl+S)
+          if ((e.metaKey || e.ctrlKey) && e.key === "s" && !e.shiftKey) {
+            e.preventDefault();
+            if (activeTab === "posts") {
+              savePost();
+            } else {
+              saveBook();
+            }
+            return;
+          }
+
+          // Toggle preview shortcut (Cmd+Shift+P or Ctrl+Shift+P)
+          // Check for P key (case-insensitive) with modifier keys
+          const isModifierPressed = (e.metaKey || e.ctrlKey) && e.shiftKey;
+          const isPKey =
+            e.key === "P" ||
+            e.key === "p" ||
+            e.keyCode === 80 ||
+            e.code === "KeyP";
+
+          if (isModifierPressed && isPKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            togglePreview();
+            return;
+          }
+        });
+
+        // URL paste handler for markdown links
+        postContent.addEventListener("paste", (e) => {
+          const selectedText = postContent.value.substring(
+            postContent.selectionStart,
+            postContent.selectionEnd
+          );
+
+          // Only proceed if text is selected
+          if (!selectedText) return;
+
+          const pastedText = e.clipboardData.getData("text");
+
+          // Check if pasted content looks like a URL
+          const urlPattern = /^https?:\/\/\S+$/i;
+          if (!urlPattern.test(pastedText.trim())) return;
+
+          // Prevent default paste and insert markdown link
+          e.preventDefault();
+          const markdownLink = `[${selectedText}](${pastedText.trim()})`;
+
+          const start = postContent.selectionStart;
+          const end = postContent.selectionEnd;
+          postContent.value =
+            postContent.value.substring(0, start) +
+            markdownLink +
+            postContent.value.substring(end);
+          postContent.selectionStart = postContent.selectionEnd =
+            start + markdownLink.length;
+
+          handlePostEdit();
+          updatePostPreview();
+        });
       }
-    }
 
-    async function showEditor() {
-      loginOverlay.style.display = 'none';
-      editorContainer.style.display = 'grid';
-      createDevToggle();
-      await Promise.all([loadPosts(), loadBooks()]);
-    }
+      // Tab switching
+      function switchTab(tab) {
+        activeTab = tab;
 
-    // =====================
-    // POSTS FUNCTIONS
-    // =====================
-    
-    async function loadPosts() {
-      const apiBase = getApiBase();
-      try {
-        const response = await fetch(`${apiBase}/api/posts`);
-        if (response.ok) {
-          posts = await response.json();
-          renderPostsList();
+        if (tab === "posts") {
+          postsTabBtn.classList.add("active");
+          booksTabBtn.classList.remove("active");
+          postsTab.style.display = "flex";
+          booksTab.style.display = "none";
+          postEditorPanel.style.display = "flex";
+          bookEditorPanel.style.display = "none";
         } else {
+          postsTabBtn.classList.remove("active");
+          booksTabBtn.classList.add("active");
+          postsTab.style.display = "none";
+          booksTab.style.display = "flex";
+          postEditorPanel.style.display = "none";
+          bookEditorPanel.style.display = "flex";
+        }
+
+        // Update preview panel visibility for current tab
+        updatePreviewPanel();
+        // Update auto-save when switching tabs
+        updateAutoSave();
+      }
+
+      async function handleLogin() {
+        password = passwordInput.value;
+        const apiBase = getApiBase();
+
+        try {
+          const response = await fetch(`${apiBase}/api/posts`, {
+            headers: { Authorization: `Bearer ${password}` },
+          });
+
+          if (response.ok) {
+            sessionStorage.setItem("editor_password", password);
+            showEditor();
+          } else {
+            loginError.style.display = "block";
+            passwordInput.value = "";
+          }
+        } catch (error) {
+          sessionStorage.setItem("editor_password", password);
+          showEditor();
+        }
+      }
+
+      async function showEditor() {
+        loginOverlay.style.display = "none";
+        editorContainer.style.display = "grid";
+        createDevToggle();
+        initializeLucide();
+
+        // Load preview state from localStorage
+        loadPreviewState();
+
+        // Load posts and books
+        await Promise.all([loadPosts(), loadBooks()]);
+
+        // Restore preview panel state
+        updatePreviewPanel();
+
+        // Restore last selected post
+        const lastPostSlug = getLastSelectedPost();
+        if (lastPostSlug) {
+          // Check if the post still exists
+          const postExists = posts.some((post) => post.slug === lastPostSlug);
+          if (postExists) {
+            await selectPost(lastPostSlug);
+          } else {
+            // Post no longer exists, clear from localStorage
+            saveLastSelectedPost(null);
+          }
+        }
+      }
+
+      // Initialize Lucide icons
+      function initializeLucide() {
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+      }
+
+      // Update icon for a button by replacing the inner HTML
+      function updateButtonIcon(button, iconName, title) {
+        const iconElement = button.querySelector("i");
+        if (iconElement) {
+          // Replace the entire innerHTML to force Lucide to recreate the icon
+          iconElement.innerHTML = "";
+          iconElement.setAttribute("data-lucide", iconName);
+          button.title = title;
+          // Reinitialize Lucide icons
+          if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+          }
+        }
+      }
+
+      // Toggle preview panel
+      function togglePreview() {
+        isPreviewVisible = !isPreviewVisible;
+        updatePreviewPanel();
+        savePreviewState();
+      }
+
+      // Update preview panel visibility and icon
+      function updatePreviewPanel() {
+        const editorContainer = document.querySelector(".editor-container");
+
+        // Update both toggle buttons to show current state
+        const allToggleBtns = [postPanelToggle, bookPanelToggle];
+
+        if (isPreviewVisible) {
+          // Show preview
+          editorContainer.classList.remove("preview-hidden");
+          postPreviewPanel.classList.remove("hidden");
+          bookPreviewPanel.classList.remove("hidden");
+
+          if (activeTab === "posts") {
+            postPreviewPanel.style.display = "flex";
+            bookPreviewPanel.style.display = "none";
+          } else {
+            postPreviewPanel.style.display = "none";
+            bookPreviewPanel.style.display = "flex";
+          }
+
+          // Update icons to show "close" action
+          allToggleBtns.forEach((btn) => {
+            updateButtonIcon(btn, "panel-right-close", "Hide Preview (⌘⇧P)");
+          });
+        } else {
+          // Hide preview
+          editorContainer.classList.add("preview-hidden");
+          postPreviewPanel.classList.add("hidden");
+          bookPreviewPanel.classList.add("hidden");
+          postPreviewPanel.style.display = "none";
+          bookPreviewPanel.style.display = "none";
+
+          // Update icons to show "open" action
+          allToggleBtns.forEach((btn) => {
+            updateButtonIcon(btn, "panel-right-open", "Show Preview (⌘⇧P)");
+          });
+        }
+      }
+
+      // =====================
+      // POSTS FUNCTIONS
+      // =====================
+
+      async function loadPosts() {
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(`${apiBase}/api/posts`);
+          if (response.ok) {
+            posts = await response.json();
+            renderPostsList();
+          } else {
+            posts = [];
+            renderPostsList();
+          }
+        } catch (error) {
+          console.error("Error loading posts:", error);
           posts = [];
           renderPostsList();
         }
-      } catch (error) {
-        console.error('Error loading posts:', error);
-        posts = [];
-        renderPostsList();
-      }
-    }
-
-    function renderPostsList() {
-      if (posts.length === 0) {
-        postsList.innerHTML = '<li><button disabled style="color: var(--color-text-secondary);">No posts yet</button></li>';
-        return;
       }
 
-      const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+      function renderPostsList() {
+        if (posts.length === 0) {
+          postsList.innerHTML =
+            '<li><button disabled style="color: var(--color-text-secondary);">No posts yet</button></li>';
+          return;
+        }
 
-      postsList.innerHTML = sortedPosts.map(post => {
-        const isActive = currentPost && currentPost.slug === post.slug;
-        const date = new Date(post.date).toLocaleDateString('en-US', {
-          month: 'short', day: 'numeric', year: 'numeric'
-        });
-        const statusIcon = post.published === false ? '📝 ' : '';
-        
-        return `
+        const sortedPosts = [...posts].sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+
+        postsList.innerHTML = sortedPosts
+          .map((post) => {
+            const isActive = currentPost && currentPost.slug === post.slug;
+            const date = new Date(post.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            });
+            const statusIcon = post.published === false ? "📝 " : "";
+
+            return `
           <li>
-            <button class="${isActive ? 'active' : ''}" onclick="selectPost('${post.slug}')">
+            <button class="${isActive ? "active" : ""}" onclick="selectPost('${
+              post.slug
+            }')">
               <span class="post-item-title">${statusIcon}${post.title}</span>
               <span class="post-item-date">${date}</span>
             </button>
           </li>
         `;
-      }).join('');
-    }
-
-    async function selectPost(slug) {
-      if (isPostDirty && !confirm('You have unsaved changes. Discard them?')) return;
-
-      const apiBase = getApiBase();
-      try {
-        const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`);
-        if (response.ok) {
-          currentPost = await response.json();
-          postTitle.value = currentPost.title;
-          postContent.value = currentPost.content;
-          publishedCheckbox.checked = currentPost.published !== false;
-          setCoverImage(currentPost.coverImage || null);
-          setSlug(currentPost.slug);
-          customSlug = true; // Existing post, don't auto-generate
-          deletePostBtn.style.display = 'inline-flex';
-          isPostDirty = false;
-          updatePostPreview();
-          renderPostsList();
-        }
-      } catch (error) {
-        console.error('Error loading post:', error);
-        setPostStatus('Error loading post', 'error');
+          })
+          .join("");
       }
-    }
 
-    function createNewPost() {
-      if (isPostDirty && !confirm('You have unsaved changes. Discard them?')) return;
+      async function selectPost(slug) {
+        if (isPostDirty && !confirm("You have unsaved changes. Discard them?"))
+          return;
 
-      currentPost = null;
-      postTitle.value = '';
-      postContent.value = '';
-      publishedCheckbox.checked = true;
-      setCoverImage(null);
-      setSlug('');
-      customSlug = false; // Allow auto-generation for new posts
-      deletePostBtn.style.display = 'none';
-      isPostDirty = false;
-      previewContent.innerHTML = '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
-      renderPostsList();
-      postTitle.focus();
-    }
+        // Stop auto-save when switching posts
+        updateAutoSave();
 
-    function handlePostEdit() {
-      isPostDirty = true;
-      setPostStatus('Unsaved changes', '');
-    }
-    
-    // URL Editor Functions
-    function generateSlug(title) {
-      return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
-    }
-    
-    function handleSlugEdit() {
-      customSlug = true;
-      handlePostEdit();
-    }
-    
-    function handleTitleChangeForSlug() {
-      // Only auto-generate slug if user hasn't manually edited it
-      if (!customSlug && !currentPost) {
-        postSlugInput.value = generateSlug(postTitle.value);
-      }
-    }
-    
-    function setSlug(slug) {
-      postSlugInput.value = slug || '';
-    }
-
-    // Cover Image Functions
-    async function handleCoverImageSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      if (!file.type.startsWith('image/')) {
-        setPostStatus('Please select an image file', 'error');
-        return;
-      }
-      
-      setPostStatus('Uploading cover image...', 'saving');
-      
-      const apiBase = getApiBase();
-      try {
-        const base64 = await fileToBase64(file);
-        
-        const response = await fetch(`${apiBase}/api/images`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-          body: JSON.stringify({ filename: `cover-${file.name}`, content: base64, contentType: file.type })
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          setCoverImage(result.url);
-          handlePostEdit();
-          setPostStatus('Cover uploaded!', 'saved');
-          setTimeout(() => { if (postStatusIndicator.textContent === 'Cover uploaded!') setPostStatus('Unsaved changes', ''); }, 2000);
-        } else {
-          const error = await response.json();
-          setPostStatus(error.error || 'Failed to upload cover', 'error');
-        }
-      } catch (error) {
-        console.error('Error uploading cover:', error);
-        setPostStatus('Error uploading cover', 'error');
-      }
-      
-      // Reset input so same file can be selected again
-      coverImageInput.value = '';
-    }
-    
-    function setCoverImage(url) {
-      currentCoverImage = url;
-      if (url) {
-        coverImagePreview.innerHTML = `<img src="${url}" alt="Cover">`;
-        coverImagePreview.classList.add('has-image');
-        coverImagePreview.title = 'Click to change, right-click to remove';
-      } else {
-        coverImagePreview.innerHTML = '<span class="cover-placeholder">+</span>';
-        coverImagePreview.classList.remove('has-image');
-        coverImagePreview.title = 'Add cover image';
-      }
-    }
-    
-    function handleCoverRightClick(e) {
-      if (currentCoverImage) {
-        e.preventDefault();
-        if (confirm('Remove cover image?')) {
-          setCoverImage(null);
-          handlePostEdit();
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(
+            `${apiBase}/api/posts?slug=${encodeURIComponent(slug)}`
+          );
+          if (response.ok) {
+            currentPost = await response.json();
+            postTitle.value = currentPost.title;
+            postContent.value = currentPost.content;
+            publishedCheckbox.checked = currentPost.published !== false;
+            setCoverImage(currentPost.coverImage || null);
+            setSlug(currentPost.slug);
+            customSlug = true; // Existing post, don't auto-generate
+            deletePostBtn.style.display = "inline-flex";
+            isPostDirty = false;
+            updatePostPreview();
+            renderPostsList();
+            // Start auto-save if this is an unpublished draft
+            updateAutoSave();
+            // Save as last selected post
+            saveLastSelectedPost(slug);
+          }
+        } catch (error) {
+          console.error("Error loading post:", error);
+          setPostStatus("Error loading post", "error");
         }
       }
-    }
 
-    function updatePostPreview() {
-      const content = postContent.value;
-      if (content.trim()) {
-        previewContent.innerHTML = marked.parse(content);
-      } else {
-        previewContent.innerHTML = '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
+      function createNewPost() {
+        if (isPostDirty && !confirm("You have unsaved changes. Discard them?"))
+          return;
+
+        // Stop auto-save when creating new post
+        updateAutoSave();
+
+        currentPost = null;
+        postTitle.value = "";
+        postContent.value = "";
+        publishedCheckbox.checked = true;
+        setCoverImage(null);
+        setSlug("");
+        customSlug = false; // Allow auto-generation for new posts
+        deletePostBtn.style.display = "none";
+        isPostDirty = false;
+        previewContent.innerHTML =
+          '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
+        renderPostsList();
+        postTitle.focus();
+        // Clear last selected post when creating new
+        saveLastSelectedPost(null);
+        // Note: Auto-save will start when user starts typing (via handlePostEdit)
       }
-    }
 
-    async function savePost() {
-      const title = postTitle.value.trim();
-      const content = postContent.value.trim();
-      const published = publishedCheckbox.checked;
-      const coverImage = currentCoverImage;
-      const slug = postSlugInput.value.trim() || generateSlug(title);
+      function handlePostEdit() {
+        isPostDirty = true;
+        setPostStatus("Unsaved changes", "");
+        updateAutoSave();
+      }
 
-      if (!title) { setPostStatus('Title is required', 'error'); return; }
-      if (!content) { setPostStatus('Content is required', 'error'); return; }
+      // Auto-save functionality for unpublished drafts
+      function updateAutoSave() {
+        // Clear existing interval
+        if (autoSaveInterval) {
+          clearInterval(autoSaveInterval);
+          autoSaveInterval = null;
+        }
 
-      setPostStatus('Saving...', 'saving');
+        // Only auto-save if:
+        // 1. There are unsaved changes
+        // 2. Post is unpublished (draft)
+        // 3. We're in the posts tab
+        const shouldAutoSave =
+          isPostDirty &&
+          !publishedCheckbox.checked &&
+          activeTab === "posts" &&
+          (currentPost || (postTitle.value.trim() && postContent.value.trim()));
 
-      const apiBase = getApiBase();
-      try {
-        let response;
+        if (shouldAutoSave) {
+          // Start auto-save interval (every 10 seconds)
+          autoSaveInterval = setInterval(() => {
+            // Double-check conditions before auto-saving
+            if (
+              isPostDirty &&
+              !publishedCheckbox.checked &&
+              activeTab === "posts"
+            ) {
+              autoSavePost();
+            } else {
+              // Conditions changed, stop auto-saving
+              updateAutoSave();
+            }
+          }, 10000); // 10 seconds
+        }
+      }
 
-        if (currentPost) {
-          // Include newSlug if slug was changed
-          const newSlug = slug !== currentPost.slug ? slug : undefined;
-          response = await fetch(`${apiBase}/api/posts`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-            body: JSON.stringify({ slug: currentPost.slug, newSlug, title, content, published, coverImage, sha: currentPost.sha })
+      // Auto-save function (silent save without status messages)
+      async function autoSavePost() {
+        const title = postTitle.value.trim();
+        const content = postContent.value.trim();
+        const published = publishedCheckbox.checked;
+        const coverImage = currentCoverImage;
+        const slug = postSlugInput.value.trim() || generateSlug(title);
+
+        // Don't auto-save if required fields are missing or if published
+        if (!title || !content || published) {
+          updateAutoSave();
+          return;
+        }
+
+        const apiBase = getApiBase();
+        try {
+          let response;
+
+          if (currentPost) {
+            // Update existing post
+            const newSlug = slug !== currentPost.slug ? slug : undefined;
+            response = await fetch(`${apiBase}/api/posts`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${password}`,
+              },
+              body: JSON.stringify({
+                slug: currentPost.slug,
+                newSlug,
+                title,
+                content,
+                published,
+                coverImage,
+                sha: currentPost.sha,
+              }),
+            });
+          } else {
+            // Create new post (only if we have both title and content)
+            response = await fetch(`${apiBase}/api/posts`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${password}`,
+              },
+              body: JSON.stringify({
+                title,
+                content,
+                published,
+                coverImage,
+                slug,
+              }),
+            });
+          }
+
+          if (response.ok) {
+            const savedPost = await response.json();
+            currentPost = savedPost;
+            setSlug(savedPost.slug);
+            customSlug = true;
+            isPostDirty = false;
+            // Show subtle auto-saved indicator
+            setPostStatus("Auto-saved", "saved");
+            setTimeout(() => {
+              if (postStatusIndicator.textContent === "Auto-saved") {
+                setPostStatus("", "");
+              }
+            }, 2000);
+            await loadPosts();
+            // Stop auto-saving since we just saved
+            updateAutoSave();
+            // Save as last selected post
+            saveLastSelectedPost(savedPost.slug);
+          } else {
+            // Silent failure - don't show error for auto-save
+            console.log("Auto-save failed (will retry)");
+          }
+        } catch (error) {
+          // Silent failure - don't show error for auto-save
+          console.log("Auto-save error (will retry):", error);
+        }
+      }
+
+      // URL Editor Functions
+      function generateSlug(title) {
+        return title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+
+      function handleSlugEdit() {
+        customSlug = true;
+        handlePostEdit();
+      }
+
+      function handleTitleChangeForSlug() {
+        // Only auto-generate slug if user hasn't manually edited it
+        if (!customSlug && !currentPost) {
+          postSlugInput.value = generateSlug(postTitle.value);
+        }
+      }
+
+      function setSlug(slug) {
+        postSlugInput.value = slug || "";
+      }
+
+      // Cover Image Functions
+      async function handleCoverImageSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+          setPostStatus("Please select an image file", "error");
+          return;
+        }
+
+        setPostStatus("Uploading cover image...", "saving");
+
+        const apiBase = getApiBase();
+        try {
+          const base64 = await fileToBase64(file);
+
+          const response = await fetch(`${apiBase}/api/images`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${password}`,
+            },
+            body: JSON.stringify({
+              filename: `cover-${file.name}`,
+              content: base64,
+              contentType: file.type,
+            }),
           });
-        } else {
-          response = await fetch(`${apiBase}/api/posts`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-            body: JSON.stringify({ title, content, published, coverImage, slug })
-          });
+
+          if (response.ok) {
+            const result = await response.json();
+            setCoverImage(result.url);
+            handlePostEdit();
+            setPostStatus("Cover uploaded!", "saved");
+            setTimeout(() => {
+              if (postStatusIndicator.textContent === "Cover uploaded!")
+                setPostStatus("Unsaved changes", "");
+            }, 2000);
+          } else {
+            const error = await response.json();
+            setPostStatus(error.error || "Failed to upload cover", "error");
+          }
+        } catch (error) {
+          console.error("Error uploading cover:", error);
+          setPostStatus("Error uploading cover", "error");
         }
 
-        if (response.ok) {
-          currentPost = await response.json();
-          setSlug(currentPost.slug);
-          customSlug = true;
-          isPostDirty = false;
-          setPostStatus('Saved!', 'saved');
-          deletePostBtn.style.display = 'inline-flex';
-          await loadPosts();
-          setTimeout(() => { if (postStatusIndicator.textContent === 'Saved!') setPostStatus('', ''); }, 3000);
-        } else {
-          const error = await response.json();
-          setPostStatus(error.error || 'Failed to save', 'error');
-        }
-      } catch (error) {
-        console.error('Error saving post:', error);
-        setPostStatus('Error saving post', 'error');
+        // Reset input so same file can be selected again
+        coverImageInput.value = "";
       }
-    }
 
-    async function deletePost() {
-      if (!currentPost) return;
-      if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) return;
-
-      setPostStatus('Deleting...', 'saving');
-
-      const apiBase = getApiBase();
-      try {
-        const response = await fetch(`${apiBase}/api/posts?slug=${encodeURIComponent(currentPost.slug)}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${password}` }
-        });
-
-        if (response.ok) {
-          setPostStatus('Deleted', 'saved');
-          createNewPost();
-          await loadPosts();
+      function setCoverImage(url) {
+        currentCoverImage = url;
+        if (url) {
+          coverImagePreview.innerHTML = `<img src="${url}" alt="Cover">`;
+          coverImagePreview.classList.add("has-image");
+          coverImagePreview.title = "Click to change, right-click to remove";
         } else {
-          const error = await response.json();
-          setPostStatus(error.error || 'Failed to delete', 'error');
+          coverImagePreview.innerHTML =
+            '<span class="cover-placeholder">+</span>';
+          coverImagePreview.classList.remove("has-image");
+          coverImagePreview.title = "Add cover image";
         }
-      } catch (error) {
-        console.error('Error deleting post:', error);
-        setPostStatus('Error deleting post', 'error');
       }
-    }
 
-    function setPostStatus(message, type) {
-      postStatusIndicator.textContent = message;
-      postStatusIndicator.className = 'status-indicator';
-      if (type) postStatusIndicator.classList.add(type);
-    }
+      function handleCoverRightClick(e) {
+        if (currentCoverImage) {
+          e.preventDefault();
+          if (confirm("Remove cover image?")) {
+            setCoverImage(null);
+            handlePostEdit();
+          }
+        }
+      }
 
-    // =====================
-    // BOOKS FUNCTIONS
-    // =====================
-    
-    async function loadBooks() {
-      const apiBase = getApiBase();
-      try {
-        const response = await fetch(`${apiBase}/api/books`);
-        if (response.ok) {
-          const data = await response.json();
-          books = data.books || [];
-          booksSha = data.sha;
-          renderBooksList();
+      function updatePostPreview() {
+        const content = postContent.value;
+        if (content.trim()) {
+          previewContent.innerHTML = marked.parse(content);
         } else {
+          previewContent.innerHTML =
+            '<p style="color: var(--color-text-secondary);">Preview will appear here...</p>';
+        }
+      }
+
+      async function savePost() {
+        const title = postTitle.value.trim();
+        const content = postContent.value.trim();
+        const published = publishedCheckbox.checked;
+        const coverImage = currentCoverImage;
+        const slug = postSlugInput.value.trim() || generateSlug(title);
+
+        if (!title) {
+          setPostStatus("Title is required", "error");
+          return;
+        }
+        if (!content) {
+          setPostStatus("Content is required", "error");
+          return;
+        }
+
+        setPostStatus("Saving...", "saving");
+
+        const apiBase = getApiBase();
+        try {
+          let response;
+
+          if (currentPost) {
+            // Include newSlug if slug was changed
+            const newSlug = slug !== currentPost.slug ? slug : undefined;
+            response = await fetch(`${apiBase}/api/posts`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${password}`,
+              },
+              body: JSON.stringify({
+                slug: currentPost.slug,
+                newSlug,
+                title,
+                content,
+                published,
+                coverImage,
+                sha: currentPost.sha,
+              }),
+            });
+          } else {
+            response = await fetch(`${apiBase}/api/posts`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${password}`,
+              },
+              body: JSON.stringify({
+                title,
+                content,
+                published,
+                coverImage,
+                slug,
+              }),
+            });
+          }
+
+          if (response.ok) {
+            currentPost = await response.json();
+            setSlug(currentPost.slug);
+            customSlug = true;
+            isPostDirty = false;
+            setPostStatus("Saved!", "saved");
+            deletePostBtn.style.display = "inline-flex";
+            await loadPosts();
+            setTimeout(() => {
+              if (postStatusIndicator.textContent === "Saved!")
+                setPostStatus("", "");
+            }, 3000);
+            // Update auto-save after manual save
+            updateAutoSave();
+            // Save as last selected post
+            saveLastSelectedPost(currentPost.slug);
+          } else {
+            const error = await response.json();
+            setPostStatus(error.error || "Failed to save", "error");
+          }
+        } catch (error) {
+          console.error("Error saving post:", error);
+          setPostStatus("Error saving post", "error");
+        }
+      }
+
+      async function deletePost() {
+        if (!currentPost) return;
+        if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`))
+          return;
+
+        setPostStatus("Deleting...", "saving");
+
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(
+            `${apiBase}/api/posts?slug=${encodeURIComponent(currentPost.slug)}`,
+            {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${password}` },
+            }
+          );
+
+          if (response.ok) {
+            setPostStatus("Deleted", "saved");
+            createNewPost();
+            await loadPosts();
+          } else {
+            const error = await response.json();
+            setPostStatus(error.error || "Failed to delete", "error");
+          }
+        } catch (error) {
+          console.error("Error deleting post:", error);
+          setPostStatus("Error deleting post", "error");
+        }
+      }
+
+      function setPostStatus(message, type) {
+        postStatusIndicator.textContent = message;
+        postStatusIndicator.className = "status-indicator";
+        if (type) postStatusIndicator.classList.add(type);
+      }
+
+      // =====================
+      // BOOKS FUNCTIONS
+      // =====================
+
+      async function loadBooks() {
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(`${apiBase}/api/books`);
+          if (response.ok) {
+            const data = await response.json();
+            books = data.books || [];
+            booksSha = data.sha;
+            renderBooksList();
+          } else {
+            books = [];
+            renderBooksList();
+          }
+        } catch (error) {
+          console.error("Error loading books:", error);
           books = [];
           renderBooksList();
         }
-      } catch (error) {
-        console.error('Error loading books:', error);
-        books = [];
-        renderBooksList();
-      }
-    }
-
-    function renderBooksList() {
-      // Update header with book count
-      const booksHeader = document.getElementById('books-header');
-      if (booksHeader) {
-        booksHeader.textContent = `Books (${books.length})`;
       }
 
-      if (books.length === 0) {
-        booksList.innerHTML = '<li><button disabled style="color: var(--color-text-secondary);">No books yet</button></li>';
-        return;
-      }
+      function renderBooksList() {
+        // Update header with book count
+        const booksHeader = document.getElementById("books-header");
+        if (booksHeader) {
+          booksHeader.textContent = `Books (${books.length})`;
+        }
 
-      // Create array with original indices, then sort
-      const sortedBooks = books
-        .map((book, index) => ({ book, originalIndex: index }))
-        .sort((a, b) => {
-          // Reading books always come first
-          if (a.book.status === 'reading' && b.book.status !== 'reading') return -1;
-          if (a.book.status !== 'reading' && b.book.status === 'reading') return 1;
-          
-          // For finished books, sort by date (most recent first)
-          if (a.book.date && b.book.date) {
-            return new Date(b.book.date) - new Date(a.book.date);
-          }
-          return 0;
-        });
+        if (books.length === 0) {
+          booksList.innerHTML =
+            '<li><button disabled style="color: var(--color-text-secondary);">No books yet</button></li>';
+          return;
+        }
 
-      booksList.innerHTML = sortedBooks.map(({ book, originalIndex }) => {
-        const isActive = currentBookIndex === originalIndex;
-        const statusText = book.status === 'reading' ? '📖' : '';
-        
-        return `
+        // Create array with original indices, then sort
+        const sortedBooks = books
+          .map((book, index) => ({ book, originalIndex: index }))
+          .sort((a, b) => {
+            // Reading books always come first
+            if (a.book.status === "reading" && b.book.status !== "reading")
+              return -1;
+            if (a.book.status !== "reading" && b.book.status === "reading")
+              return 1;
+
+            // For finished books, sort by date (most recent first)
+            if (a.book.date && b.book.date) {
+              return new Date(b.book.date) - new Date(a.book.date);
+            }
+            return 0;
+          });
+
+        booksList.innerHTML = sortedBooks
+          .map(({ book, originalIndex }) => {
+            const isActive = currentBookIndex === originalIndex;
+            const statusText = book.status === "reading" ? "📖" : "";
+
+            return `
           <li>
-            <button class="${isActive ? 'active' : ''}" onclick="selectBook(${originalIndex})">
-              <span class="post-item-title">${statusText} ${book.emoji} ${book.title}</span>
-              <span class="post-item-date">${book.status === 'reading' ? 'Reading' : book.date}</span>
+            <button class="${
+              isActive ? "active" : ""
+            }" onclick="selectBook(${originalIndex})">
+              <span class="post-item-title">${statusText} ${book.emoji} ${
+              book.title
+            }</span>
+              <span class="post-item-date">${
+                book.status === "reading" ? "Reading" : book.date
+              }</span>
             </button>
           </li>
         `;
-      }).join('');
-    }
-
-    function selectBook(index) {
-      if (isBookDirty && !confirm('You have unsaved changes. Discard them?')) return;
-
-      currentBookIndex = index;
-      const book = books[index];
-      
-      bookEmoji.value = book.emoji;
-      bookTitleInput.value = book.title;
-      bookAuthor.value = book.author || '';
-      bookGenre.value = book.genre;
-      bookDate.value = book.date || '';
-      bookGoodreads.value = book.goodreadsUrl || '';
-      bookFavorite.checked = book.favorite || false;
-      
-      // Set status radio
-      document.querySelector(`input[name="book-status"][value="${book.status}"]`).checked = true;
-      bookDateGroup.style.display = book.status === 'reading' ? 'none' : 'flex';
-      
-      deleteBookBtn.style.display = 'inline-flex';
-      isBookDirty = false;
-      updateBookPreview();
-      renderBooksList();
-    }
-
-    function createNewBook() {
-      if (isBookDirty && !confirm('You have unsaved changes. Discard them?')) return;
-
-      currentBookIndex = null;
-      bookEmoji.value = '📚';
-      bookTitleInput.value = '';
-      bookAuthor.value = '';
-      bookGenre.value = '';
-      bookDate.value = '';
-      bookGoodreads.value = '';
-      bookFavorite.checked = false;
-      document.querySelector('input[name="book-status"][value="finished"]').checked = true;
-      bookDateGroup.style.display = 'flex';
-      deleteBookBtn.style.display = 'none';
-      isBookDirty = false;
-      updateBookPreview();
-      renderBooksList();
-      bookTitleInput.focus();
-    }
-
-    function handleBookEdit() {
-      isBookDirty = true;
-      setBookStatus('Unsaved changes', '');
-    }
-
-    function updateBookPreview() {
-      const emoji = bookEmoji.value || '📚';
-      const title = bookTitleInput.value || 'Book Title';
-      const author = bookAuthor.value || 'Author';
-      const genre = bookGenre.value || 'Genre';
-      const status = document.querySelector('input[name="book-status"]:checked').value;
-      const date = bookDate.value;
-      const favorite = bookFavorite.checked;
-      
-      document.getElementById('preview-emoji').textContent = emoji;
-      document.getElementById('preview-title').textContent = title;
-      document.getElementById('preview-genre').textContent = `${genre} • ${author}`;
-      
-      const previewCard = document.getElementById('book-preview-card');
-      if (favorite) {
-        previewCard.classList.add('favorite');
-      } else {
-        previewCard.classList.remove('favorite');
-      }
-      
-      const statusEl = document.getElementById('preview-status');
-      const dateEl = document.getElementById('preview-date');
-      
-      if (status === 'reading') {
-        statusEl.style.display = 'inline';
-        dateEl.style.display = 'none';
-      } else {
-        statusEl.style.display = 'none';
-        dateEl.style.display = 'inline';
-        dateEl.textContent = date || '';
-      }
-    }
-
-    async function saveBook() {
-      const emoji = bookEmoji.value.trim();
-      const title = bookTitleInput.value.trim();
-      const author = bookAuthor.value.trim();
-      const genre = bookGenre.value.trim();
-      const status = document.querySelector('input[name="book-status"]:checked').value;
-      const date = status === 'reading' ? '' : bookDate.value.trim();
-      const goodreadsUrl = bookGoodreads.value.trim();
-      const favorite = bookFavorite.checked;
-
-      if (!title) { setBookStatus('Title is required', 'error'); return; }
-      if (!emoji) { setBookStatus('Emoji is required', 'error'); return; }
-
-      setBookStatus('Saving...', 'saving');
-
-      // Generate ID from title
-      const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
-      const bookData = { id, emoji, title, author, genre, status, date, goodreadsUrl, favorite };
-
-      // Update or add book
-      if (currentBookIndex !== null) {
-        books[currentBookIndex] = bookData;
-      } else {
-        books.unshift(bookData); // Add to beginning
-        currentBookIndex = 0;
+          })
+          .join("");
       }
 
-      const apiBase = getApiBase();
-      try {
-        const response = await fetch(`${apiBase}/api/books`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-          body: JSON.stringify({ books, sha: booksSha })
-        });
+      function selectBook(index) {
+        if (isBookDirty && !confirm("You have unsaved changes. Discard them?"))
+          return;
 
-        if (response.ok) {
-          const data = await response.json();
-          booksSha = data.sha;
-          isBookDirty = false;
-          setBookStatus('Saved!', 'saved');
-          deleteBookBtn.style.display = 'inline-flex';
-          renderBooksList();
-          setTimeout(() => { if (bookStatusIndicator.textContent === 'Saved!') setBookStatus('', ''); }, 3000);
+        currentBookIndex = index;
+        const book = books[index];
+
+        bookEmoji.value = book.emoji;
+        bookTitleInput.value = book.title;
+        bookAuthor.value = book.author || "";
+        bookGenre.value = book.genre;
+        bookDate.value = book.date || "";
+        bookGoodreads.value = book.goodreadsUrl || "";
+        bookFavorite.checked = book.favorite || false;
+
+        // Set status radio
+        document.querySelector(
+          `input[name="book-status"][value="${book.status}"]`
+        ).checked = true;
+        bookDateGroup.style.display =
+          book.status === "reading" ? "none" : "flex";
+
+        deleteBookBtn.style.display = "inline-flex";
+        isBookDirty = false;
+        updateBookPreview();
+        renderBooksList();
+      }
+
+      function createNewBook() {
+        if (isBookDirty && !confirm("You have unsaved changes. Discard them?"))
+          return;
+
+        currentBookIndex = null;
+        bookEmoji.value = "📚";
+        bookTitleInput.value = "";
+        bookAuthor.value = "";
+        bookGenre.value = "";
+        bookDate.value = "";
+        bookGoodreads.value = "";
+        bookFavorite.checked = false;
+        document.querySelector(
+          'input[name="book-status"][value="finished"]'
+        ).checked = true;
+        bookDateGroup.style.display = "flex";
+        deleteBookBtn.style.display = "none";
+        isBookDirty = false;
+        updateBookPreview();
+        renderBooksList();
+        bookTitleInput.focus();
+      }
+
+      function handleBookEdit() {
+        isBookDirty = true;
+        setBookStatus("Unsaved changes", "");
+      }
+
+      function updateBookPreview() {
+        const emoji = bookEmoji.value || "📚";
+        const title = bookTitleInput.value || "Book Title";
+        const author = bookAuthor.value || "Author";
+        const genre = bookGenre.value || "Genre";
+        const status = document.querySelector(
+          'input[name="book-status"]:checked'
+        ).value;
+        const date = bookDate.value;
+        const favorite = bookFavorite.checked;
+
+        document.getElementById("preview-emoji").textContent = emoji;
+        document.getElementById("preview-title").textContent = title;
+        document.getElementById(
+          "preview-genre"
+        ).textContent = `${genre} • ${author}`;
+
+        const previewCard = document.getElementById("book-preview-card");
+        if (favorite) {
+          previewCard.classList.add("favorite");
         } else {
-          const error = await response.json();
-          setBookStatus(error.error || 'Failed to save', 'error');
+          previewCard.classList.remove("favorite");
         }
-      } catch (error) {
-        console.error('Error saving book:', error);
-        setBookStatus('Error saving book', 'error');
-      }
-    }
 
-    async function deleteBook() {
-      if (currentBookIndex === null) return;
-      const book = books[currentBookIndex];
-      if (!confirm(`Delete "${book.title}"? This cannot be undone.`)) return;
+        const statusEl = document.getElementById("preview-status");
+        const dateEl = document.getElementById("preview-date");
 
-      setBookStatus('Deleting...', 'saving');
-
-      books.splice(currentBookIndex, 1);
-
-      const apiBase = getApiBase();
-      try {
-        const response = await fetch(`${apiBase}/api/books`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-          body: JSON.stringify({ books, sha: booksSha })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          booksSha = data.sha;
-          setBookStatus('Deleted', 'saved');
-          createNewBook();
-          renderBooksList();
+        if (status === "reading") {
+          statusEl.style.display = "inline";
+          dateEl.style.display = "none";
         } else {
-          const error = await response.json();
-          setBookStatus(error.error || 'Failed to delete', 'error');
+          statusEl.style.display = "none";
+          dateEl.style.display = "inline";
+          dateEl.textContent = date || "";
         }
-      } catch (error) {
-        console.error('Error deleting book:', error);
-        setBookStatus('Error deleting book', 'error');
-      }
-    }
-
-    function setBookStatus(message, type) {
-      bookStatusIndicator.textContent = message;
-      bookStatusIndicator.className = 'status-indicator';
-      if (type) bookStatusIndicator.classList.add(type);
-    }
-
-    // =====================
-    // IMAGE UPLOAD
-    // =====================
-
-    function handleDragOver(e) {
-      e.preventDefault();
-      imageUploadZone.classList.add('dragover');
-    }
-
-    function handleDragLeave(e) {
-      e.preventDefault();
-      imageUploadZone.classList.remove('dragover');
-    }
-
-    function handleDrop(e) {
-      e.preventDefault();
-      imageUploadZone.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if (files.length > 0) uploadImage(files[0]);
-    }
-
-    function handleImageSelect(e) {
-      const files = e.target.files;
-      if (files.length > 0) uploadImage(files[0]);
-    }
-
-    async function uploadImage(file) {
-      if (!file.type.startsWith('image/')) {
-        setPostStatus('Please select an image file', 'error');
-        return;
       }
 
-      setPostStatus('Uploading image...', 'saving');
+      async function saveBook() {
+        const emoji = bookEmoji.value.trim();
+        const title = bookTitleInput.value.trim();
+        const author = bookAuthor.value.trim();
+        const genre = bookGenre.value.trim();
+        const status = document.querySelector(
+          'input[name="book-status"]:checked'
+        ).value;
+        const date = status === "reading" ? "" : bookDate.value.trim();
+        const goodreadsUrl = bookGoodreads.value.trim();
+        const favorite = bookFavorite.checked;
 
-      const apiBase = getApiBase();
-      try {
-        const base64 = await fileToBase64(file);
-        
-        const response = await fetch(`${apiBase}/api/images`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${password}` },
-          body: JSON.stringify({ filename: file.name, content: base64, contentType: file.type })
-        });
+        if (!title) {
+          setBookStatus("Title is required", "error");
+          return;
+        }
+        if (!emoji) {
+          setBookStatus("Emoji is required", "error");
+          return;
+        }
 
-        if (response.ok) {
-          const result = await response.json();
-          const imageMarkdown = `![${file.name}](${result.url})`;
-          insertAtCursor(postContent, imageMarkdown);
-          handlePostEdit();
-          updatePostPreview();
-          setPostStatus('Image uploaded!', 'saved');
-          setTimeout(() => { if (postStatusIndicator.textContent === 'Image uploaded!') setPostStatus('Unsaved changes', ''); }, 3000);
+        setBookStatus("Saving...", "saving");
+
+        // Generate ID from title
+        const id = title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+
+        const bookData = {
+          id,
+          emoji,
+          title,
+          author,
+          genre,
+          status,
+          date,
+          goodreadsUrl,
+          favorite,
+        };
+
+        // Update or add book
+        if (currentBookIndex !== null) {
+          books[currentBookIndex] = bookData;
         } else {
-          const error = await response.json();
-          setPostStatus(error.error || 'Failed to upload', 'error');
+          books.unshift(bookData); // Add to beginning
+          currentBookIndex = 0;
         }
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        setPostStatus('Error uploading image', 'error');
+
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(`${apiBase}/api/books`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${password}`,
+            },
+            body: JSON.stringify({ books, sha: booksSha }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            booksSha = data.sha;
+            isBookDirty = false;
+            setBookStatus("Saved!", "saved");
+            deleteBookBtn.style.display = "inline-flex";
+            renderBooksList();
+            setTimeout(() => {
+              if (bookStatusIndicator.textContent === "Saved!")
+                setBookStatus("", "");
+            }, 3000);
+          } else {
+            const error = await response.json();
+            setBookStatus(error.error || "Failed to save", "error");
+          }
+        } catch (error) {
+          console.error("Error saving book:", error);
+          setBookStatus("Error saving book", "error");
+        }
       }
-    }
 
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
+      async function deleteBook() {
+        if (currentBookIndex === null) return;
+        const book = books[currentBookIndex];
+        if (!confirm(`Delete "${book.title}"? This cannot be undone.`)) return;
 
-    function insertAtCursor(textarea, text) {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(end);
-      textarea.selectionStart = textarea.selectionEnd = start + text.length;
-      textarea.focus();
-    }
+        setBookStatus("Deleting...", "saving");
 
-    // Global functions for onclick handlers
-    window.selectPost = selectPost;
-    window.selectBook = selectBook;
+        books.splice(currentBookIndex, 1);
 
-    // Initialize
-    init();
-  </script>
-</body>
+        const apiBase = getApiBase();
+        try {
+          const response = await fetch(`${apiBase}/api/books`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${password}`,
+            },
+            body: JSON.stringify({ books, sha: booksSha }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            booksSha = data.sha;
+            setBookStatus("Deleted", "saved");
+            createNewBook();
+            renderBooksList();
+          } else {
+            const error = await response.json();
+            setBookStatus(error.error || "Failed to delete", "error");
+          }
+        } catch (error) {
+          console.error("Error deleting book:", error);
+          setBookStatus("Error deleting book", "error");
+        }
+      }
+
+      function setBookStatus(message, type) {
+        bookStatusIndicator.textContent = message;
+        bookStatusIndicator.className = "status-indicator";
+        if (type) bookStatusIndicator.classList.add(type);
+      }
+
+      // =====================
+      // IMAGE UPLOAD
+      // =====================
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        imageUploadZone.classList.add("dragover");
+      }
+
+      function handleDragLeave(e) {
+        e.preventDefault();
+        imageUploadZone.classList.remove("dragover");
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        imageUploadZone.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (files.length > 0) uploadImage(files[0]);
+      }
+
+      function handleImageSelect(e) {
+        const files = e.target.files;
+        if (files.length > 0) uploadImage(files[0]);
+      }
+
+      async function uploadImage(file) {
+        if (!file.type.startsWith("image/")) {
+          setPostStatus("Please select an image file", "error");
+          return;
+        }
+
+        setPostStatus("Uploading image...", "saving");
+
+        const apiBase = getApiBase();
+        try {
+          const base64 = await fileToBase64(file);
+
+          const response = await fetch(`${apiBase}/api/images`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${password}`,
+            },
+            body: JSON.stringify({
+              filename: file.name,
+              content: base64,
+              contentType: file.type,
+            }),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            const imageMarkdown = `![${file.name}](${result.url})`;
+            insertAtCursor(postContent, imageMarkdown);
+            handlePostEdit();
+            updatePostPreview();
+            setPostStatus("Image uploaded!", "saved");
+            setTimeout(() => {
+              if (postStatusIndicator.textContent === "Image uploaded!")
+                setPostStatus("Unsaved changes", "");
+            }, 3000);
+          } else {
+            const error = await response.json();
+            setPostStatus(error.error || "Failed to upload", "error");
+          }
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setPostStatus("Error uploading image", "error");
+        }
+      }
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(",")[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function insertAtCursor(textarea, text) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        textarea.value =
+          textarea.value.substring(0, start) +
+          text +
+          textarea.value.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + text.length;
+        textarea.focus();
+      }
+
+      // Global functions for onclick handlers
+      window.selectPost = selectPost;
+      window.selectBook = selectBook;
+
+      // Initialize
+      init();
+    </script>
+  </body>
 </html>
