@@ -768,7 +768,6 @@ section h2 {
   line-height: 1.6;
   background-color: var(--color-background);
   color: var(--color-text);
-  max-width: 800px;
   display: block;
   box-sizing: border-box;
 }

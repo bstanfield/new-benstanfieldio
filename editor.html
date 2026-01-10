@@ -428,7 +428,7 @@
           id="post-panel-toggle"
           title="Toggle Preview (⌘⇧P)"
         >
-          <i data-lucide="panel-right-close"></i>
+          <i id="post-panel-toggle-icon" data-lucide="panel-right-close"></i>
         </button>
 
         <!-- URL Editor -->
@@ -504,7 +504,7 @@
           id="book-panel-toggle"
           title="Toggle Preview (⌘⇧P)"
         >
-          <i data-lucide="panel-right-close"></i>
+          <i id="book-panel-toggle-icon" data-lucide="panel-right-close"></i>
         </button>
         <div class="book-form">
           <div class="form-group">
@@ -1077,16 +1077,16 @@
 
       // Update icon for a button by replacing the inner HTML
       function updateButtonIcon(button, iconName, title) {
-        const iconElement = button.querySelector("i");
+        const iconElement = document.getElementById(`${button.id}-icon`);
+
         if (iconElement) {
-          // Replace the entire innerHTML to force Lucide to recreate the icon
-          iconElement.innerHTML = "";
+          iconElement.setAttribute("class", `lucide-${iconName}`);
           iconElement.setAttribute("data-lucide", iconName);
-          button.title = title;
-          // Reinitialize Lucide icons
-          if (typeof lucide !== "undefined") {
-            lucide.createIcons();
-          }
+        }
+
+        // Need to reinitialize Lucide icons
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
         }
       }
 
