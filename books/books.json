@@ -1,5 +1,16 @@
 [
   {
+    "id": "anna-karenina",
+    "emoji": "🪆",
+    "title": "Anna Karenina",
+    "author": "Leo Tolstoy",
+    "genre": "Classics",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/15823480-anna-karenina",
+    "favorite": false
+  },
+  {
     "id": "7-powers",
     "emoji": "📈",
     "title": "7 Powers",
