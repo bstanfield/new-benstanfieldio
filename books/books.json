@@ -1,5 +1,16 @@
 [
   {
+    "id": "7-powers",
+    "emoji": "📈",
+    "title": "7 Powers",
+    "author": "Hamilton Helmer",
+    "genre": "Business",
+    "status": "finished",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/32816087-7-powers",
+    "favorite": false
+  },
+  {
     "id": "discourses-selected-writings",
     "emoji": "🧐",
     "title": "Discourses & Selected Writings",
