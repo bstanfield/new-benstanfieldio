@@ -1,5 +1,16 @@
 [
   {
+    "id": "letters-from-a-stoic",
+    "emoji": "✉️",
+    "title": "Letters from a Stoic",
+    "author": "Seneca",
+    "genre": "Philosophy",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/97411.Letters_from_a_Stoic",
+    "favorite": false
+  },
+  {
     "id": "anna-karenina",
     "emoji": "💃",
     "title": "Anna Karenina",
