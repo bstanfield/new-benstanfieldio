@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Benjamin Stanfield — Co-founder at Wren, Product Designer</title>
+    <title>Benjamin Stanfield — Founding Designer at Outset</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Benjamin Stanfield (Ben Stanfield) is a Co-founder and Head of Product Design at Wren, helping over a million people reduce their carbon footprint. Based in California." />
+    <meta name="description" content="Benjamin Stanfield (Ben Stanfield) is the Founding Designer at Outset, and formerly Co-founder and Head of Product Design at Wren and Topos. Based in San Francisco, California." />
     <meta name="keywords" content="Benjamin Stanfield, Ben Stanfield, Wren, climate tech, product design, Y Combinator, Topos" />
     <meta name="author" content="Benjamin Stanfield" />
     <meta name="robots" content="index, follow" />
@@ -119,15 +119,15 @@
         <div class="profile-bio">
           <h2>Benjamin Stanfield</h2>
           <p>
-            I'm Ben, Co-founder and Head of Product Design at
+            I'm Ben, Founding Designer at <a href="https://outset.ai" target="_blank">Outset</a>, and formerly the Co-founder and Head of Product Design at
             <a href="https://wren.co" target="_blank">Wren</a> and
-            <a href="https://toposdata.com" target="_blank">Topos (Acq.)</a>.
+            <a href="https://toposdata.com" target="_blank">Topos (Acq.)</a>, from 2019-2026.
           </p>
           <p>
             I love basketball, typography,
             <a href="https://drinks.benstanfield.io/" target="_blank"
               >fun cocktails</a
-            >, and espresso. I currently live in Saratoga, California, cozied up
+            >, and espresso. I currently live in California, cozied up
             against the Santa Cruz mountains.
           </p>
           <p>
@@ -473,15 +473,41 @@
             return;
           }
 
+          // Parse date strings like "Jan 2026", "Jan. 2026", "December 2025" into timestamps
+          const monthMap = {
+            jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+            jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+            january: 0, february: 1, march: 2, april: 3, june: 5,
+            july: 6, august: 7, september: 8, october: 9, november: 10, december: 11
+          };
+          
+          function parseBookDate(dateStr) {
+            if (!dateStr) return 0;
+            // Remove periods and lowercase
+            const cleaned = dateStr.replace(/\./g, '').toLowerCase().trim();
+            const parts = cleaned.split(/\s+/);
+            if (parts.length < 2) return 0;
+            
+            const monthStr = parts[0];
+            const year = parseInt(parts[1], 10);
+            const month = monthMap[monthStr];
+            
+            if (month === undefined || isNaN(year)) return 0;
+            return new Date(year, month, 1).getTime();
+          }
+
           // Sort: reading first, then by date descending
           const sortedBooks = [...books].sort((a, b) => {
             if (a.status === "reading" && b.status !== "reading") return -1;
             if (a.status !== "reading" && b.status === "reading") return 1;
             // For finished books, sort by date
-            if (a.date && b.date) {
-              return new Date(b.date) - new Date(a.date);
+            const dateA = parseBookDate(a.date);
+            const dateB = parseBookDate(b.date);
+            if (dateA !== dateB) {
+              return dateB - dateA;
             }
-            return 0;
+            // Stable fallback: sort by title alphabetically
+            return (a.title || '').localeCompare(b.title || '');
           });
 
           // Separate reading and finished books
