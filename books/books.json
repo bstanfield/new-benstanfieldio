@@ -188,12 +188,12 @@
   },
   {
     "id": "meditations",
-    "emoji": "🏛️",
+    "emoji": "💭",
     "title": "Meditations",
     "author": "Marcus Aurelius",
     "genre": "Philosophy",
     "status": "finished",
-    "date": "Sept. 2025",
+    "date": "September 2025",
     "goodreadsUrl": "https://www.goodreads.com/book/show/30659.Meditations",
     "favorite": true
   },
