@@ -142,7 +142,7 @@
             >.
           </p>
           <br />
-          <p>Current interests:</p>
+          <h4>Current interests</h4>
           <ul>
             <li>
               <b>Climate action & optimism.</b> This has driven my work at
@@ -543,12 +543,12 @@
           let html = "";
 
           if (readingBooks.length > 0) {
-            html += '<div class="bookshelf-subheader">Reading now</div>';
+            html += '<h5 class="bookshelf-subheader">Reading now</h5>';
             html += readingBooks.map(renderBook).join("");
           }
 
           if (finishedBooks.length > 0) {
-            html += '<div class="bookshelf-subheader">Finished</div>';
+            html += '<h5 class="bookshelf-subheader">Finished</h5>';
             html += finishedBooks.map(renderBook).join("");
           }
 
