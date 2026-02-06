@@ -54,6 +54,14 @@
     {
       "src": "/(.*)",
       "dest": "/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "status": 302,
+      "headers": { "Location": "/?notfound=1" }
     }
   ]
 }

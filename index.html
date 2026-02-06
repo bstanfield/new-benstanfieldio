@@ -247,6 +247,12 @@
       </footer>
     </main>
 
+    <!-- 404 Toast -->
+    <div class="toast" id="notfound-toast">
+      <span class="toast-message">That page doesn't exist.</span>
+      <button class="toast-dismiss" onclick="dismissToast()" aria-label="Dismiss">&times;</button>
+    </div>
+
     <!-- Fixed Controls (bottom right, desktop only) -->
     <div class="fixed-controls">
       <div class="theme-toggle">
@@ -938,7 +944,27 @@
         setTimeout(() => main.classList.remove("page-transition-in"), 300);
 
         loadPosts();
+
+        // Show 404 toast if redirected from a missing page
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("notfound")) {
+          // Clean the URL
+          const url = new URL(window.location);
+          url.searchParams.delete("notfound");
+          window.history.replaceState({}, "", url.pathname);
+
+          const toast = document.getElementById("notfound-toast");
+          requestAnimationFrame(() => {
+            toast.classList.add("visible");
+          });
+          setTimeout(() => dismissToast(), 5000);
+        }
       });
+
+      function dismissToast() {
+        const toast = document.getElementById("notfound-toast");
+        toast.classList.remove("visible");
+      }
     </script>
   </body>
 </html>
