@@ -1,5 +1,16 @@
 [
   {
+    "id": "dialogues-letters",
+    "emoji": "🦉",
+    "title": "Dialogues & Letters",
+    "author": "Seneca",
+    "genre": "Philosophy",
+    "status": "finished",
+    "date": "Mar. 25",
+    "goodreadsUrl": "",
+    "favorite": true
+  },
+  {
     "id": "letters-from-a-stoic",
     "emoji": "✉️",
     "title": "Letters from a Stoic",
