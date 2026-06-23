@@ -1,5 +1,16 @@
 [
   {
+    "id": "montaigne-s-essay",
+    "emoji": "🪶",
+    "title": "Montaigne’s Essay",
+    "author": "Michel de Montaigne",
+    "genre": "Philosophy",
+    "status": "reading",
+    "date": "",
+    "goodreadsUrl": "",
+    "favorite": false
+  },
+  {
     "id": "dialogues-letters",
     "emoji": "🦉",
     "title": "Dialogues & Letters",
