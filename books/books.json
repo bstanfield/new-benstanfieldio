@@ -28,9 +28,9 @@
     "author": "Seneca",
     "genre": "Philosophy",
     "status": "finished",
-    "date": "",
-    "goodreadsUrl": "Jun. 2026",
-    "favorite": false
+    "date": "Jun. 2026",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/18431670-hardship-and-happiness",
+    "favorite": true
   },
   {
     "id": "montaigne-s-essay",
