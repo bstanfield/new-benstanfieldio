@@ -1,5 +1,16 @@
 [
   {
+    "id": "mastery",
+    "emoji": "🎯",
+    "title": "Mastery",
+    "author": "Robert Greene",
+    "genre": "Psychology",
+    "status": "finished",
+    "date": "Jul. 2026",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/13589182-mastery",
+    "favorite": false
+  },
+  {
     "id": "the-river-of-doubt",
     "emoji": "🌊",
     "title": "The River of Doubt",
