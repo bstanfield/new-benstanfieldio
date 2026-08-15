@@ -1,5 +1,16 @@
 [
   {
+    "id": "shroud",
+    "emoji": "🪐",
+    "title": "Shroud",
+    "author": "Adrian Tchaikovsky",
+    "genre": "Science Fiction",
+    "status": "finished",
+    "date": "Aug 20, 2026",
+    "goodreadsUrl": "https://www.goodreads.com/book/show/210384823-shroud",
+    "favorite": false
+  },
+  {
     "id": "mastery",
     "emoji": "🎯",
     "title": "Mastery",
