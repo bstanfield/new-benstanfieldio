@@ -198,17 +198,6 @@
     "favorite": false
   },
   {
-    "id": "wolf-hall",
-    "emoji": "🏰",
-    "title": "Wolf Hall",
-    "author": "Hilary Mantel",
-    "genre": "Fiction",
-    "status": "reading",
-    "date": "",
-    "goodreadsUrl": "https://www.goodreads.com/book/show/6101138-wolf-hall",
-    "favorite": false
-  },
-  {
     "id": "outliers",
     "emoji": "🎯",
     "title": "Outliers",
