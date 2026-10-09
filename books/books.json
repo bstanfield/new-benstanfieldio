@@ -1,5 +1,16 @@
 [
   {
+    "id": "steve-jobs",
+    "emoji": "🍎",
+    "title": "Steve Jobs",
+    "author": "Walter Isaacson",
+    "genre": "Biography",
+    "status": "finished",
+    "date": "Oct. 2026",
+    "goodreadsUrl": "https://www.goodreads.com/en/book/show/11084145-steve-jobs",
+    "favorite": true
+  },
+  {
     "id": "shroud",
     "emoji": "🪐",
     "title": "Shroud",
